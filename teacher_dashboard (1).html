@@ -1,0 +1,2339 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Teacher Dashboard</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --primary-light: #e0f2fe;
+            --secondary: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --radius: 16px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: var(--white);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .brand {
+            padding: 24px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-links {
+            padding: 20px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            text-decoration: none;
+            color: var(--text-muted);
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .nav-link.active {
+            background-color: var(--primary);
+            color: var(--white);
+        }
+
+        .nav-link i { font-size: 1.2rem; width: 24px; text-align: center; }
+
+        .logout-btn {
+            margin: 20px 16px;
+            padding: 14px;
+            text-align: center;
+            background-color: #fee2e2;
+            color: var(--danger);
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+        }
+        .logout-btn:hover { background-color: #fca5a5; color: #7f1d1d; }
+
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 30px;
+            max-width: 1400px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .greeting h1 { font-size: 1.8rem; color: var(--text-main); }
+        .greeting p { color: var(--text-muted); }
+
+        .topbar-actions { display: flex; align-items: center; gap: 20px; }
+
+        .notify-btn {
+            position: relative;
+            background: var(--white);
+            border: 1px solid var(--border);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            transition: 0.3s;
+        }
+        .notify-btn:hover { color: var(--primary); border-color: var(--primary); }
+
+        .notify-badge {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            width: 10px;
+            height: 10px;
+            background-color: var(--danger);
+            border-radius: 50%;
+            border: 2px solid var(--white);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--white);
+            padding: 8px 16px 8px 8px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #1e293b;
+            color: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+        }
+
+        .icon-blue { background: #e0f2fe; color: #0284c7; }
+        .icon-green { background: #dcfce7; color: #16a34a; }
+        .icon-orange { background: #ffedd5; color: #ea580c; }
+        .icon-purple { background: #f3e8ff; color: #9333ea; }
+
+        .stat-details h3 { font-size: 1.5rem; margin: 0; color: var(--text-main); }
+        .stat-details p { margin: 0; color: var(--text-muted); font-size: 0.9rem; }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            font-weight: 500;
+            font-size: 0.9rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+
+        .student-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .student-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            background: var(--secondary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* Action Buttons (Attendance) */
+        .action-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.2s;
+            background: var(--secondary);
+            color: var(--text-muted);
+        }
+
+        .btn-present:hover { background: #dcfce7; color: #16a34a; border-color: #16a34a; }
+        .btn-late:hover { background: #ffedd5; color: #ea580c; border-color: #ea580c; }
+        .btn-absent:hover { background: #fee2e2; color: #ef4444; border-color: #ef4444; }
+
+        /* Marked Status */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .status-badge.present { background: #dcfce7; color: #16a34a; }
+        .status-badge.late { background: #ffedd5; color: #ea580c; }
+        .status-badge.absent { background: #fee2e2; color: #ef4444; }
+
+        /* Content Toggle Switch */
+        .content-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: var(--secondary);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .content-info h5 { margin: 0; font-size: 1rem; color: var(--text-main); }
+        .content-info p { margin: 4px 0 0 0; font-size: 0.8rem; color: var(--text-muted); }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px; width: 20px;
+            left: 4px; bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: var(--shadow-sm);
+        }
+        input:checked + .slider { background-color: var(--primary); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
+        /* Grading Section */
+        .grade-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+        .grade-item:last-child { border-bottom: none; }
+        
+        .file-icon {
+            font-size: 2rem;
+            color: var(--danger); /* PDF Red */
+        }
+        .file-icon.word { color: #2563eb; }
+
+        .grade-info { flex: 1; }
+        .grade-info h5 { margin: 0 0 4px 0; font-size: 0.95rem; }
+        .grade-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+
+        .btn-grade {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-grade:hover { background: var(--primary); color: var(--white); }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .modal-content {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            animation: modalSlideIn 0.3s ease;
+        }
+        @keyframes modalSlideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .close-modal {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            transition: 0.2s;
+        }
+        .close-modal:hover { color: var(--danger); }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            outline: none;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+        .form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 30px;
+        }
+        .btn-submit {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-submit:hover { background: var(--primary-dark); }
+        .btn-cancel {
+            background: var(--secondary);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+        .btn-cancel:hover { background: var(--border); }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .toast {
+            background: var(--white);
+            color: var(--text-main);
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 300px;
+            transform: translateX(120%);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast-icon { font-size: 1.25rem; }
+        .toast.success { border-left-color: var(--success); }
+        .toast.success .toast-icon { color: var(--success); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast.warning .toast-icon { color: var(--warning); }
+        .toast.danger { border-left-color: var(--danger); }
+        .toast.danger .toast-icon { color: var(--danger); }
+        .toast-content { flex: 1; }
+        .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
+        .toast-msg { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* SPA tab animation */
+        .tab-panel {
+            animation: fadeInTab 0.4s ease-out;
+        }
+        @keyframes fadeInTab {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Redesigned Summary Overview Widgets --- */
+        .summary-header-banner {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            border-radius: var(--radius);
+            padding: 24px;
+            color: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+        .summary-header-banner h2 { font-size: 1.4rem; font-weight: 600; margin-bottom: 6px; }
+        .summary-header-banner p { font-size: 0.88rem; opacity: 0.85; }
+        .summary-header-banner .badge { background: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; }
+        
+        .attendance-bar-chart {
+            display: flex;
+            height: 24px;
+            background: #cbd5e1;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.08);
+        }
+        .attendance-bar-segment {
+            height: 100%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .segment-present { background: var(--success); }
+        .segment-late { background: var(--warning); }
+        .segment-absent { background: var(--danger); }
+        
+        .summary-details-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .summary-details-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: var(--secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            transition: 0.2s;
+        }
+        .summary-details-item:hover {
+            transform: translateX(4px);
+            border-color: var(--primary);
+        }
+        
+        .badge-pill {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .badge-pill.success { background: #dcfce7; color: #16a34a; }
+        .badge-pill.danger { background: #fee2e2; color: #ef4444; }
+        
+        .quick-action-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            background: var(--secondary);
+            color: var(--primary-dark);
+            border: 1px dashed var(--primary);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .quick-action-link:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-style: solid;
+        }
+        
+        .empty-state-box {
+            text-align: center;
+            padding: 30px 15px;
+            color: var(--text-muted);
+        }
+        .empty-state-box i { font-size: 2rem; margin-bottom: 12px; opacity: 0.5; }
+        .empty-state-box p { font-size: 0.88rem; }
+        
+        .podium-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .podium-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            background: var(--secondary);
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+        .podium-rank {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .podium-rank.first { background: #fef08a; color: #a16207; }
+        .podium-rank.second { background: #e2e8f0; color: #475569; }
+        .podium-rank.third { background: #fed7aa; color: #9a3412; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-graduation-cap"></i> LMS Teacher
+        </div>
+        <div class="nav-links">
+            <a id="link-summary" class="nav-link active" onclick="switchTab('summary')"><i class="fa-solid fa-chart-pie"></i> แดชบอร์ดสรุปผล</a>
+            <a id="link-attendance" class="nav-link" onclick="switchTab('attendance')"><i class="fa-solid fa-clipboard-user"></i> เช็คชื่อเข้าเรียน</a>
+            <a id="link-grading" class="nav-link" onclick="switchTab('grading')"><i class="fa-solid fa-square-check"></i> ตรวจการบ้าน</a>
+            <a id="link-materials" class="nav-link" onclick="switchTab('materials')"><i class="fa-solid fa-book-open-reader"></i> จัดการสื่อ/บทเรียน</a>
+            <a id="link-gamestats" class="nav-link" onclick="switchTab('gamestats')"><i class="fa-solid fa-chart-bar"></i> สถิติเกมและคะแนน</a>
+        </div>
+        <button class="logout-btn"><i class="fa-solid fa-sign-out-alt"></i> ออกจากระบบ</button>
+    </aside>
+
+    <main class="main-content">
+        
+        <!-- Topbar (Always visible) -->
+        <header class="topbar">
+            <div class="greeting">
+                <h1 id="greeting-title">สวัสดี, ครูสมชาย! 👨‍🏫</h1>
+                <p id="greeting-subtitle">ภาพรวมการเรียนการสอน ห้อง ม.3/1 ประจำวันนี้</p>
+            </div>
+            <div class="topbar-actions">
+                <div class="notify-btn">
+                    <i class="fa-regular fa-bell"></i>
+                    <div class="notify-badge"></div>
+                </div>
+                <div class="user-profile">
+                    <div class="avatar">ส</div>
+                    <div class="user-info">
+                        <h4>สมชาย ใจดี</h4>
+                        <p>ครูประจำวิชา วิทยาการคำนวณ</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Overview (Always visible) -->
+        <div class="stats-grid">
+            <div class="stat-card" style="border-left-color: #16a34a;">
+                <div class="stat-icon icon-green"><i class="fa-solid fa-users"></i></div>
+                <div class="stat-details">
+                    <h3 id="class-attendance-stat">95%</h3>
+                    <p>อัตราการเข้าเรียนเฉลี่ย</p>
+                </div>
+            </div>
+            <div class="stat-card" style="border-left-color: #0284c7;">
+                <div class="stat-icon icon-blue"><i class="fa-solid fa-file-signature"></i></div>
+                <div class="stat-details">
+                    <h3 id="pending-tasks-stat">12 งาน</h3>
+                    <p>การบ้านที่รอตรวจ</p>
+                </div>
+            </div>
+            <div class="stat-card" style="border-left-color: #9333ea;">
+                <div class="stat-icon icon-purple"><i class="fa-solid fa-folder-open"></i></div>
+                <div class="stat-details">
+                    <h3>3 บท</h3>
+                    <p>บทเรียนที่เปิดให้นักเรียนดู</p>
+                </div>
+            </div>
+            <div class="stat-card" style="border-left-color: #ea580c;">
+                <div class="stat-icon icon-orange"><i class="fa-solid fa-gamepad"></i></div>
+                <div class="stat-details">
+                    <h3>45 คน</h3>
+                    <p>นักเรียนที่ผ่านมินิเกมล่าสุด</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 1: SUMMARY OVERVIEW ================= -->
+        <div id="panel-summary" class="tab-panel">
+            
+            <!-- Quick Summary Header Banner -->
+            <div class="summary-header-banner">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 8px;">
+                        <h2 style="margin: 0; font-size: 1.4rem;">ภาพรวมการเรียนการสอนรายวิชา วิทยาการคำนวณ</h2>
+                        
+                        <!-- Class Selector -->
+                        <select id="summary-class-select" style="padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.15); color: white; outline: none; cursor: pointer; font-family: 'Prompt', sans-serif; font-weight: 500; font-size: 0.9rem;" onchange="changeSummaryClass()">
+                            <option value="m1" style="color: black;">มัธยมศึกษาปีที่ 1</option>
+                            <option value="m2" style="color: black;">มัธยมศึกษาปีที่ 2</option>
+                            <option value="m3" selected style="color: black;">มัธยมศึกษาปีที่ 3</option>
+                        </select>
+                        
+                        <!-- Room Selector -->
+                        <select id="summary-room-select" style="padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.15); color: white; outline: none; cursor: pointer; font-family: 'Prompt', sans-serif; font-weight: 500; font-size: 0.9rem;" onchange="changeSummaryClass()">
+                            <option value="1" selected style="color: black;">/1</option>
+                            <option value="2" style="color: black;">/2</option>
+                            <option value="3" style="color: black;">/3</option>
+                        </select>
+                    </div>
+                    <p id="summary-today-desc">อัปเดตสถิติล่าสุดประจำวัน | บทเรียนเปิดสอนอยู่ 1 บทเรียน</p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <span class="badge"><i class="fa-solid fa-signal"></i> เชื่อมต่อห้องเรียนแล้ว</span>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                
+                <div class="col-left">
+                    <!-- Attendance Card Preview -->
+                    <div class="card">
+                        <div class="card-header" style="border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px;">
+                            <div class="card-title">
+                                <i class="fa-solid fa-clipboard-user" style="color: var(--success);"></i>
+                                สรุปการเข้าเรียนประจำวัน (Daily Attendance Summary)
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 0.88rem; color: var(--text-muted);">สัดส่วนการเข้าเรียนของชั้นเรียนห้องเรียนปัจจุบัน (คำนวณแบบเรียลไทม์)</p>
+                        
+                        <!-- Segemented bar chart -->
+                        <div class="attendance-bar-chart" id="summary-att-bar">
+                            <div class="attendance-bar-segment segment-present" style="width: 100%;" title="มาเรียน">มา 100%</div>
+                            <div class="attendance-bar-segment segment-late" style="width: 0%;" title="สาย">สาย 0%</div>
+                            <div class="attendance-bar-segment segment-absent" style="width: 0%;" title="ขาด">ขาด 0%</div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-around; margin: 15px 0; font-size: 0.9rem; text-align: center;">
+                            <div>
+                                <span style="font-weight: 700; color: var(--success); font-size: 1.15rem;" id="summary-att-present-count">3 คน</span>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">มาเรียน</p>
+                            </div>
+                            <div>
+                                <span style="font-weight: 700; color: var(--warning); font-size: 1.15rem;" id="summary-att-late-count">0 คน</span>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">มาสาย</p>
+                            </div>
+                            <div>
+                                <span style="font-weight: 700; color: var(--danger); font-size: 1.15rem;" id="summary-att-absent-count">0 คน</span>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">ขาดเรียน</p>
+                            </div>
+                        </div>
+
+                        <button class="quick-action-link" onclick="switchTab('attendance')">
+                            <i class="fa-solid fa-calendar-check"></i> ลงทะเบียน / บันทึกข้อมูลการเข้าเรียนประจำวัน
+                        </button>
+                    </div>
+
+                    <!-- Grading Card Preview -->
+                    <div class="card">
+                        <div class="card-header" style="border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px;">
+                            <div class="card-title">
+                                <i class="fa-solid fa-file-signature" style="color: var(--primary);"></i>
+                                การบ้านรอดำเนินการตรวจ (Recent Submissions)
+                            </div>
+                        </div>
+
+                        <!-- Submissions list -->
+                        <div class="summary-details-list" id="summary-grading-list">
+                            <!-- Loaded dynamically -->
+                        </div>
+
+                        <button class="quick-action-link" onclick="switchTab('grading')">
+                            <i class="fa-solid fa-square-poll-vertical"></i> ไปที่แผงตรวจการบ้านทั้งหมด
+                        </button>
+                    </div>
+                </div>
+
+                <div class="col-right">
+                    <!-- Time-lock Manager Preview -->
+                    <div class="card">
+                        <div class="card-header" style="border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px;">
+                            <div class="card-title">
+                                <i class="fa-solid fa-lock-open" style="color: var(--primary);"></i>
+                                สิทธิ์การเปิดเผยสื่อบทเรียน (Course Materials Lock)
+                            </div>
+                        </div>
+                        
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">กำหนดการปลดล็อกสื่อเสริมและสไลด์การสอน</p>
+
+                        <div class="summary-details-list" id="summary-materials-list">
+                            <!-- Loaded dynamically -->
+                        </div>
+
+                        <button class="quick-action-link" onclick="switchTab('materials')">
+                            <i class="fa-solid fa-sliders"></i> ไปที่แผงควบคุมสิทธิ์บทเรียน (Time-lock)
+                        </button>
+                    </div>
+
+                    <!-- Game DB Preview -->
+                    <div class="card">
+                        <div class="card-header" style="border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px;">
+                            <div class="card-title">
+                                <i class="fa-solid fa-trophy" style="color: var(--warning);"></i>
+                                ทำเนียบเกียรติยศนักเรียน (Leaderboard)
+                            </div>
+                        </div>
+
+                        <div class="podium-list" id="summary-leaderboard-list">
+                            <!-- Loaded dynamically -->
+                        </div>
+
+                        <button class="quick-action-link" onclick="switchTab('gamestats')">
+                            <i class="fa-solid fa-chart-line"></i> ไปที่แผงสถิติมินิเกมและคะแนนชั้นเรียน
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: CHECK ATTENDANCE ================= -->
+        <div id="panel-attendance" class="tab-panel" style="display: none;">
+            <div class="card" id="attendance-main-box">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: GRADE ASSIGNMENT ================= -->
+        <div id="panel-grading" class="tab-panel" style="display: none;">
+            <div class="card" id="grading-main-box">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: MANAGE COURSE MATERIAL ================= -->
+        <div id="panel-materials" class="tab-panel" style="display: none;">
+            <div class="card" id="materials-main-box">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+
+        <!-- ================= TAB 5: GAME STATS & LEADERBOARD ================= -->
+        <div id="panel-gamestats" class="tab-panel" style="display: none;">
+            <div class="card" id="gamestats-main-box">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Set up Broadcast Channel for communication
+        const bc = new BroadcastChannel('lms-demo-channel');
+
+        // --- SPA Router Switch ---
+        function switchTab(tabId) {
+            const panels = document.querySelectorAll('.tab-panel');
+            panels.forEach(p => p.style.display = 'none');
+
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(l => l.classList.remove('active'));
+
+            const activePanel = document.getElementById('panel-' + tabId);
+            if (activePanel) activePanel.style.display = 'block';
+
+            const activeLink = document.getElementById('link-' + tabId);
+            if (activeLink) activeLink.classList.add('active');
+
+            const titleEl = document.getElementById('greeting-title');
+            const subtitleEl = document.getElementById('greeting-subtitle');
+
+            if (tabId === 'summary') {
+                titleEl.innerText = "สวัสดี, ครูสมชาย! 👨‍🏫";
+                subtitleEl.innerText = "ภาพรวมการเรียนการสอน ห้อง ม.3/1 ประจำวันนี้";
+            } else if (tabId === 'attendance') {
+                titleEl.innerText = "เช็คชื่อเข้าเรียน 📋";
+                subtitleEl.innerText = "แผงควบคุมระบบตรวจสอบเวลาล็อกอินและประเมินสถานะมาเรียนรายบุคคล";
+                renderAttendanceHistory(); // Refresh history list when tab opens
+            } else if (tabId === 'grading') {
+                titleEl.innerText = "ตรวจประเมินการบ้าน 📝";
+                subtitleEl.innerText = "ตรวจสอบไฟล์งานที่นักเรียนแนบ วิเคราะห์ข้อมูล และให้คะแนนสะสมย้อนกลับ";
+            } else if (tabId === 'materials') {
+                titleEl.innerText = "ระบบควบคุมเอกสารการสอน 🔓";
+                subtitleEl.innerText = "จัดการ Time-lock เพื่อกำหนดการมองเห็นของบทเรียนประกอบวิชา";
+            } else if (tabId === 'gamestats') {
+                titleEl.innerText = "ระบบจัดการมินิเกมสะสมแต้ม 🎮";
+                subtitleEl.innerText = "ตรวจสอบสถิติลีดเดอร์บอร์ดและการกระจายประสิทธิภาพวิชาของนักเรียน";
+            }
+        }
+
+        // --- Core UI HTML Templates ---
+        const attendanceHTML = `
+            <div class="card-header" style="flex-direction: column; align-items: stretch; gap: 15px; border-bottom: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="card-title">
+                        <i class="fa-solid fa-clipboard-user" style="color: var(--primary);"></i> 
+                        ตารางเช็คชื่อเข้าเรียน (Student Attendance)
+                    </div>
+                </div>
+                
+                <!-- Subtabs inside Attendance tab -->
+                <div style="display: flex; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-top: 5px;">
+                    <button id="subtab-btn-today" class="btn-action" style="background: var(--primary); color: white;" onclick="switchAttendanceSubtab('today')"><i class="fa-solid fa-calendar-day"></i> บันทึกข้อมูลวันนี้</button>
+                    <button id="subtab-btn-history" class="btn-action" style="background: var(--secondary); color: var(--text-muted);" onclick="switchAttendanceSubtab('history')"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติและรายงานย้อนหลัง</button>
+                </div>
+            </div>
+            
+            <!-- SUBTAB 1: TODAY CONTENT -->
+            <div id="attendance-today-content">
+                <div style="display: flex; gap: 15px; background: var(--secondary); padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin: 0 16px 20px 16px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label style="font-size: 0.9rem; font-weight: 500; color: var(--text-main);">ระดับชั้น:</label>
+                        <select id="class-select" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); outline: none; cursor: pointer;" onchange="filterStudents()">
+                            <option value="m1">มัธยมศึกษาปีที่ 1</option>
+                            <option value="m2">มัธยมศึกษาปีที่ 2</option>
+                            <option value="m3" selected>มัธยมศึกษาปีที่ 3</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label style="font-size: 0.9rem; font-weight: 500; color: var(--text-main);">ห้อง:</label>
+                        <select id="room-select" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); outline: none; cursor: pointer;" onchange="filterStudents()">
+                            <option value="1" selected>/1</option>
+                            <option value="2">/2</option>
+                            <option value="3">/3</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
+                        <label style="font-size: 0.9rem; font-weight: 500; color: var(--text-main);"><i class="fa-solid fa-calendar-days" style="color: var(--primary);"></i> วันที่เช็คชื่อ:</label>
+                        <input type="date" id="attendance-date-select" style="padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); outline: none; cursor: pointer; font-family: 'Prompt', sans-serif;" onchange="loadAttendanceForSelectedDate()">
+                    </div>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ชื่อ-นามสกุล</th>
+                            <th>รหัสนักเรียน</th>
+                            <th>เวลาที่ล็อกอิน</th>
+                            <th style="text-align: right;">การจัดการสถานะ (ครูประเมิน)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attendance-tbody-rows">
+                        <tr id="row-stu-1">
+                            <td>
+                                <div class="student-cell">
+                                    <div class="student-avatar">ภ</div>
+                                    <div>
+                                        <div style="font-weight: 500;">ภัทรพล เรียนดี</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-muted);">student.pat@lms.ac.th</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>660101</td>
+                            <td>08:15 น.</td>
+                            <td style="text-align: right;" id="action-stu-1">
+                                <div class="action-group" style="justify-content: flex-end;">
+                                    <button class="btn-action btn-present" onclick="markAttendance('stu-1', 'present')"><i class="fa-solid fa-check"></i> มา</button>
+                                    <button class="btn-action btn-late" onclick="markAttendance('stu-1', 'late')"><i class="fa-solid fa-clock"></i> สาย</button>
+                                    <button class="btn-action btn-absent" onclick="markAttendance('stu-1', 'absent')"><i class="fa-solid fa-xmark"></i> ขาด</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-stu-2">
+                            <td>
+                                <div class="student-cell">
+                                    <div class="student-avatar" style="background: #e0f2fe; color: #0284c7;">ส</div>
+                                    <div>
+                                        <div style="font-weight: 500;">สมหญิง รักดี</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-muted);">student.som@lms.ac.th</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>660102</td>
+                            <td>08:35 น.</td>
+                            <td style="text-align: right;" id="action-stu-2">
+                                <div class="action-group" style="justify-content: flex-end;">
+                                    <button class="btn-action btn-present" onclick="markAttendance('stu-2', 'present')"><i class="fa-solid fa-check"></i> มา</button>
+                                    <button class="btn-action btn-late" onclick="markAttendance('stu-2', 'late')"><i class="fa-solid fa-clock"></i> สาย</button>
+                                    <button class="btn-action btn-absent" onclick="markAttendance('stu-2', 'absent')"><i class="fa-solid fa-xmark"></i> ขาด</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="row-stu-3">
+                            <td>
+                                <div class="student-cell">
+                                    <div class="student-avatar" style="background: #ffedd5; color: #ea580c;">ม</div>
+                                    <div>
+                                        <div style="font-weight: 500;">มานะ อดทน</div>
+                                        <div style="font-size: 0.8rem; color: var(--text-muted);">student.mana@lms.ac.th</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>660103</td>
+                            <td style="color: var(--danger);">ยังไม่เข้าสู่ระบบ</td>
+                            <td style="text-align: right;" id="action-stu-3">
+                                <div class="action-group" style="justify-content: flex-end;">
+                                    <button class="btn-action btn-present" onclick="markAttendance('stu-3', 'present')"><i class="fa-solid fa-check"></i> มา</button>
+                                    <button class="btn-action btn-late" onclick="markAttendance('stu-3', 'late')"><i class="fa-solid fa-clock"></i> สาย</button>
+                                    <button class="btn-action btn-absent" onclick="markAttendance('stu-3', 'absent')"><i class="fa-solid fa-xmark"></i> ขาด</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div style="margin: 20px 16px 0 16px; display: flex; justify-content: flex-end;">
+                    <button class="btn-submit" onclick="saveTodayAttendance()"><i class="fa-solid fa-floppy-disk"></i> บันทึกรายงานเช็คชื่อประจำวัน</button>
+                </div>
+            </div>
+
+            <!-- SUBTAB 2: HISTORY CONTENT -->
+            <div id="attendance-history-content" style="display: none; padding: 0 16px 16px 16px;">
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">ประวัติและอัตราการเข้าเรียนย้อนหลังรายวัน (ดึงข้อมูลจำลองจาก LocalStorage)</p>
+                <div id="attendance-history-list">
+                    <!-- History rows loaded dynamically -->
+                </div>
+            </div>
+        `;
+
+        const gradingHTML = `
+            <div class="card-header" style="flex-direction: column; align-items: stretch; gap: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="card-title">
+                        <i class="fa-solid fa-file-signature" style="color: #2563eb;"></i> 
+                        การบ้านรอดำเนินการตรวจ (Recent Submissions)
+                    </div>
+                    <span style="font-size: 0.9rem; color: var(--text-muted);" id="grade-count-text">รอตรวจ 1 รายการ</span>
+                </div>
+                
+                <div style="display: flex; gap: 15px; background: var(--secondary); padding: 12px; border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label style="font-size: 0.9rem; font-weight: 500; color: var(--text-main);">กรองตามชั้น:</label>
+                        <select id="grade-class-select" style="padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); outline: none; cursor: pointer;" onchange="filterGrades()">
+                            <option value="all">ทั้งหมด</option>
+                            <option value="m1">มัธยมศึกษาปีที่ 1</option>
+                            <option value="m2">มัธยมศึกษาปีที่ 2</option>
+                            <option value="m3" selected>มัธยมศึกษาปีที่ 3</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="grade-items-container">
+                <!-- Submissions List -->
+                <div class="grade-item" data-class="m3" id="submission-somying">
+                    <i class="fa-solid fa-file-pdf file-icon"></i>
+                    <div class="grade-info">
+                        <h5>ใบงานที่ 1: อัลกอริทึมเบื้องต้น (ม.3/1)</h5>
+                        <p>ส่งโดย: <strong>สมหญิง รักดี</strong> | เมื่อเวลา 15:30 น.</p>
+                    </div>
+                    <button class="btn-grade" onclick="openGradeModal('somying', 'สมหญิง รักดี', 'ใบงานที่ 1: อัลกอริทึมเบื้องต้น', 'pdf')"><i class="fa-solid fa-pen"></i> ประเมิน</button>
+                </div>
+            </div>
+        `;
+
+        const materialsHTML = `
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-lock-open" style="color: #9333ea;"></i> ระบบจัดการสื่อ (Time-lock)</div>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">เปิด/ปิด การมองเห็นเอกสารบทเรียนและไฟล์วิดีโอสอนหลักของนักเรียนในวิชา</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div class="content-item">
+                    <div class="content-info">
+                        <h5><i class="fa-solid fa-file-powerpoint" style="color: #ea580c; margin-right: 6px;"></i> สไลด์บทที่ 1: การเขียนโค้ดเบื้องต้น</h5>
+                        <p id="status-lock-1" style="color: var(--success);"><i class="fa-solid fa-eye"></i> นักเรียนมองเห็น</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked id="switch-lock-1" onchange="toggleLock('lock-1', this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="content-item">
+                    <div class="content-info">
+                        <h5><i class="fa-solid fa-file-video" style="color: #2563eb; margin-right: 6px;"></i> วิดีโอสอนเสริม: การเขียน Flowchart</h5>
+                        <p id="status-lock-2" style="color: var(--danger);"><i class="fa-solid fa-eye-slash"></i> ซ่อนจากนักเรียน</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="switch-lock-2" onchange="toggleLock('lock-2', this)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        `;
+
+        const gamestatsHTML = `
+            <div class="card-header">
+                <div class="card-title"><i class="fa-solid fa-trophy" style="color: #eab308;"></i> ภาพรวมมินิเกมและการกระจายคะแนนห้องเรียน</div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <div>
+                    <div style="background: var(--secondary); padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px;">คะแนนเฉลี่ยของห้อง (ด่านล่าสุด)</p>
+                        <h2 style="margin: 0; color: var(--primary-dark); font-size: 2rem;">850 pts</h2>
+                    </div>
+                    
+                    <h5 style="margin-bottom: 12px; font-size: 0.95rem;"><i class="fa-solid fa-medal"></i> ท็อป 3 ของห้องเรียน ม.3/1</h5>
+                    <div id="leaderboard-scores-container">
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                            <span>1. สมชาย ขยันเรียน</span>
+                            <span style="font-weight: 600;">1,500 pts</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+                            <span>2. สมหญิง รักดี</span>
+                            <span style="font-weight: 600;" id="leader-score-somying">1,320 pts</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.85rem;">
+                            <span>3. ภัทรพล เรียนดี</span>
+                            <span style="font-weight: 600;" id="leader-score-pat">1,250 pts</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h5 style="font-size: 0.9rem; margin-bottom: 15px;"><i class="fa-solid fa-chart-column"></i> การแจกแจงคะแนนสะสม (มินิเกม + กิจกรรม)</h5>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                                <span>คะแนน 1,400 - 1,500 pts (กลุ่มเด็กเก่ง)</span>
+                                <span style="font-weight: 600;" id="stats-count-group1">2 คน (40%)</span>
+                            </div>
+                            <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                <div style="width: 40%; height: 100%; background: var(--success); transition: width 0.5s ease;" id="stats-bar-group1"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                                <span>คะแนน 1,200 - 1,390 pts (กลุ่มปานกลางบน)</span>
+                                <span style="font-weight: 600;" id="stats-count-group2">1 คน (20%)</span>
+                            </div>
+                            <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                <div style="width: 20%; height: 100%; background: var(--primary); transition: width 0.5s ease;" id="stats-bar-group2"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                                <span>คะแนน 1,000 - 1,190 pts (กลุ่มปานกลาง)</span>
+                                <span style="font-weight: 600;">1 คน (20%)</span>
+                            </div>
+                            <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                <div style="width: 20%; height: 100%; background: var(--warning);"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px;">
+                                <span>คะแนน ต่ำกว่า 1,000 pts (กลุ่มส่งเสริม)</span>
+                                <span style="font-weight: 600;">1 คน (20%)</span>
+                            </div>
+                            <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                                <div style="width: 20%; height: 100%; background: var(--danger);"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Seed default historical records
+        const DEFAULT_ATTENDANCE_HISTORY = [
+            {
+                date: '10 มิ.ย. 2569',
+                total: 3,
+                present: 2,
+                late: 1,
+                absent: 0,
+                rate: 100,
+                records: {
+                    'stu-1': 'present',
+                    'stu-2': 'late',
+                    'stu-3': 'present'
+                }
+            },
+            {
+                date: '09 มิ.ย. 2569',
+                total: 3,
+                present: 3,
+                late: 0,
+                absent: 0,
+                rate: 100,
+                records: {
+                    'stu-1': 'present',
+                    'stu-2': 'present',
+                    'stu-3': 'present'
+                }
+            },
+            {
+                date: '08 มิ.ย. 2569',
+                total: 3,
+                present: 2,
+                late: 0,
+                absent: 1,
+                rate: 67,
+                records: {
+                    'stu-1': 'present',
+                    'stu-2': 'present',
+                    'stu-3': 'absent'
+                }
+            }
+        ];
+
+        // Initialize and clone template HTMLs into respective tabs and previews
+        window.addEventListener('load', () => {
+            // Fill panels
+            document.getElementById('attendance-main-box').innerHTML = attendanceHTML;
+            document.getElementById('grading-main-box').innerHTML = gradingHTML;
+            document.getElementById('materials-main-box').innerHTML = materialsHTML;
+            document.getElementById('gamestats-main-box').innerHTML = gamestatsHTML;
+
+            // Add row class mappings
+            document.querySelectorAll('[id="row-stu-1"]').forEach(r => r.classList.add('m3-1'));
+            document.querySelectorAll('[id="row-stu-2"]').forEach(r => r.classList.add('m3-1'));
+            
+            updateGradingCount();
+            initAttendanceDatabase();
+            
+            // Initial render of summary page widgets
+            updateGradingSummary();
+            updateMaterialsSummary();
+            updateLeaderboardSummary();
+        });
+
+        // --- Local Attendance Database Logic ---
+        function initAttendanceDatabase() {
+            const history = localStorage.getItem('lms-attendance-history');
+            if (!history) {
+                localStorage.setItem('lms-attendance-history', JSON.stringify(DEFAULT_ATTENDANCE_HISTORY));
+            }
+            
+            // Set default date input value to today
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const todayISO = `${yyyy}-${mm}-${dd}`;
+            
+            document.querySelectorAll('#attendance-date-select').forEach(input => {
+                input.value = todayISO;
+            });
+            
+            loadAttendanceForSelectedDate(todayISO);
+            updateStatsGrid();
+        }
+
+        function getAttendanceHistory() {
+            return JSON.parse(localStorage.getItem('lms-attendance-history') || '[]');
+        }
+
+        function getTodayThaiDate() {
+            const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const now = new Date();
+            return `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear() + 543}`;
+        }
+
+        function formatToThaiDate(dateStr) {
+            if (!dateStr) return '';
+            const parts = dateStr.split('-');
+            if (parts.length !== 3) return dateStr;
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]) - 1;
+            const day = parseInt(parts[2]);
+            const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            return `${day} ${months[month]} ${year + 543}`;
+        }
+
+        function loadAttendanceForSelectedDate(dateVal) {
+            const activeTabInput = document.querySelector('#panel-attendance #attendance-date-select');
+            const val = dateVal || (activeTabInput ? activeTabInput.value : '');
+            if (!val) return;
+
+            // Sync other date input instances (e.g. in preview card)
+            document.querySelectorAll('#attendance-date-select').forEach(input => {
+                if (input.value !== val) input.value = val;
+            });
+
+            const thaiDate = formatToThaiDate(val);
+            const history = getAttendanceHistory();
+            const entry = history.find(h => h.date === thaiDate);
+
+            const studentIds = ['stu-1', 'stu-2', 'stu-3'];
+            studentIds.forEach(id => {
+                const actionCells = document.querySelectorAll('[id="action-' + id + '"]');
+                const rows = document.querySelectorAll('[id="row-' + id + '"]');
+
+                if (entry && entry.records[id]) {
+                    const status = entry.records[id];
+                    let badgeHTML = '';
+                    if (status === 'present') {
+                        badgeHTML = '<span class="status-badge present"><i class="fa-solid fa-check-circle"></i> มาเรียน</span>';
+                    } else if (status === 'late') {
+                        badgeHTML = '<span class="status-badge late"><i class="fa-solid fa-clock"></i> สาย</span>';
+                    } else if (status === 'absent') {
+                        badgeHTML = '<span class="status-badge absent"><i class="fa-solid fa-xmark-circle"></i> ขาดเรียน</span>';
+                    }
+                    
+                    actionCells.forEach(cell => {
+                        cell.innerHTML = badgeHTML;
+                        cell.style.opacity = '1';
+                    });
+                    rows.forEach(row => {
+                        row.style.opacity = status === 'absent' ? '0.6' : '1';
+                    });
+                } else {
+                    const buttonsHTML = `
+                        <div class="action-group" style="justify-content: flex-end;">
+                            <button class="btn-action btn-present" onclick="markAttendance('${id}', 'present')"><i class="fa-solid fa-check"></i> มา</button>
+                            <button class="btn-action btn-late" onclick="markAttendance('${id}', 'late')"><i class="fa-solid fa-clock"></i> สาย</button>
+                            <button class="btn-action btn-absent" onclick="markAttendance('${id}', 'absent')"><i class="fa-solid fa-xmark"></i> ขาด</button>
+                        </div>
+                    `;
+                    actionCells.forEach(cell => {
+                        cell.innerHTML = buttonsHTML;
+                        cell.style.opacity = '1';
+                    });
+                    rows.forEach(row => {
+                        row.style.opacity = '1';
+                    });
+                }
+            });
+            updateAttendanceSummary();
+        }
+
+        function saveTodayAttendance() {
+            const records = {};
+            let presentCount = 0;
+            let lateCount = 0;
+            let absentCount = 0;
+            
+            const studentIds = ['stu-1', 'stu-2', 'stu-3'];
+            let fullyMarked = true;
+            
+            studentIds.forEach(id => {
+                // Read from active tab table
+                const tabTable = document.getElementById('attendance-today-content');
+                const actionCell = tabTable ? tabTable.querySelector('#action-' + id) : null;
+                if (!actionCell) return;
+                
+                const badge = actionCell.querySelector('.status-badge');
+                if (!badge) {
+                    fullyMarked = false;
+                    return;
+                }
+                
+                if (badge.classList.contains('present')) {
+                    records[id] = 'present';
+                    presentCount++;
+                } else if (badge.classList.contains('late')) {
+                    records[id] = 'late';
+                    lateCount++;
+                } else if (badge.classList.contains('absent')) {
+                    records[id] = 'absent';
+                    absentCount++;
+                }
+            });
+            
+            if (!fullyMarked) {
+                showToast('บันทึกไม่สำเร็จ', 'กรุณาทำการเช็คชื่อนักเรียนให้ครบถ้วนทุกคนก่อนกดบันทึกครับ', 'warning');
+                return;
+            }
+            
+            const history = getAttendanceHistory();
+            
+            const dateInput = document.querySelector('#panel-attendance #attendance-date-select');
+            const targetDateStr = dateInput ? formatToThaiDate(dateInput.value) : getTodayThaiDate();
+            
+            const newEntry = {
+                date: targetDateStr,
+                total: studentIds.length,
+                present: presentCount,
+                late: lateCount,
+                absent: absentCount,
+                rate: Math.round(((presentCount + lateCount) / studentIds.length) * 100),
+                records: records
+            };
+            
+            // Avoid duplicate dates by replacing
+            const existingIndex = history.findIndex(h => h.date === targetDateStr);
+            if (existingIndex !== -1) {
+                history[existingIndex] = newEntry;
+            } else {
+                history.unshift(newEntry);
+            }
+            
+            localStorage.setItem('lms-attendance-history', JSON.stringify(history));
+            showToast('บันทึกสำเร็จ', `บันทึกรายงานข้อมูลการเข้าเรียนของวันที่ ${targetDateStr} เรียบร้อยแล้ว!`, 'success');
+            
+            // Broadcast an event to student dashboard to notify them about saved history
+            bc.postMessage({
+                type: 'ATTENDANCE_SAVED',
+                date: targetDateStr,
+                records: records
+            });
+            
+            renderAttendanceHistory();
+            updateStatsGrid();
+            updateAttendanceSummary();
+        }
+
+        function renderAttendanceHistory() {
+            const history = getAttendanceHistory();
+            const container = document.getElementById('attendance-history-list');
+            if (!container) return;
+            
+            if (history.length === 0) {
+                container.innerHTML = '<p style="text-align:center; padding: 30px; color: var(--text-muted);">ไม่มีประวัติบันทึกการเช็คชื่อเข้าเรียน</p>';
+                return;
+            }
+            
+            let html = '';
+            history.forEach((h, index) => {
+                const rateColor = h.rate >= 90 ? 'var(--success)' : h.rate >= 70 ? 'var(--warning)' : 'var(--danger)';
+                html += `
+                    <div style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
+                        <div>
+                            <h4 style="margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: var(--text-main);"><i class="fa-regular fa-file-lines" style="color: var(--primary);"></i> รายงานเข้าเรียนประจำวันที่ ${h.date}</h4>
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">
+                                นักเรียนทั้งหมด: ${h.total} คน | 
+                                มาเรียน: <span style="color:var(--success); font-weight:600;">${h.present}</span> | 
+                                สาย: <span style="color:var(--warning); font-weight:600;">${h.late}</span> | 
+                                ขาด: <span style="color:var(--danger); font-weight:600;">${h.absent}</span>
+                            </p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 20px;">
+                            <div style="text-align: right;">
+                                <span style="font-size: 1.15rem; font-weight: 700; color: ${rateColor};">${h.rate}%</span>
+                                <p style="font-size: 0.75rem; color: var(--text-muted); margin: 0;">อัตราเข้าเรียน</p>
+                            </div>
+                            <button class="btn-grade" style="padding: 6px 14px;" onclick="viewPastAttendanceDetails(${index})"><i class="fa-solid fa-receipt"></i> รายละเอียด</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function viewPastAttendanceDetails(index) {
+            const history = getAttendanceHistory();
+            const entry = history[index];
+            if (!entry) return;
+            
+            const studentNames = {
+                'stu-1': { name: 'ภัทรพล เรียนดี', email: 'student.pat@lms.ac.th', avatar: 'ภ' },
+                'stu-2': { name: 'สมหญิง รักดี', email: 'student.som@lms.ac.th', avatar: 'ส' },
+                'stu-3': { name: 'มานะ อดทน', email: 'student.mana@lms.ac.th', avatar: 'ม' }
+            };
+            
+            let rowsHTML = '';
+            Object.keys(entry.records).forEach(sid => {
+                const student = studentNames[sid];
+                if (!student) return;
+                const status = entry.records[sid];
+                
+                let statusBadge = '';
+                if (status === 'present') {
+                    statusBadge = '<span class="status-badge present"><i class="fa-solid fa-check-circle"></i> มาเรียน</span>';
+                } else if (status === 'late') {
+                    statusBadge = '<span class="status-badge late"><i class="fa-solid fa-clock"></i> สาย</span>';
+                } else if (status === 'absent') {
+                    statusBadge = '<span class="status-badge absent"><i class="fa-solid fa-xmark-circle"></i> ขาดเรียน</span>';
+                }
+                
+                rowsHTML += `
+                    <tr style="opacity: ${status === 'absent' ? '0.6' : '1'};">
+                        <td style="padding: 12px 16px;">
+                            <div class="student-cell">
+                                <div class="student-avatar" style="${sid === 'stu-2' ? 'background: #e0f2fe; color: #0284c7;' : sid === 'stu-3' ? 'background: #ffedd5; color: #ea580c;' : ''}">${student.avatar}</div>
+                                <div>
+                                    <div style="font-weight: 500;">${student.name}</div>
+                                    <div style="font-size: 0.8rem; color: var(--text-muted);">${student.email}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td style="padding: 12px 16px; text-align: right;">${statusBadge}</td>
+                    </tr>
+                `;
+            });
+            
+            const modalTitle = `<i class="fa-regular fa-calendar-check" style="color: var(--primary);"></i> ประวัติเข้าเรียนวันที่ ${entry.date}`;
+            const modalBodyHTML = `
+                <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:12px;">รายงานสรุปสิทธิ์ผู้เรียนประจำรายวิชา วิทยาการคำนวณ ม.3</p>
+                <table class="data-table" style="border: 1px solid var(--border); border-radius: 8px;">
+                    <thead>
+                        <tr style="background: var(--secondary);">
+                            <th style="padding: 10px 16px;">ชื่อนักเรียน</th>
+                            <th style="padding: 10px 16px; text-align: right;">สถานะเช็คชื่อ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHTML}
+                    </tbody>
+                </table>
+            `;
+            
+            openReportModal(modalTitle, modalBodyHTML);
+        }
+
+        // Report modal triggers
+        function openReportModal(title, bodyHTML) {
+            document.getElementById('reportModalTitle').innerHTML = title;
+            document.getElementById('reportModalBody').innerHTML = bodyHTML;
+            document.getElementById('reportModal').style.display = 'flex';
+        }
+
+        function closeReportModal() {
+            document.getElementById('reportModal').style.display = 'none';
+        }
+
+        function updateStatsGrid() {
+            const history = getAttendanceHistory();
+            if (history.length === 0) return;
+            
+            // Calculate average attendance rate across all stored days
+            const sum = history.reduce((acc, h) => acc + h.rate, 0);
+            const avgRate = Math.round(sum / history.length);
+            
+            const attStatEl = document.getElementById('class-attendance-stat');
+            if (attStatEl) {
+                attStatEl.innerText = `${avgRate}%`;
+            }
+        }
+
+        // --- Subtabs within Check Attendance ---
+        function switchAttendanceSubtab(subId) {
+            const todayBtn = document.getElementById('subtab-btn-today');
+            const historyBtn = document.getElementById('subtab-btn-history');
+            const todayContent = document.getElementById('attendance-today-content');
+            const historyContent = document.getElementById('attendance-history-content');
+
+            if (!todayBtn || !historyBtn || !todayContent || !historyContent) return;
+
+            if (subId === 'today') {
+                todayBtn.style.background = 'var(--primary)';
+                todayBtn.style.color = 'white';
+                historyBtn.style.background = 'var(--secondary)';
+                historyBtn.style.color = 'var(--text-muted)';
+                
+                todayContent.style.display = 'block';
+                historyContent.style.display = 'none';
+            } else {
+                historyBtn.style.background = 'var(--primary)';
+                historyBtn.style.color = 'white';
+                todayBtn.style.background = 'var(--secondary)';
+                todayBtn.style.color = 'var(--text-muted)';
+                
+                todayContent.style.display = 'none';
+                historyContent.style.display = 'block';
+                renderAttendanceHistory(); // reload history records
+            }
+        }
+
+        // --- Attendance Interaction ---
+        function markAttendance(studentId, status) {
+            // Update all container instances (summary preview card + dedicated tab)
+            const actionContainers = document.querySelectorAll('[id="action-' + studentId + '"]');
+            
+            let badgeHTML = '';
+            if (status === 'present') {
+                badgeHTML = '<span class="status-badge present"><i class="fa-solid fa-check-circle"></i> มาเรียน</span>';
+            } else if (status === 'late') {
+                badgeHTML = '<span class="status-badge late"><i class="fa-solid fa-clock"></i> สาย</span>';
+            } else if (status === 'absent') {
+                badgeHTML = '<span class="status-badge absent"><i class="fa-solid fa-xmark-circle"></i> ขาดเรียน</span>';
+            }
+
+            actionContainers.forEach(container => {
+                container.style.opacity = '0';
+                setTimeout(() => {
+                    container.innerHTML = badgeHTML;
+                    container.style.opacity = '1';
+                }, 200);
+            });
+
+            // Dim rows slightly if absent
+            const rows = document.querySelectorAll('[id="row-' + studentId + '"]');
+            rows.forEach(row => {
+                if(status === 'absent') {
+                    row.style.opacity = '0.6';
+                } else {
+                    row.style.opacity = '1';
+                }
+            });
+
+            // Broadcast the attendance status change (only stu-1 for pat check-in update)
+            bc.postMessage({
+                type: 'ATTENDANCE_CHANGED',
+                studentId: studentId,
+                status: status
+            });
+            
+            updateAttendanceSummary();
+        }
+
+        // --- Content Toggle Logic ---
+        function toggleLock(contentId, checkboxObj) {
+            const allSwitches = document.querySelectorAll('input[onchange*="' + contentId + '"]');
+            allSwitches.forEach(sw => sw.checked = checkboxObj.checked);
+
+            const isVisible = checkboxObj.checked;
+            const statusTexts = document.querySelectorAll('[id="status-' + contentId + '"]');
+            
+            statusTexts.forEach(statusText => {
+                if (isVisible) {
+                    statusText.innerHTML = '<i class="fa-solid fa-eye"></i> นักเรียนมองเห็น';
+                    statusText.style.color = 'var(--success)';
+                } else {
+                    statusText.innerHTML = '<i class="fa-solid fa-eye-slash"></i> ซ่อนจากนักเรียน';
+                    statusText.style.color = 'var(--danger)';
+                }
+            });
+
+            // Broadcast the content lock status change
+            bc.postMessage({
+                type: 'CONTENT_LOCK_CHANGED',
+                contentId: contentId,
+                visible: isVisible
+            });
+            
+            updateMaterialsSummary();
+        }
+
+        // --- Filter Logic ---
+        function filterStudents() {
+            const classVal = document.getElementById('class-select').value;
+            const roomVal = document.getElementById('room-select').value;
+            console.log(`Filtering attendance for: ${classVal} Room: ${roomVal}`);
+            
+            // Sync summary page selectors
+            const sumClass = document.getElementById('summary-class-select');
+            if (sumClass && sumClass.value !== classVal) sumClass.value = classVal;
+            const sumRoom = document.getElementById('summary-room-select');
+            if (sumRoom && sumRoom.value !== roomVal) sumRoom.value = roomVal;
+            
+            const greetingP = document.querySelector('.greeting p');
+            let classNameDisplay = "";
+            if(classVal === 'm1') classNameDisplay = "ม.1";
+            if(classVal === 'm2') classNameDisplay = "ม.2";
+            if(classVal === 'm3') classNameDisplay = "ม.3";
+            greetingP.innerText = `ภาพรวมการเรียนการสอน ห้อง ${classNameDisplay}/${roomVal} ประจำวันนี้`;
+
+            const tbodies = document.querySelectorAll('.data-table tbody');
+            tbodies.forEach(tb => {
+                tb.style.opacity = '0.3';
+                setTimeout(() => {
+                     tb.style.opacity = '1';
+                }, 300);
+            });
+            
+            updateAttendanceSummary();
+        }
+
+        function filterGrades() {
+             const classVal = document.getElementById('grade-class-select').value;
+             console.log(`Filtering grades for: ${classVal}`);
+             
+             const gradeItems = document.querySelectorAll('.grade-item');
+             gradeItems.forEach(item => {
+                 item.style.opacity = '0'; // fade out
+                 setTimeout(() => {
+                      if (classVal === 'all' || item.getAttribute('data-class') === classVal) {
+                          item.style.display = 'flex';
+                          setTimeout(() => item.style.opacity = '1', 50); // fade in
+                      } else {
+                          item.style.display = 'none';
+                      }
+                 }, 200);
+             });
+        }
+
+        // --- Grading Logic ---
+        let currentGradingId = null;
+        let currentGradingStudent = '';
+        let currentGradingAssignment = '';
+        let currentGradingType = 'pdf';
+
+        let classLeaderboard = {
+            'สมชาย ขยันเรียน': 1500,
+            'สมหญิง รักดี': 1320,
+            'ภัทรพล เรียนดี': 1250
+        };
+
+        function openGradeModal(id, studentName, assignmentName, type = 'pdf') {
+            currentGradingId = id;
+            currentGradingStudent = studentName;
+            currentGradingAssignment = assignmentName;
+            currentGradingType = type;
+            
+            document.getElementById('modalStudentName').innerText = studentName;
+            document.getElementById('modalAssignmentName').innerText = assignmentName;
+            document.getElementById('gradeScore').value = "10";
+            document.getElementById('gradeFeedback').value = "ตรวจทานแล้ว อัลกอริทึมการทำงานถูกต้องและมีความเป็นระเบียบเรียบร้อยมาก ผลงานดีมากครับ!";
+            document.getElementById('gradeModal').style.display = 'flex';
+        }
+
+        function closeGradeModal() {
+            document.getElementById('gradeModal').style.display = 'none';
+        }
+
+        function submitGrade() {
+            const score = parseFloat(document.getElementById('gradeScore').value) || 0;
+            const feedback = document.getElementById('gradeFeedback').value || 'ผ่านเกณฑ์เรียบร้อย';
+            
+            // Broadcast the graded event to student
+            bc.postMessage({
+                type: 'ASSIGNMENT_GRADED',
+                studentId: currentGradingId,
+                score: score,
+                feedback: feedback,
+                assignmentName: currentGradingAssignment
+            });
+
+            // Show a success toast
+            showToast('ประเมินสำเร็จ', `ส่งผลคะแนน ${score}/10 ให้คุณ ${currentGradingStudent} เรียบร้อยแล้ว`, 'success');
+
+            // Remove item from UI (both summary and grading tab)
+            const items = document.querySelectorAll('[id="submission-' + currentGradingId + '"]');
+            items.forEach(item => {
+                item.style.transform = 'scale(0.8)';
+                item.style.opacity = '0';
+                setTimeout(() => {
+                    item.remove();
+                    updateGradingCount();
+                }, 300);
+            });
+
+            if (currentGradingId === 'stu-1') {
+                classLeaderboard['ภัทรพล เรียนดี'] = 1350; // Base 1250 + 100
+                updateClassLeaderboardUI();
+            }
+
+            closeGradeModal();
+            updateGradingSummary();
+            updateLeaderboardSummary();
+        }
+
+        function updateClassLeaderboardUI() {
+            // Sync points displays in Game DB Card
+            const patScoreLabel = document.querySelectorAll('[id="leader-score-pat"]');
+            patScoreLabel.forEach(lbl => lbl.innerText = classLeaderboard['ภัทรพล เรียนดี'].toLocaleString() + ' pts');
+
+            const patScore = classLeaderboard['ภัทรพล เรียนดี'];
+            if (patScore >= 1400) {
+                const group1Count = document.querySelectorAll('[id="stats-count-group1"]');
+                group1Count.forEach(el => el.innerText = "3 คน (60%)");
+                const group1Bar = document.querySelectorAll('[id="stats-bar-group1"]');
+                group1Bar.forEach(el => el.style.width = "60%");
+
+                const group2Count = document.querySelectorAll('[id="stats-count-group2"]');
+                group2Count.forEach(el => el.innerText = "0 คน (0%)");
+                const group2Bar = document.querySelectorAll('[id="stats-bar-group2"]');
+                group2Bar.forEach(el => el.style.width = "0%");
+            } else {
+                const group2Count = document.querySelectorAll('[id="stats-count-group2"]');
+                group2Count.forEach(el => el.innerText = "1 คน (20%)");
+                const group2Bar = document.querySelectorAll('[id="stats-bar-group2"]');
+                group2Bar.forEach(el => el.style.width = "20%");
+            }
+
+            // Re-render scores and sort them in UI
+            const containerList = document.querySelectorAll('[id="leaderboard-scores-container"]');
+            containerList.forEach(container => {
+                const sorted = Object.entries(classLeaderboard).sort((a,b) => b[1] - a[1]);
+                container.innerHTML = '';
+                sorted.forEach((item, index) => {
+                    const row = document.createElement('div');
+                    row.style.display = 'flex';
+                    row.style.justify = 'space-between';
+                    row.style.fontSize = '0.85rem';
+                    row.style.marginBottom = index < 2 ? '10px' : '0px';
+                    row.style.paddingBottom = index < 2 ? '10px' : '0px';
+                    row.style.borderBottom = index < 2 ? '1px solid var(--border)' : 'none';
+                    if (item[0] === 'ภัทรพล เรียนดี') {
+                        row.style.fontWeight = 'bold';
+                        row.style.color = 'var(--primary-dark)';
+                    }
+                    row.innerHTML = `<span>${index+1}. ${item[0]}</span> <span style="font-weight:600;">${item[1].toLocaleString()} pts</span>`;
+                    container.appendChild(row);
+                });
+            });
+            
+            updateLeaderboardSummary();
+        }
+
+        function updateGradingCount() {
+            const containers = document.querySelectorAll('[id="grade-items-container"]');
+            let count = 0;
+            if (containers.length > 0) {
+                count = containers[0].querySelectorAll('.grade-item').length;
+            }
+
+            const countTexts = document.querySelectorAll('[id="grade-count-text"]');
+            countTexts.forEach(txt => txt.innerText = `รอตรวจ ${count} รายการ`);
+            
+            const statEl = document.getElementById('pending-tasks-stat');
+            if (statEl) {
+                statEl.innerText = `${12 + count} งาน`;
+            }
+        }
+
+        // --- BroadcastChannel Message Handling ---
+        bc.onmessage = (event) => {
+            const data = event.data;
+            if (data.type === 'ASSIGNMENT_SUBMITTED') {
+                handleAssignmentSubmission(data);
+            } else if (data.type === 'PING') {
+                bc.postMessage({
+                    type: 'SYNC_STATES',
+                    attendance: getAttendanceState(),
+                    locks: getLocksState()
+                });
+            } else if (data.type === 'ASSIGNMENT_GRADED') {
+                if (data.assignmentName === 'มินิเกมสะสมแต้ม') {
+                    classLeaderboard['ภัทรพล เรียนดี'] = 1350; // Update local leaderboard
+                    updateClassLeaderboardUI();
+                }
+            }
+        };
+
+        function getAttendanceState() {
+            const states = {};
+            ['stu-1', 'stu-2', 'stu-3'].forEach(id => {
+                // Scrape status from active tab attendance checking cell
+                const tabTable = document.getElementById('attendance-today-content');
+                const actionCell = tabTable ? tabTable.querySelector('#action-' + id) : null;
+                if (actionCell) {
+                    const badge = actionCell.querySelector('.status-badge');
+                    if (badge) {
+                        if (badge.classList.contains('present')) states[id] = 'present';
+                        else if (badge.classList.contains('late')) states[id] = 'late';
+                        else if (badge.classList.contains('absent')) states[id] = 'absent';
+                    }
+                }
+            });
+            return states;
+        }
+
+        function getLocksState() {
+            const lock1Input = document.querySelector('input[onchange*="lock-1"]');
+            const lock2Input = document.querySelector('input[onchange*="lock-2"]');
+            return {
+                'lock-1': lock1Input ? lock1Input.checked : true,
+                'lock-2': lock2Input ? lock2Input.checked : false
+            };
+        }
+
+        function handleAssignmentSubmission(data) {
+            playNotificationSound();
+            showToast('การบ้านส่งใหม่', `คุณ ${data.studentName} ส่ง "${data.fileName}" เข้ามา`, 'success');
+
+            const containers = document.querySelectorAll('[id="grade-items-container"]');
+            const existingId = 'submission-' + data.studentId;
+
+            if (document.getElementById(existingId)) return;
+
+            const fileIconClass = data.fileType === 'pdf' ? 'fa-file-pdf' : 'fa-file-word';
+            const fileIconColor = data.fileType === 'pdf' ? '' : 'word';
+
+            containers.forEach(container => {
+                const newItem = document.createElement('div');
+                newItem.className = 'grade-item';
+                newItem.setAttribute('data-class', 'm3');
+                newItem.id = existingId;
+                newItem.style.opacity = '0';
+                newItem.style.transform = 'translateY(15px)';
+                newItem.style.transition = 'all 0.3s ease';
+
+                newItem.innerHTML = `
+                    <i class="fa-solid ${fileIconClass} file-icon ${fileIconColor}"></i>
+                    <div class="grade-info">
+                        <h5>${data.assignmentName} (${data.className})</h5>
+                        <p>ส่งโดย: <strong>${data.studentName}</strong> | เมื่อเวลา ${data.time}</p>
+                    </div>
+                    <button class="btn-grade" onclick="openGradeModal('${data.studentId}', '${data.studentName}', '${data.assignmentName}', '${data.fileType}')"><i class="fa-solid fa-pen"></i> ประเมิน</button>
+                `;
+
+                container.insertBefore(newItem, container.firstChild);
+                
+                setTimeout(() => {
+                    newItem.style.opacity = '1';
+                    newItem.style.transform = 'translateY(0)';
+                }, 50);
+            });
+
+            setTimeout(() => {
+                updateGradingCount();
+                updateGradingSummary();
+            }, 100);
+        }
+
+        // --- Summary Update Functions for UI/UX Overhaul ---
+        function changeSummaryClass() {
+            const classVal = document.getElementById('summary-class-select').value;
+            const roomVal = document.getElementById('summary-room-select').value;
+            
+            // Sync with attendance tab selectors
+            const classSelect = document.getElementById('class-select');
+            if (classSelect) classSelect.value = classVal;
+            const roomSelect = document.getElementById('room-select');
+            if (roomSelect) roomSelect.value = roomVal;
+            
+            // Sync dashboard top greeting p text
+            const greetingP = document.querySelector('.greeting p');
+            let classNameDisplay = "";
+            if(classVal === 'm1') classNameDisplay = "ม.1";
+            if(classVal === 'm2') classNameDisplay = "ม.2";
+            if(classVal === 'm3') classNameDisplay = "ม.3";
+            if (greetingP) greetingP.innerText = `ภาพรวมการเรียนการสอน ห้อง ${classNameDisplay}/${roomVal} ประจำวันนี้`;
+            
+            // Sync summary banner header text
+            const descEl = document.getElementById('summary-today-desc');
+            const todayInput = document.querySelector('#panel-attendance #attendance-date-select');
+            const targetDateStr = todayInput ? formatToThaiDate(todayInput.value) : getTodayThaiDate();
+            
+            const lock1Input = document.querySelector('input[onchange*="lock-1"]');
+            const lock2Input = document.querySelector('input[onchange*="lock-2"]');
+            let count = 0;
+            if (lock1Input && lock1Input.checked) count++;
+            if (lock2Input && lock2Input.checked) count++;
+            
+            if (descEl) {
+                descEl.innerText = `อัปเดตสถิติล่าสุดประจำวันที่ ${targetDateStr} | สื่อบทเรียนเปิดอยู่ ${count} รายการ`;
+            }
+            
+            // Trigger stats reload
+            updateAttendanceSummary();
+            
+            // Sync student view filters in case they are looking at other tabs
+            const tbodies = document.querySelectorAll('.data-table tbody');
+            tbodies.forEach(tb => {
+                tb.style.opacity = '0.3';
+                setTimeout(() => {
+                     tb.style.opacity = '1';
+                }, 300);
+            });
+        }
+
+        function updateAttendanceSummary() {
+            const classVal = document.getElementById('class-select').value;
+            const roomVal = document.getElementById('room-select').value;
+            
+            const isTargetClass = (classVal === 'm3' && roomVal === '1');
+            
+            // Calculate active attendance rates for today
+            const studentIds = isTargetClass ? ['stu-1', 'stu-2', 'stu-3'] : [];
+            let present = 0, late = 0, absent = 0, unchecked = 0;
+            
+            if (isTargetClass) {
+                studentIds.forEach(id => {
+                    const tabTable = document.getElementById('attendance-today-content');
+                    const actionCell = tabTable ? tabTable.querySelector('#action-' + id) : null;
+                    if (actionCell) {
+                        const badge = actionCell.querySelector('.status-badge');
+                        if (badge) {
+                            if (badge.classList.contains('present')) present++;
+                            else if (badge.classList.contains('late')) late++;
+                            else if (badge.classList.contains('absent')) absent++;
+                        } else {
+                            unchecked++;
+                        }
+                    }
+                });
+            }
+            
+            const total = isTargetClass ? studentIds.length : 0;
+            const markedTotal = present + late + absent;
+            
+            let presentPct = 0, latePct = 0, absentPct = 0, uncheckedPct = 100;
+            if (total > 0) {
+                presentPct = Math.round((present / total) * 100);
+                latePct = Math.round((late / total) * 100);
+                absentPct = Math.round((absent / total) * 100);
+                uncheckedPct = 100 - (presentPct + latePct + absentPct);
+            }
+            
+            // Update labels
+            const pEl = document.getElementById('summary-att-present-count');
+            if (pEl) pEl.innerText = total > 0 ? `${present} คน` : '0 คน';
+            const lEl = document.getElementById('summary-att-late-count');
+            if (lEl) lEl.innerText = total > 0 ? `${late} คน` : '0 คน';
+            const aEl = document.getElementById('summary-att-absent-count');
+            if (aEl) aEl.innerText = total > 0 ? `${absent} คน` : '0 คน';
+            
+            // Update bar chart segments
+            const bar = document.getElementById('summary-att-bar');
+            if (bar) {
+                if (total > 0) {
+                    bar.innerHTML = `
+                        <div class="attendance-bar-segment segment-present" style="width: ${presentPct}%; display: ${presentPct > 0 ? 'flex' : 'none'};" title="มาเรียน">มา ${presentPct}%</div>
+                        <div class="attendance-bar-segment segment-late" style="width: ${latePct}%; display: ${latePct > 0 ? 'flex' : 'none'};" title="สาย">สาย ${latePct}%</div>
+                        <div class="attendance-bar-segment segment-absent" style="width: ${absentPct}%; display: ${absentPct > 0 ? 'flex' : 'none'};" title="ขาด">ขาด ${absentPct}%</div>
+                        <div class="attendance-bar-segment" style="width: ${uncheckedPct}%; background: #e2e8f0; color: #64748b; display: ${uncheckedPct > 0 ? 'flex' : 'none'};" title="ยังไม่เช็ค">ยังไม่เช็ค ${uncheckedPct}%</div>
+                    `;
+                } else {
+                    bar.innerHTML = `
+                        <div class="attendance-bar-segment" style="width: 100%; background: #e2e8f0; color: #64748b;" title="ไม่มีข้อมูลเช็คชื่อสำหรับห้องนี้">ไม่มีข้อมูลเช็คชื่อสำหรับห้องนี้ (จำลองเฉพาะ ม.3/1)</div>
+                    `;
+                }
+            }
+
+            // Sync average attendance statistics grid
+            const history = getAttendanceHistory();
+            const todayInput = document.querySelector('#panel-attendance #attendance-date-select');
+            const targetDateStr = todayInput ? formatToThaiDate(todayInput.value) : getTodayThaiDate();
+            
+            // Find if there's saved history for today/selected date to count into overall average
+            let sumRate = 0;
+            let dayCount = history.length;
+            
+            // Calculate current average
+            if (markedTotal === total && total > 0) {
+                const currentRate = Math.round(((present + late) / total) * 100);
+                const hasSavedToday = history.some(h => h.date === targetDateStr);
+                if (hasSavedToday) {
+                    const tempHistory = history.map(h => h.date === targetDateStr ? { ...h, rate: currentRate } : h);
+                    sumRate = tempHistory.reduce((acc, h) => acc + h.rate, 0);
+                } else {
+                    sumRate = history.reduce((acc, h) => acc + h.rate, 0) + currentRate;
+                    dayCount += 1;
+                }
+            } else {
+                sumRate = history.reduce((acc, h) => acc + h.rate, 0);
+            }
+            
+            const avgRate = dayCount > 0 ? Math.round(sumRate / dayCount) : 100;
+            const classAttStat = document.getElementById('class-attendance-stat');
+            if (classAttStat) {
+                classAttStat.innerText = `${avgRate}%`;
+            }
+        }
+        
+        function updateGradingSummary() {
+            const listEl = document.getElementById('summary-grading-list');
+            if (!listEl) return;
+            
+            const container = document.getElementById('grade-items-container');
+            const gradeItems = container ? container.querySelectorAll('.grade-item') : [];
+            
+            if (gradeItems.length === 0) {
+                listEl.innerHTML = `
+                    <div class="empty-state-box">
+                        <i class="fa-solid fa-circle-check" style="color: var(--success); opacity: 0.7;"></i>
+                        <p>ไม่มีการบ้านค้างตรวจในขณะนี้ 🎉 ทุกชิ้นงานเรียบร้อยแล้ว!</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            gradeItems.forEach(item => {
+                const studentName = item.querySelector('strong') ? item.querySelector('strong').innerText : 'นักเรียน';
+                const infoText = item.querySelector('h5') ? item.querySelector('h5').innerText : 'ใบงาน';
+                const timeText = item.querySelector('p') ? item.querySelector('p').innerText.split('|')[1].trim() : '';
+                const fileIcon = item.querySelector('i') ? item.querySelector('i').className : 'fa-solid fa-file';
+                
+                // Get onclick attributes from grade item button
+                const btn = item.querySelector('.btn-grade');
+                const onclickAttr = btn ? btn.getAttribute('onclick') : '';
+                
+                html += `
+                    <div class="summary-details-item">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="${fileIcon}" style="font-size: 1.5rem; color: #ef4444;"></i>
+                            <div>
+                                <h5 style="margin: 0; font-size: 0.9rem;">${infoText}</h5>
+                                <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">ส่งโดย: ${studentName} | ${timeText}</p>
+                            </div>
+                        </div>
+                        <button class="btn-grade" style="padding: 6px 12px; font-size: 0.8rem;" onclick="${onclickAttr}"><i class="fa-solid fa-pen"></i> ตรวจ</button>
+                    </div>
+                `;
+            });
+            
+            listEl.innerHTML = html;
+        }
+        
+        function updateMaterialsSummary() {
+            const listEl = document.getElementById('summary-materials-list');
+            if (!listEl) return;
+            
+            const lock1Input = document.querySelector('input[onchange*="lock-1"]');
+            const lock2Input = document.querySelector('input[onchange*="lock-2"]');
+            
+            const lock1Visible = lock1Input ? lock1Input.checked : true;
+            const lock2Visible = lock2Input ? lock2Input.checked : false;
+            
+            listEl.innerHTML = `
+                <div class="summary-details-item">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-file-powerpoint" style="color: #ea580c; font-size: 1.15rem;"></i>
+                        <span style="font-size: 0.88rem; font-weight: 500;">สไลด์บทที่ 1: การเขียนโค้ดเบื้องต้น</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 0.8rem; font-weight: 600; color: ${lock1Visible ? 'var(--success)' : 'var(--danger)'};">
+                            ${lock1Visible ? 'เปิดเรียนรู้' : 'ซ่อนอยู่'}
+                        </span>
+                        <label class="switch" style="transform: scale(0.8); margin: 0; width: 50px; height: 28px;">
+                            <input type="checkbox" ${lock1Visible ? 'checked' : ''} onchange="toggleLock('lock-1', this)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+                <div class="summary-details-item">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-file-video" style="color: #2563eb; font-size: 1.15rem;"></i>
+                        <span style="font-size: 0.88rem; font-weight: 500;">วิดีโอสอนเสริม: การเขียน Flowchart</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 0.8rem; font-weight: 600; color: ${lock2Visible ? 'var(--success)' : 'var(--danger)'};">
+                            ${lock2Visible ? 'เปิดเรียนรู้' : 'ซ่อนอยู่'}
+                        </span>
+                        <label class="switch" style="transform: scale(0.8); margin: 0; width: 50px; height: 28px;">
+                            <input type="checkbox" ${lock2Visible ? 'checked' : ''} onchange="toggleLock('lock-2', this)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            `;
+            
+            // Sync summary banner unlocked count
+            let count = 0;
+            if (lock1Visible) count++;
+            if (lock2Visible) count++;
+            const descEl = document.getElementById('summary-today-desc');
+            if (descEl) {
+                const todayInput = document.querySelector('#panel-attendance #attendance-date-select');
+                const targetDateStr = todayInput ? formatToThaiDate(todayInput.value) : getTodayThaiDate();
+                descEl.innerText = `อัปเดตสถิติล่าสุดประจำวันที่ ${targetDateStr} | สื่อบทเรียนเปิดอยู่ ${count} รายการ`;
+            }
+        }
+        
+        function updateLeaderboardSummary() {
+            const listEl = document.getElementById('summary-leaderboard-list');
+            if (!listEl) return;
+            
+            const sorted = Object.entries(classLeaderboard).sort((a,b) => b[1] - a[1]);
+            let html = '';
+            
+            sorted.forEach((item, index) => {
+                let rankClass = '';
+                if (index === 0) rankClass = 'first';
+                else if (index === 1) rankClass = 'second';
+                else if (index === 2) rankClass = 'third';
+                
+                let icon = '';
+                if (index === 0) icon = '🥇';
+                else if (index === 1) icon = '🥈';
+                else if (index === 2) icon = '🥉';
+                
+                html += `
+                    <div class="podium-item" style="${item[0] === 'ภัทรพล เรียนดี' ? 'border-color: var(--primary); background: var(--primary-light);' : ''}">
+                        <div class="podium-rank ${rankClass}">${index + 1}</div>
+                        <div style="flex: 1;">
+                            <h5 style="margin: 0; font-size: 0.88rem;">${icon} ${item[0]}</h5>
+                            <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">ห้อง ม.3/1</p>
+                        </div>
+                        <span style="font-weight: 700; color: var(--primary-dark); font-size: 0.88rem;">${item[1].toLocaleString()} pts</span>
+                    </div>
+                `;
+            });
+            
+            listEl.innerHTML = html;
+        }
+
+        // Synthesizes offline audio notification chime
+        function playNotificationSound() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc1 = ctx.createOscillator();
+                const osc2 = ctx.createOscillator();
+                const gain = ctx.createGain();
+
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(523.25, ctx.currentTime);
+                osc1.frequency.exponentialRampToValueAtTime(880.00, ctx.currentTime + 0.15);
+
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(659.25, ctx.currentTime);
+                osc2.frequency.exponentialRampToValueAtTime(1046.50, ctx.currentTime + 0.15);
+
+                gain.gain.setValueAtTime(0.08, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(ctx.destination);
+
+                osc1.start();
+                osc2.start();
+                osc1.stop(ctx.currentTime + 0.3);
+                osc2.stop(ctx.currentTime + 0.3);
+            } catch (e) {
+                console.log('AudioContext initialization deferred:', e);
+            }
+        }
+
+        // Toast helper
+        function showToast(title, message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            let iconClass = 'fa-info-circle';
+            if (type === 'success') iconClass = 'fa-check-circle';
+            if (type === 'warning') iconClass = 'fa-exclamation-circle';
+            if (type === 'danger') iconClass = 'fa-exclamation-triangle';
+
+            toast.innerHTML = `
+                <i class="fa-solid ${iconClass} toast-icon"></i>
+                <div class="toast-content">
+                    <div class="toast-title">${title}</div>
+                    <div class="toast-msg">${message}</div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+            toast.offsetHeight;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+    </script>
+
+    <!-- Grading Modal -->
+    <div id="gradeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">ประเมินผลการเรียน</h3>
+                <button class="close-modal" onclick="closeGradeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 15px;">
+                    นักเรียน: <strong id="modalStudentName" style="color: var(--text-main);"></strong><br>
+                    งาน: <span id="modalAssignmentName" style="font-weight: 500;"></span>
+                </p>
+                <div class="form-group">
+                    <label for="gradeScore" style="color: var(--text-main);">คะแนนที่ได้ (เต็ม 10 คะแนน):</label>
+                    <input type="number" id="gradeScore" class="form-input" min="0" max="10" placeholder="กรอกคะแนน เช่น 9" value="10">
+                </div>
+                <div class="form-group">
+                    <label for="gradeFeedback" style="color: var(--text-main);">ความคิดเห็น/ข้อเสนอแนะเพิ่มเติม:</label>
+                    <textarea id="gradeFeedback" class="form-input" rows="3" placeholder="เขียนคอมเมนต์ เช่น เขียนโค้ดเป็นระเบียบเรียบร้อยดีมาก!"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeGradeModal()">ยกเลิก</button>
+                <button class="btn-submit" onclick="submitGrade()">ส่งผลประเมิน</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div id="reportModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title" id="reportModalTitle">รายงานประวัติย้อนหลัง</h3>
+                <button class="close-modal" onclick="closeReportModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="reportModalBody" style="max-height: 400px; overflow-y: auto;">
+                <!-- Loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-submit" onclick="closeReportModal()">ปิดหน้าต่าง</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+</body>
+</html>

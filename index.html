@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LMS Project Portal - PSC IT Project</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #090d16;
+            --card-bg: rgba(30, 41, 59, 0.45);
+            --border: rgba(255, 255, 255, 0.08);
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --primary-glow: rgba(14, 165, 233, 0.35);
+            --success: #10b981;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --white: #ffffff;
+            --gradient: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', 'Outfit', sans-serif;
+            background-color: var(--bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(99, 102, 241, 0.08) 0%, transparent 40%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        /* Portal Container */
+        .portal-container {
+            width: 100%;
+            max-width: 1200px;
+            text-align: center;
+        }
+
+        /* Typography & Header */
+        header {
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        header i.logo {
+            font-size: 4.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px var(--primary-glow));
+            display: inline-block;
+        }
+
+        header h1 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+            background: linear-gradient(to right, #ffffff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Grid Layout */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+            animation: fadeInUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s both;
+        }
+
+        /* Portal Cards */
+        .portal-card {
+            background-color: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: left;
+            text-decoration: none;
+            color: var(--text-light);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 100%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(14, 165, 233, 0.4);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.4),
+                0 0 30px rgba(14, 165, 233, 0.15);
+        }
+
+        .portal-card.recommended {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+            border: 2px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(14, 165, 233, 0.1);
+        }
+
+        .portal-card.recommended:hover {
+            border-color: #38bdf8;
+            box-shadow: 
+                0 25px 50px rgba(0, 0, 0, 0.5),
+                0 0 40px rgba(14, 165, 233, 0.3);
+        }
+
+        .card-header-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 18px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .recommended .card-header-icon {
+            background: var(--gradient);
+            color: var(--white);
+            border: none;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .portal-card:hover .card-header-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .card-body h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            background-color: var(--success);
+            color: var(--white);
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .card-body p {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .card-action {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--primary);
+            transition: 0.2s;
+        }
+
+        .portal-card:hover .card-action {
+            color: var(--text-light);
+        }
+
+        .portal-card:hover .card-action i {
+            transform: translateX(6px);
+        }
+
+        .card-action i {
+            transition: transform 0.2s ease;
+        }
+
+        /* Footer brand info */
+        footer {
+            margin-top: 40px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            animation: fadeIn 0.8s ease 0.4s both;
+        }
+
+        footer strong {
+            color: var(--text-light);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .portal-grid {
+                grid-template-columns: 1fr;
+            }
+            .portal-card.recommended {
+                grid-column: span 1;
+            }
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="portal-container">
+        
+        <!-- Portal Header -->
+        <header>
+            <i class="fa-solid fa-graduation-cap logo"></i>
+            <h1>Modern LMS System Portal</h1>
+            <p>ระบบจัดการการเรียนรู้ยุคใหม่ที่เชื่อมโยงผู้เรียนและผู้สอนแบบ Real-time ผสานระบบ Gamification และ Time-locked Contents เพื่อการเรียนรู้เชิงรุก (Active Learning)</p>
+        </header>
+
+        <!-- Navigation Grid -->
+        <div class="portal-grid">
+            
+            <!-- Recommended: Interactive Demo Sandbox -->
+            <a href="demo_sandbox.html" class="portal-card recommended">
+                <div>
+                    <div class="card-header-icon">
+                        <i class="fa-solid fa-square-poll-horizontal"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>Interactive Sandbox (Split Screen) <span class="badge">แนะนำสำหรับการทดสอบ</span></h2>
+                        <p>ห้องจำลองระบบปฏิบัติการจริง โดยแบ่งสองหน้าจอ (คุณครู - นักเรียน) ให้คุณได้เห็นและทดสอบการโต้ตอบกันทันทีแบบ Real-time เช่น การเช็คชื่อ สับสวิตช์เปิดเอกสาร การแจ้งเตือนส่งการบ้าน ตรวจคะแนนสะสม และการจัดลำดับคะแนนแบบสด ๆ</p>
+                    </div>
+                </div>
+                <div class="card-action">
+                    เปิดห้องจำลอง Sandbox <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- presentation slides -->
+            <a href="gemini-code-1781168821203.html" class="portal-card">
+                <div>
+                    <div class="card-header-icon" style="color: #6366f1;">
+                        <i class="fa-solid fa-desktop"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>Project Presentation Slides</h2>
+                        <p>สไลด์นำเสนอสถาปัตยกรรมระบบ โครงสร้างเสาหลักทั้ง 4 โมดูล แนวทางการพัฒนา และชุดคำสั่งเทคโนโลยีเบื้องหลัง (Next.js, PostgreSQL, Docker) พร้อมลุยสำหรับขึ้น Production</p>
+                    </div>
+                </div>
+                <div class="card-action" style="color: #818cf8;">
+                    เปิดสไลด์นำเสนอโครงการ <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Teacher dashboard only -->
+            <a href="teacher_dashboard (1).html" class="portal-card">
+                <div>
+                    <div class="card-header-icon" style="color: #f43f5e;">
+                        <i class="fa-solid fa-chalkboard-user"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>Teacher Dashboard</h2>
+                        <p>หน้าควบคุมของคุณครูแบบเต็มจอ เพื่อเช็คชื่อนักเรียนรายห้อง กรองชั้นเรียน ตรวจไฟล์การบ้านสะสมพร้อมให้คะแนน/ผลสะท้อนกลับ และควบคุมสื่อการเรียนล็อกเวลาสำหรับแสดงให้นักเรียนมองเห็น</p>
+                    </div>
+                </div>
+                <div class="card-action" style="color: #fb7185;">
+                    เข้าสู่หน้าแผงควบคุมคุณครู <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Student dashboard only -->
+            <a href="student_dashboard (1).html" class="portal-card">
+                <div>
+                    <div class="card-header-icon" style="color: #38bdf8;">
+                        <i class="fa-solid fa-user-graduate"></i>
+                    </div>
+                    <div class="card-body">
+                        <h2>Student Dashboard</h2>
+                        <p>หน้าหลักของนักเรียน (ภัทรพล เรียนดี) เพื่อเข้าเช็คชื่อ ดูสถานะคะแนนและอันดับของตนเองในกลุ่มห้องเรียน เข้าดูเอกสารบทเรียนที่ครูปลดล็อก และส่งการบ้านตรวจสอบไฟล์แบบรวดเร็ว</p>
+                    </div>
+                </div>
+                <div class="card-action" style="color: #38bdf8;">
+                    เข้าสู่หน้าแผงควบคุมนักเรียน <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- Footer Info -->
+        <footer>
+            โครงการพัฒนาเทคโนโลยีสารสนเทศ | <strong>วิทยาลัยพณิชยการเชตุพน (PSC)</strong>
+        </footer>
+
+    </div>
+
+</body>
+</html>

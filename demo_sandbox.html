@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive LMS Demo Sandbox - PSC Project</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --bar-color: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --primary: #0ea5e9;
+            --primary-glow: rgba(14, 165, 233, 0.2);
+            --success: #10b981;
+            --border: #334155;
+            --radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Prompt', 'Outfit', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Bar styling */
+        .top-bar {
+            background-color: var(--bar-color);
+            border-bottom: 1px solid var(--border);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .project-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .project-title i {
+            font-size: 1.8rem;
+            color: var(--primary);
+            filter: drop-shadow(0 0 8px var(--primary-glow));
+        }
+
+        .project-title h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .project-title span {
+            font-size: 0.85rem;
+            background-color: var(--primary-glow);
+            color: var(--primary);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 1px solid rgba(14, 165, 233, 0.3);
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-reset {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-reset:hover {
+            background-color: #ef4444;
+            color: white;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-portal {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid var(--border);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-portal:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Instruction guide slider */
+        .guide-container {
+            background-color: #1e293b;
+            padding: 8px 24px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        .guide-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .guide-steps {
+            display: flex;
+            gap: 20px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+
+        .guide-step {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .guide-step strong {
+            color: var(--text-light);
+        }
+
+        /* Split-screen Sandbox layout */
+        .sandbox-body {
+            flex: 1;
+            display: flex;
+            background-color: #090d16;
+        }
+
+        .panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .panel-header {
+            background-color: #161f30;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-header span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge-teacher { color: #f43f5e; }
+        .badge-student { color: #38bdf8; }
+
+        .btn-popout {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
+        .btn-popout:hover {
+            color: var(--text-light);
+        }
+
+        .panel-divider {
+            width: 4px;
+            background-color: var(--border);
+            position: relative;
+            cursor: col-resize;
+            transition: background-color 0.2s;
+        }
+
+        .panel-divider:hover {
+            background-color: var(--primary);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: #f1f5f9;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <header class="top-bar">
+        <div class="project-title">
+            <i class="fa-solid fa-square-poll-horizontal"></i>
+            <h1>LMS Real-time Interactive Sandbox</h1>
+            <span>Mockup Demo</span>
+        </div>
+        <div class="actions">
+            <a href="index.html" class="btn-portal"><i class="fa-solid fa-home"></i> กลับหน้าหลัก Portal</a>
+            <button class="btn-reset" onclick="resetSandbox()"><i class="fa-solid fa-rotate-left"></i> รีเซ็ตการทดสอบ</button>
+        </div>
+    </header>
+
+    <!-- Quick Demonstration Step Guide -->
+    <div class="guide-container">
+        <div class="guide-label"><i class="fa-solid fa-circle-play"></i> แนะนำขั้นตอนการทดลอง:</div>
+        <div class="guide-steps">
+            <div class="guide-step">
+                <i class="fa-solid fa-circle-info" style="color: var(--primary);"></i>
+                <span><strong>1. เช็คชื่อรายวันและรายงานย้อนหลัง:</strong> เลือกวันที่และเช็คชื่อที่ฝั่งครู (ซ้าย) แล้วกด <strong>บันทึกรายงานเช็คชื่อประจำวัน</strong> -> ฝั่งเด็ก (ขวา) จะมีสถิติการเข้าเรียนสะสมอัปเดตแบบเรียลไทม์ และสามารถกดปุ่ม <strong>ดูรายงานเช็คชื่อย้อนหลัง</strong> เพื่อดูสถิติและรายงานรายวันย้อนหลังได้</span>
+            </div>
+            <div class="guide-step">
+                <i class="fa-solid fa-circle-info" style="color: var(--primary);"></i>
+                <span><strong>2. เปิดปิดสื่อ (Time-lock):</strong> ฝั่งครู (ซ้าย) สับสวิตช์ <strong>วิดีโอสอนเสริม Flowchart</strong> -> ฝั่งเด็ก (ขวา) วิดีโอจะสไลด์แสดงขึ้นมา</span>
+            </div>
+            <div class="guide-step">
+                <i class="fa-solid fa-circle-info" style="color: var(--primary);"></i>
+                <span><strong>3. ส่งงานตรวจ:</strong> ฝั่งเด็ก (ขวา) ลากไฟล์ใส่กล่อง <strong>ส่งการบ้าน</strong> -> ฝั่งครู (ซ้าย) จะได้ยินเสียงชิปแจ้งเตือน พร้อมตารางรอยื่นตรวจขึ้นไฟล์ขึ้นมา</span>
+            </div>
+            <div class="guide-step">
+                <i class="fa-solid fa-circle-info" style="color: var(--primary);"></i>
+                <span><strong>4. ประเมินและขยับอันดับ:</strong> ฝั่งครู (ซ้าย) กด <strong>ประเมิน</strong> ใส่คะแนน 10/10 -> ฝั่งเด็ก (ขวา) ได้รับรางวัล คะแนนเพิ่ม 100 คะแนน และอันดับขยับนำหน้าสมหญิงทันที!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Sandbox frames container -->
+    <div class="sandbox-body">
+        
+        <!-- Left Frame: Teacher Dashboard -->
+        <div class="panel">
+            <div class="panel-header">
+                <span><i class="fa-solid fa-chalkboard-user badge-teacher"></i> คุณครู (TEACHER VIEW)</span>
+                <a href="teacher_dashboard (1).html" target="_blank" class="btn-popout"><i class="fa-solid fa-up-right-from-square"></i> เปิดหน้าต่างใหม่</a>
+            </div>
+            <iframe src="teacher_dashboard (1).html" id="teacherFrame"></iframe>
+        </div>
+
+        <!-- Divider line -->
+        <div class="panel-divider"></div>
+
+        <!-- Right Frame: Student Dashboard -->
+        <div class="panel">
+            <div class="panel-header">
+                <span><i class="fa-solid fa-user-graduate badge-student"></i> นักเรียน (STUDENT VIEW - ภัทรพล)</span>
+                <a href="student_dashboard (1).html" target="_blank" class="btn-popout"><i class="fa-solid fa-up-right-from-square"></i> เปิดหน้าต่างใหม่</a>
+            </div>
+            <iframe src="student_dashboard (1).html" id="studentFrame"></iframe>
+        </div>
+        
+    </div>
+
+    <script>
+        function resetSandbox() {
+            // Reload both iframes to reset local states
+            document.getElementById('teacherFrame').contentWindow.location.reload();
+            document.getElementById('studentFrame').contentWindow.location.reload();
+            
+            // Temporary overlay visual cue
+            const btn = document.querySelector('.btn-reset');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> รีเซ็ตแล้ว!';
+            btn.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+            btn.style.color = '#34d399';
+            btn.style.borderColor = 'rgba(16, 185, 129, 0.4)';
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.style.backgroundColor = 'rgba(239, 68, 68, 0.15)';
+                btn.style.color = '#f87171';
+                btn.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

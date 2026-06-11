@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern LMS System Architecture - Presentation</title>
+  
+  <!-- Google Fonts: Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --primary: #0ea5e9; /* Ocean Blue */
+      --primary-dark: #0284c7;
+      --secondary: #e0f2fe;
+      --bg: #f8fafc;
+      --white: #ffffff;
+      --text-dark: #0f172a;
+      --text-light: #64748b;
+      --danger: #ef4444;
+      --success: #10b981;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Prompt', sans-serif;
+      background-color: var(--bg);
+      color: var(--text-dark);
+      overflow: hidden;
+    }
+
+    /* Slide Container */
+    .slides-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(30px);
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      z-index: 1;
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      z-index: 10;
+    }
+
+    /* Decorative Background Element */
+    .bg-shape {
+      position: absolute;
+      width: 600px; height: 600px;
+      background: linear-gradient(135deg, var(--secondary) 0%, rgba(255,255,255,0) 100%);
+      border-radius: 50%;
+      top: -200px; right: -200px;
+      z-index: -1;
+    }
+
+    /* Typography */
+    h1 { font-size: 3.5rem; color: var(--primary-dark); margin-bottom: 1rem; text-align: center; }
+    h2 { font-size: 2.5rem; color: var(--primary); margin-bottom: 2rem; border-bottom: 4px solid var(--secondary); padding-bottom: 10px; }
+    h3 { font-size: 1.5rem; color: var(--text-dark); margin-bottom: 1rem; }
+    p { font-size: 1.2rem; color: var(--text-light); line-height: 1.6; }
+    ul { list-style: none; }
+    li { font-size: 1.2rem; margin-bottom: 1rem; display: flex; align-items: flex-start; gap: 15px; }
+    li i { margin-top: 5px; }
+
+    /* Layout Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      width: 90%;
+      max-width: 1200px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      width: 90%;
+      max-width: 1200px;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--white);
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      border-top: 5px solid var(--primary);
+      transition: transform 0.3s;
+    }
+    .card:hover { transform: translateY(-5px); }
+    .card-icon {
+      font-size: 3rem;
+      color: var(--primary);
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* Controls */
+    .controls {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      z-index: 100;
+      background: var(--white);
+      padding: 10px 20px;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .btn {
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      font-size: 1.5rem;
+      cursor: pointer;
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      transition: 0.3s;
+      display: flex; justify-content: center; align-items: center;
+    }
+    .btn:hover { background: var(--secondary); color: var(--primary); }
+    .slide-counter { font-size: 1.1rem; font-weight: 600; color: var(--primary-dark); min-width: 60px; text-align: center; }
+
+    /* Footer Brand */
+    .footer-brand {
+      position: absolute;
+      bottom: 30px; left: 40px;
+      font-size: 1rem;
+      color: var(--text-light);
+      font-weight: 500;
+      z-index: 50;
+    }
+    
+    .btn-demo {
+      display: inline-block;
+      padding: 15px 40px;
+      background: var(--primary);
+      color: var(--white);
+      text-decoration: none;
+      border-radius: 30px;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-top: 20px;
+      box-shadow: 0 10px 20px rgba(14, 165, 233, 0.3);
+      transition: 0.3s;
+    }
+    .btn-demo:hover { background: var(--primary-dark); transform: scale(1.05); }
+
+  </style>
+</head>
+<body>
+
+  <div class="bg-shape"></div>
+  <div class="footer-brand"><i class="fa-solid fa-code"></i> Information Technology Project | PSC</div>
+
+  <div class="slides-container" id="slides-container">
+    
+    <!-- Slide 1: Title -->
+    <section class="slide active">
+      <div style="text-align: center;">
+        <i class="fa-solid fa-network-wired" style="font-size: 5rem; color: var(--primary); margin-bottom: 20px;"></i>
+        <h1>Modern LMS System Architecture</h1>
+        <p style="font-size: 1.5rem; color: var(--primary-dark); margin-bottom: 10px;">ระบบจัดการการเรียนรู้ยุคใหม่ เพื่อยกระดับห้องเรียนวิทยาลัย</p>
+        <p>เปลี่ยนห้องเรียนธรรมดา ให้เป็นพื้นที่แห่งการเรียนรู้แบบ Active Learning</p>
+      </div>
+    </section>
+
+    <!-- Slide 2: Pain Points & Solutions -->
+    <section class="slide">
+      <h2>Pain Points & Solutions</h2>
+      <div class="grid-2">
+        <div class="card" style="border-top-color: var(--danger);">
+          <div class="card-icon" style="color: var(--danger);"><i class="fa-solid fa-circle-xmark"></i></div>
+          <h3 style="text-align: center; color: var(--danger);">ปัญหาเดิม</h3>
+          <ul>
+            <li><i class="fa-solid fa-tired"></i> <span><b>ห้องเรียนขาดความน่าสนใจ:</b> การนั่งฟังบรรยายอย่างเดียวทำให้ผู้เรียนหลุดโฟกัสง่าย</span></li>
+            <li><i class="fa-solid fa-users-slash"></i> <span><b>ขาดแคลนกิจกรรมโต้ตอบ:</b> ครูต้องการหากิจกรรมที่ให้เด็กมีส่วนร่วม แต่ขาดเครื่องมือ</span></li>
+            <li><i class="fa-solid fa-folder-open"></i> <span><b>การจัดการงานยุ่งยาก:</b> ส่งงานกระจัดกระจาย ครูตรวจสอบยาก</span></li>
+          </ul>
+        </div>
+        <div class="card" style="border-top-color: var(--success);">
+          <div class="card-icon" style="color: var(--success);"><i class="fa-solid fa-lightbulb"></i></div>
+          <h3 style="text-align: center; color: var(--success);">ทางออกของระบบเรา</h3>
+          <ul>
+            <li><i class="fa-solid fa-gamepad"></i> <span><b>เรียนรู้ผ่านกิจกรรม (Active Learning):</b> ผสานมินิเกม (Gamification) เปลี่ยนห้องเรียนให้น่าสนุก</span></li>
+            <li><i class="fa-solid fa-boxes-stacked"></i> <span><b>ศูนย์รวมการจัดการ:</b> สั่งงาน ส่งไฟล์ ตรวจคะแนน จบในที่เดียวแบบครบวงจร</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 3: 4 Core Modules -->
+    <section class="slide">
+      <h2>4 เสาหลักของระบบ (Core Modules)</h2>
+      <div class="grid-4" style="margin-top: 30px;">
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-key"></i></div>
+          <h3 style="text-align: center; font-size: 1.2rem;">1. Smart Auth & Policy</h3>
+          <p style="text-align: center; font-size: 1rem;">จัดการสิทธิ์นักเรียน/ครู และระบบเช็คชื่อยืดหยุ่น</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-file-arrow-up"></i></div>
+          <h3 style="text-align: center; font-size: 1.2rem;">2. Assignment & Notify</h3>
+          <p style="text-align: center; font-size: 1rem;">ส่งงานคัดกรองไฟล์ พร้อมแจ้งเตือนแบบเรียลไทม์</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-chart-line"></i></div>
+          <h3 style="text-align: center; font-size: 1.2rem;">3. Teacher Dashboard</h3>
+          <p style="text-align: center; font-size: 1rem;">ศูนย์แสดงผลข้อมูล ติดตามความคืบหน้าของเด็ก</p>
+        </div>
+        <div class="card">
+          <div class="card-icon"><i class="fa-solid fa-trophy"></i></div>
+          <h3 style="text-align: center; font-size: 1.2rem;">4. Game & Leaderboard</h3>
+          <p style="text-align: center; font-size: 1rem;">กิจกรรมกระตุ้นการเรียนรู้ด้วยคะแนนและจัดอันดับ</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 4: Module 1 -->
+    <section class="slide">
+      <h2>Module 1: Smart Auth & Flexible Policy</h2>
+      <div class="grid-2" style="align-items: center;">
+        <div>
+          <ul>
+            <li><i class="fa-solid fa-user-shield" style="color: var(--primary);"></i> <span><b>การจัดการสิทธิ์ชัดเจน:</b> แยกหน้าต่างนักเรียน และคุณครู ป้องกันการเข้าถึงผิดพลาด</span></li>
+            <li><i class="fa-solid fa-calendar-check" style="color: var(--primary);"></i> <span><b>ระบบเช็คชื่อแบบยืดหยุ่น (Flexible Attendance):</b> <br><br>- ครูสามารถ "เช็คชื่อด้วยตัวเอง" เพื่อคงปฏิสัมพันธ์ในห้อง<br>- หรือปรับกฎในหน้า Policy ให้ "เช็คชื่ออัตโนมัติ" ตามเวลาล็อกอินได้</span></li>
+            <li><i class="fa-solid fa-lock" style="color: var(--primary);"></i> <span><b>ความปลอดภัยข้อมูล:</b> เข้ารหัสผ่าน (bcrypt) มาตรฐานสากล</span></li>
+          </ul>
+        </div>
+        <div class="card" style="text-align: center; background: var(--secondary); border: none;">
+          <i class="fa-solid fa-sliders" style="font-size: 6rem; color: var(--primary-dark);"></i>
+          <h3 style="margin-top: 20px;">อิสระในการตั้งค่าห้องเรียน</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5: Module 2 -->
+    <section class="slide">
+      <h2>Module 2: Secure Upload & Notify</h2>
+      <div class="grid-2" style="align-items: center;">
+        <div class="card" style="text-align: center; background: var(--secondary); border: none;">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size: 6rem; color: var(--primary-dark);"></i>
+          <div style="margin-top: 20px; font-size: 2rem;"><i class="fa-solid fa-file-pdf"></i> <i class="fa-solid fa-file-word"></i> <i class="fa-solid fa-image"></i></div>
+        </div>
+        <div>
+          <ul>
+            <li><i class="fa-solid fa-shield-virus" style="color: var(--primary);"></i> <span><b>คัดกรองอัจฉริยะ (Magic Bytes Validation):</b> อนุญาตเฉพาะไฟล์งาน บล็อกไฟล์ไวรัสหรือสคริปต์เด็ดขาด</span></li>
+            <li><i class="fa-solid fa-server" style="color: var(--primary);"></i> <span><b>ลดภาระเซิร์ฟเวอร์:</b> จำกัดขนาดไม่เกิน 25MB ให้ระบบไหลลื่น</span></li>
+            <li><i class="fa-solid fa-bell" style="color: var(--primary);"></i> <span><b>Real-time Notification:</b> ทันทีที่เด็กส่งงาน ครูจะได้รับการแจ้งเตือนผ่านหน้าเว็บทันที</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 6: Module 3 -->
+    <section class="slide">
+      <h2>Module 3: Teacher Dashboard</h2>
+      <div class="grid-2" style="align-items: center;">
+        <div>
+          <ul>
+            <li><i class="fa-solid fa-chart-pie" style="color: var(--primary);"></i> <span><b>หน้าเดียวครบจบ (All-in-One):</b> ครูเห็นภาพรวม อัตราเข้าเรียน งานค้างตรวจ และคะแนนของเด็กทุกคน</span></li>
+            <li><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary);"></i> <span><b>ระบบจัดการสื่อ (Time-lock):</b> ตั้งเวลา "เปิด-ปิด" การเข้าถึงเอกสารประกอบการเรียนได้ล่วงหน้า</span></li>
+            <li><i class="fa-solid fa-bolt" style="color: var(--primary);"></i> <span><b>ประมวลผลทันที:</b> ข้อมูลอัปเดตอัตโนมัติ (Polling) ไม่ต้องกดรีเฟรชหน้าจอ</span></li>
+          </ul>
+        </div>
+        <div class="card" style="text-align: center; background: var(--secondary); border: none;">
+          <i class="fa-solid fa-chalkboard-user" style="font-size: 6rem; color: var(--primary-dark);"></i>
+          <h3 style="margin-top: 20px;">ศูนย์บัญชาการข้อมูลครู</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 7: Module 4 -->
+    <section class="slide">
+      <h2>Module 4: Gamification & Leaderboard</h2>
+      <div class="grid-2" style="align-items: center;">
+        <div class="card" style="text-align: center; background: var(--secondary); border: none;">
+          <i class="fa-solid fa-ranking-star" style="font-size: 6rem; color: #eab308;"></i>
+          <h3 style="margin-top: 20px;">เปลี่ยนความจำเจ เป็นความท้าทาย</h3>
+        </div>
+        <div>
+          <ul>
+            <li><i class="fa-solid fa-face-smile" style="color: var(--primary);"></i> <span><b>ลดความเบื่อหน่าย:</b> ผสานมินิเกมตอบคำถาม ทบทวนความรู้ก่อนหรือหลังเรียน</span></li>
+            <li><i class="fa-solid fa-list-ol" style="color: var(--primary);"></i> <span><b>กระตุ้นการมีส่วนร่วม:</b> คำนวณคะแนนและจัดอันดับ (Leaderboard) ทันทีที่ภารกิจสำเร็จ</span></li>
+            <li><i class="fa-solid fa-fire" style="color: var(--primary);"></i> <span><b>สร้างบรรยากาศ:</b> เกิดการแข่งขันเชิงบวก ดึงดูดให้เด็กอยากทำแบบทดสอบมากขึ้น</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 8: Under the Hood -->
+    <section class="slide">
+      <h2>สถาปัตยกรรมระดับองค์กร (Production-Ready)</h2>
+      <div class="grid-4" style="margin-top: 20px; width: 100%;">
+        <div class="card" style="text-align: center;">
+          <i class="fa-brands fa-react" style="font-size: 4rem; color: #61dafb;"></i>
+          <h3 style="margin-top: 15px; font-size: 1.2rem;">Next.js 14</h3>
+          <p style="font-size: 0.9rem;">เฟรมเวิร์กแกนหลัก ทำงานรวดเร็ว</p>
+        </div>
+        <div class="card" style="text-align: center;">
+          <i class="fa-solid fa-database" style="font-size: 4rem; color: #336791;"></i>
+          <h3 style="margin-top: 15px; font-size: 1.2rem;">PostgreSQL & Prisma</h3>
+          <p style="font-size: 0.9rem;">ฐานข้อมูลเสถียร จัดการง่าย</p>
+        </div>
+        <div class="card" style="text-align: center;">
+          <i class="fa-brands fa-docker" style="font-size: 4rem; color: #2496ed;"></i>
+          <h3 style="margin-top: 15px; font-size: 1.2rem;">Docker Compose</h3>
+          <p style="font-size: 0.9rem;">ติดตั้งง่าย ปลอดภัย ไม่รบกวนระบบอื่น</p>
+        </div>
+        <div class="card" style="text-align: center;">
+          <i class="fa-solid fa-hard-drive" style="font-size: 4rem; color: #64748b;"></i>
+          <h3 style="margin-top: 15px; font-size: 1.2rem;">Auto Backup</h3>
+          <p style="font-size: 0.9rem;">สคริปต์สำรองข้อมูล ป้องกันสูญหาย</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 9: Live Demo -->
+    <section class="slide">
+      <div style="text-align: center;">
+        <i class="fa-solid fa-laptop-code" style="font-size: 5rem; color: var(--primary); margin-bottom: 20px;"></i>
+        <h2>System Demonstration</h2>
+        <p style="font-size: 1.2rem; max-width: 600px; margin: 0 auto;">ขอเชิญคณะกรรมการรับชมการจำลองระบบปฏิบัติการจริง (Interactive Demo) ที่แสดงการทำงานร่วมกันระหว่างหน้าจอนักเรียนและหน้าจอคุณครูแบบ Real-time ครับ</p>
+        <br>
+        <!-- สามารถใส่ลิงก์ไปยังไฟล์ HTML Live Demo ของคุณได้ตรง href -->
+        <a href="demo_sandbox.html" class="btn-demo" target="_blank"><i class="fa-solid fa-play"></i> เปิดหน้าจอจำลองระบบ</a>
+      </div>
+    </section>
+
+    <!-- Slide 10: Q&A -->
+    <section class="slide">
+      <div style="text-align: center;">
+        <h1 style="font-size: 6rem; color: var(--primary);">Q & A</h1>
+        <p style="font-size: 1.5rem; margin-top: 20px;">ขอขอบคุณคณะกรรมการและคุณครูทุกท่านสำหรับการรับฟัง<br>เปิดโอกาสให้ซักถามข้อสงสัยและให้คำแนะนำครับ</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Navigation Controls -->
+  <div class="controls">
+    <button class="btn" id="prevBtn" title="Previous Slide"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="slide-counter"><span id="currentSlide">1</span> / 10</div>
+    <button class="btn" id="nextBtn" title="Next Slide"><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const currentSlideText = document.getElementById('currentSlide');
+    let currentIdx = 0;
+
+    function updateSlides() {
+      slides.forEach((slide, index) => {
+        slide.classList.remove('active');
+        if (index === currentIdx) {
+          slide.classList.add('active');
+        }
+      });
+      currentSlideText.textContent = currentIdx + 1;
+    }
+
+    function nextSlide() {
+      if (currentIdx < slides.length - 1) {
+        currentIdx++;
+        updateSlides();
+      }
+    }
+
+    function prevSlide() {
+      if (currentIdx > 0) {
+        currentIdx--;
+        updateSlides();
+      }
+    }
+
+    nextBtn.addEventListener('click', nextSlide);
+    prevBtn.addEventListener('click', prevSlide);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+  </script>
+
+</body>
+</html>
