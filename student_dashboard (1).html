@@ -129,7 +129,6 @@
             margin-left: 260px;
             flex: 1;
             padding: 30px;
-            max-width: 1200px;
         }
 
         /* --- Topbar --- */
@@ -693,6 +692,8 @@
                                 </div>
                                 <a href="#" class="btn-play" style="padding: 6px 12px; font-size: 0.8rem; background: var(--primary); color: white; border-radius: 20px; font-weight: 500;" onclick="alert('กำลังเปิดดูวิดีโอสอนเสริม: การเขียน Flowchart')"><i class="fa-solid fa-play"></i> เล่นคลิป</a>
                             </div>
+                            <!-- Container for student uploaded materials (m3 files visible) -->
+                            <div id="student-uploaded-materials-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
                         </div>
                     </div>
 
@@ -798,7 +799,7 @@
                 
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                     <!-- Lesson Item 1 (Slide) -->
-                    <div style="background: var(--secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                    <div id="lessons-tab-lock-1" style="background: var(--secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
                         <i class="fa-solid fa-file-powerpoint" style="font-size: 2.5rem; color: #ea580c; margin-bottom: 15px;"></i>
                         <h4 style="margin-bottom: 8px;">สไลด์บทที่ 1: การเขียนโค้ดเบื้องต้น</h4>
                         <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">สไลด์รวบรวมหลักการคิดเชิงนามธรรม ตัวแปร และลูปการทำงานในระบบเบื้องต้น</p>
@@ -812,6 +813,9 @@
                         <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">วิดีโออธิบายการทำงานของผังงานและเงื่อนไขแบบเห็นภาพชัดเจนจากคุณครูสมชาย</p>
                         <button class="btn-play" style="background: var(--primary); color: white;" onclick="alert('เปิดดูวิดีโอคลิป')"><i class="fa-solid fa-play"></i> รับชมวิดีโอ</button>
                     </div>
+                    
+                    <!-- Container for student uploaded materials grid -->
+                    <div id="student-uploaded-materials-grid" style="display: contents;"></div>
 
                     <div id="lessons-tab-placeholder" style="border: 2px dashed var(--border); border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; color: var(--text-muted);">
                         <i class="fa-solid fa-lock" style="font-size: 2.5rem; margin-bottom: 15px; color: var(--text-muted);"></i>
@@ -987,6 +991,14 @@
             if (todayEntry && todayEntry.records['stu-1']) {
                 updateAttendanceUI('stu-1', todayEntry.records['stu-1']);
             }
+            try {
+                const stored = localStorage.getItem('lms-primary-lessons-state');
+                if (stored) {
+                    updatePrimaryLessonsFromState(JSON.parse(stored));
+                }
+            } catch (e) {}
+            updateUploadLimitLabels();
+            renderStudentMaterials();
         });
 
         // --- BroadcastChannel Listeners ---
@@ -1007,8 +1019,15 @@
                 }
             } else if (data.type === 'CONTENT_LOCK_CHANGED') {
                 updateContentLockUI(data.contentId, data.visible);
+            } else if (data.type === 'PRIMARY_LESSONS_CHANGED') {
+                updatePrimaryLessonsFromState(data.state);
             } else if (data.type === 'ASSIGNMENT_GRADED') {
                 handleAssignmentGraded(data);
+            } else if (data.type === 'SYSTEM_SETTINGS_CHANGED') {
+                updateUploadLimitLabels();
+                showToast('การตั้งค่าระบบเปลี่ยนไป', 'คุณครูได้อัปเดตการตั้งค่าเกณฑ์ระบบวิชาเรียนใหม่', 'info');
+            } else if (data.type === 'MEDIA_STORE_UPDATED' || data.type === 'MEDIA_VISIBILITY_CHANGED') {
+                renderStudentMaterials();
             } else if (data.type === 'SYNC_STATES') {
                 // Bulk sync states from teacher
                 if (data.attendance && data.attendance['stu-1']) {
@@ -1019,8 +1038,140 @@
                         updateContentLockUI(lockId, data.locks[lockId]);
                     });
                 }
+                if (data.primaryState) {
+                    updatePrimaryLessonsFromState(data.primaryState);
+                }
             }
         };
+
+        function updatePrimaryLessonsFromState(state) {
+            if (!state) return;
+            Object.keys(state).forEach(id => {
+                const item = state[id];
+                const contentId = id; // 'lock-1' or 'lock-2'
+
+                // Update text on landing page
+                const landingItem = document.getElementById('lesson-' + contentId);
+                if (landingItem) {
+                    const titleEl = landingItem.querySelector('h5');
+                    const descEl = landingItem.querySelector('p');
+                    if (titleEl && item.name) titleEl.innerText = item.name;
+                    if (descEl && item.desc) descEl.innerText = item.desc;
+                    
+                    if (item.deleted) {
+                        landingItem.style.display = 'none';
+                    } else if (item.visible) {
+                        landingItem.style.display = 'flex';
+                        landingItem.style.opacity = '1';
+                        landingItem.style.transform = 'translateY(0)';
+                    } else {
+                        landingItem.style.display = 'none';
+                    }
+                }
+
+                // Update text on My Lessons tab
+                const tabItem = document.getElementById('lessons-tab-' + contentId);
+                if (tabItem) {
+                    const titleEl = tabItem.querySelector('h4');
+                    const descEl = tabItem.querySelector('p');
+                    if (titleEl && item.name) titleEl.innerText = item.name;
+                    if (descEl && item.desc) descEl.innerText = item.desc;
+
+                    if (item.deleted) {
+                        tabItem.style.display = 'none';
+                    } else if (item.visible) {
+                        tabItem.style.display = 'block';
+                    } else {
+                        tabItem.style.display = 'none';
+                    }
+                }
+            });
+            renderStudentMaterials();
+        }
+
+        function getFileCategory(file) {
+            const name = (file && file.name) ? file.name.toLowerCase() : '';
+            const type = file && file.type ? file.type.toLowerCase() : '';
+            if (type.startsWith('image') || name.match(/\.(jpg|jpeg|png|gif|bmp|webp)$/)) return 'image';
+            if (type.startsWith('video') || name.match(/\.(mp4|mov|avi|mkv|webm)$/)) return 'video';
+            if (type === 'application/pdf' || name.endsWith('.pdf')) return 'pdf';
+            return 'other';
+        }
+
+        function renderStudentMaterials() {
+            const container = document.getElementById('student-uploaded-materials-container');
+            const gridContainer = document.getElementById('student-uploaded-materials-grid');
+            
+            const store = JSON.parse(localStorage.getItem('lms-manage-media') || '[]');
+            const m3Files = store.filter(it => it.class === 'm3' && it.visibleToStudents && it.status === 'stored');
+
+            if (container) {
+                let html = '';
+                m3Files.forEach(item => {
+                    const category = getFileCategory(item);
+                    let iconClass = 'fa-file';
+                    let iconColor = '#64748b';
+                    let playIcon = 'fa-eye';
+                    let actionText = 'เปิดดู';
+
+                    if (category === 'video') { iconClass = 'fa-file-video'; iconColor = '#2563eb'; playIcon = 'fa-play'; actionText = 'เล่นคลิป'; }
+                    else if (category === 'image') { iconClass = 'fa-file-image'; iconColor = '#10b981'; }
+                    else if (category === 'pdf') { iconClass = 'fa-file-pdf'; iconColor = '#ef4444'; }
+
+                    html += `
+                        <div class="lesson-item" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--secondary); border-radius: 12px; border: 1px solid var(--border);">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <i class="fa-solid ${iconClass}" style="font-size: 1.5rem; color: ${iconColor};"></i>
+                                <div>
+                                    <h5 style="margin: 0; font-size: 0.95rem; font-weight:600;">${item.name}</h5>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">สื่อเสริม • ${(item.size/1024/1024).toFixed(2)} MB</p>
+                                </div>
+                            </div>
+                            <a href="#" class="btn-play" style="padding: 6px 12px; font-size: 0.8rem; background: var(--primary); color: white; border-radius: 20px; font-weight: 500;" onclick="alert('กำลังเปิดดู: ${item.name}')"><i class="fa-solid ${playIcon}"></i> ${actionText}</a>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            if (gridContainer) {
+                let html = '';
+                m3Files.forEach(item => {
+                    const category = getFileCategory(item);
+                    let iconClass = 'fa-file';
+                    let iconColor = '#64748b';
+                    let playIcon = 'fa-eye';
+                    let actionText = 'เริ่มเรียนรู้';
+
+                    if (category === 'video') { iconClass = 'fa-file-video'; iconColor = '#2563eb'; playIcon = 'fa-play'; actionText = 'รับชมวิดีโอ'; }
+                    else if (category === 'image') { iconClass = 'fa-file-image'; iconColor = '#10b981'; }
+                    else if (category === 'pdf') { iconClass = 'fa-file-pdf'; iconColor = '#ef4444'; }
+
+                    html += `
+                        <div style="background: var(--secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; flex-direction: column;">
+                            <i class="fa-solid ${iconClass}" style="font-size: 2.5rem; color: ${iconColor}; margin-bottom: 15px; align-self: flex-start;"></i>
+                            <h4 style="margin-bottom: 8px; font-weight: 600;">${item.name}</h4>
+                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; flex: 1;">สื่อการเรียนรู้เพิ่มเติมอัปโหลดโดยคุณครูสมชาย สำหรับประกอบการเรียนวิชาวิทยาการคำนวณ</p>
+                            <button class="btn-play" style="background: var(--primary); color: white; align-self: flex-start;" onclick="alert('กำลังเปิดดู: ${item.name}')"><i class="fa-solid ${playIcon}"></i> ${actionText}</button>
+                        </div>
+                    `;
+                });
+                gridContainer.innerHTML = html;
+            }
+
+            // Manage placeholder visibility based on lock-2 and uploaded files
+            const lock2El = document.getElementById('lessons-tab-lock-2');
+            const placeholderEl = document.getElementById('lessons-tab-placeholder');
+            const isLock2Visible = lock2El && lock2El.style.display !== 'none';
+            
+            if (placeholderEl) {
+                if (m3Files.length > 0 || isLock2Visible) {
+                    placeholderEl.style.display = 'none';
+                } else {
+                    placeholderEl.style.display = 'flex';
+                }
+            }
+        }
 
         function updateAttendanceUI(studentId, status) {
             if (studentId !== 'stu-1') return; // only care about ภัทรพล
@@ -1083,6 +1234,7 @@
                     if (placeholder) placeholder.style.display = 'flex';
                 }
             }
+            renderStudentMaterials();
         }
 
         let currentScore = 1250;
@@ -1214,6 +1366,13 @@
             currentLeaderboardData.sort((a, b) => b.score - a.score);
             // Render
             syncLeaderboardUI();
+
+            // Broadcast score update to teacher dashboard
+            bc.postMessage({
+                type: 'STUDENT_SCORE_UPDATED',
+                studentName: studentName,
+                score: newScore
+            });
         }
 
         // --- Interactive Mini-game logic ---
@@ -1329,12 +1488,72 @@
             });
         });
 
+        function getSystemSettings() {
+            const settings = localStorage.getItem('lms-system-settings');
+            const DEFAULT_SETTINGS = {
+                timeLate: '08:30',
+                timeAbsent: '09:00',
+                deductionAbsent: 0.5,
+                maxFileSize: 25,
+                latePenalty: '10',
+                extPdf: true,
+                extDocx: true,
+                extXlsx: true,
+                extImages: true,
+                gameBonus: 100,
+                pointsRate: 100,
+                allowGameReplay: false,
+                restrictEmail: true,
+                preventResubmissions: true,
+                lockAfterDeadline: false
+            };
+            if (!settings) return DEFAULT_SETTINGS;
+            return JSON.parse(settings);
+        }
+
+        function updateUploadLimitLabels() {
+            const s = getSystemSettings();
+            
+            // Format labels text
+            const sizeText = `ระบบตรวจสอบไฟล์อัตโนมัติ (Magic Bytes) รองรับขนาดไม่เกิน ${s.maxFileSize}MB`;
+            const dropzoneP = document.querySelector('#dropzone p');
+            if (dropzoneP) dropzoneP.innerText = sizeText;
+            const dropzoneTabP = document.querySelector('#dropzone-tab p');
+            if (dropzoneTabP) dropzoneTabP.innerText = sizeText;
+            
+            // Render tags
+            let tagsHTML = '';
+            if (s.extPdf) tagsHTML += '<span class="tag">.PDF</span> ';
+            if (s.extDocx) tagsHTML += '<span class="tag">.DOCX</span> ';
+            if (s.extXlsx) tagsHTML += '<span class="tag">.XLSX</span> ';
+            if (s.extImages) tagsHTML += '<span class="tag">.PNG</span> <span class="tag">.JPG</span> ';
+            
+            const fileTypesDivs = document.querySelectorAll('.file-types');
+            fileTypesDivs.forEach(div => {
+                const fileInput = div.querySelector('input[type="file"]');
+                div.innerHTML = tagsHTML;
+                if (fileInput) div.appendChild(fileInput);
+            });
+        }
+
         function handleFileUpload(file) {
-            const allowedExts = ['pdf', 'docx', 'xlsx', 'png', 'jpg'];
+            const s = getSystemSettings();
+            const allowedExts = [];
+            if (s.extPdf) allowedExts.push('pdf');
+            if (s.extDocx) allowedExts.push('docx');
+            if (s.extXlsx) allowedExts.push('xlsx');
+            if (s.extImages) { allowedExts.push('png'); allowedExts.push('jpg'); allowedExts.push('jpeg'); }
+            
             const fileExt = file.name.split('.').pop().toLowerCase();
             
             if (!allowedExts.includes(fileExt)) {
-                showToast('อัปโหลดล้มเหลว', 'นามสกุลไฟล์ไม่ได้รับการสนับสนุน (Magic Bytes Blocked)', 'danger');
+                showToast('อัปโหลดล้มเหลว', 'นามสกุลไฟล์ไม่ได้รับการสนับสนุนโดยนโยบายวิชาเรียนของคุณครู', 'danger');
+                return;
+            }
+
+            const maxBytes = s.maxFileSize * 1024 * 1024;
+            if (file.size > maxBytes) {
+                showToast('อัปโหลดล้มเหลว', `ขนาดไฟล์การบ้านเกินขีดจำกัดที่ครูกำหนดไว้ (สูงสุด ${s.maxFileSize}MB)`, 'danger');
                 return;
             }
 
