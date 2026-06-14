@@ -150,6 +150,13 @@
 
         .nav-link i { font-size: 1.2rem; width: 24px; text-align: center; }
 
+        .nav-divider {
+            height: 1px;
+            background-color: var(--border);
+            margin: 8px 16px;
+            opacity: 0.6;
+        }
+
         .logout-btn {
             margin: 20px 16px;
             padding: 14px;
@@ -208,14 +215,54 @@
 
         .notify-badge {
             position: absolute;
-            top: 10px;
-            right: 12px;
-            width: 10px;
-            height: 10px;
+            top: 8px;
+            right: 10px;
+            min-width: 18px;
+            height: 18px;
             background-color: var(--danger-text);
-            border-radius: 50%;
+            border-radius: 20px;
             border: 2px solid var(--white);
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
         }
+
+        /* Notification Dropdown */
+        .notify-wrapper { position: relative; }
+        .notify-dropdown {
+            display: none; position: absolute; top: calc(100% + 10px); right: 0; width: 360px;
+            background: var(--white); border: 1px solid var(--border); border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12); z-index: 9999; overflow: hidden; animation: dropIn 0.2s ease;
+        }
+        .notify-dropdown.open { display: block; }
+        @keyframes dropIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+        .notify-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px 12px; border-bottom: 1px solid var(--border); }
+        .notify-header h4 { margin: 0; font-size: 0.95rem; font-weight: 700; }
+        .notify-read-all { font-size: 0.78rem; color: var(--primary); cursor: pointer; border: none; background: none; font-weight: 600; padding: 0; }
+        .notify-read-all:hover { text-decoration: underline; }
+        .notify-list { max-height: 380px; overflow-y: auto; }
+        .notify-item { display: flex; gap: 12px; padding: 13px 18px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; position: relative; text-align: left; }
+        .notify-item:last-child { border-bottom: none; }
+        .notify-item:hover { background: var(--secondary); }
+        .notify-item.unread { background: #f0f9ff; }
+        .notify-item.unread:hover { background: #e0f2fe; }
+        .notify-dot { position: absolute; top: 16px; right: 16px; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+        .notify-icon { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+        .notify-icon.blue   { background: #dbeafe; color: #1d4ed8; }
+        .notify-icon.green  { background: #dcfce7; color: #16a34a; }
+        .notify-icon.orange { background: #ffedd5; color: #c2410c; }
+        .notify-icon.purple { background: #ede9fe; color: #7c3aed; }
+        .notify-icon.red    { background: #fee2e2; color: #dc2626; }
+        .notify-body { flex: 1; min-width: 0; text-align: left; }
+        .notify-body p { margin: 0 0 3px 0; font-size: 0.85rem; font-weight: 600; color: var(--text-main); line-height: 1.4; }
+        .notify-body span { font-size: 0.75rem; color: var(--text-muted); display: block; }
+        .notify-empty { text-align: center; padding: 36px 20px; color: var(--text-muted); font-size: 0.88rem; }
+        .notify-footer { padding: 12px 18px; border-top: 1px solid var(--border); text-align: center; }
+        .notify-footer button { background: none; border: none; color: var(--primary); font-size: 0.83rem; font-weight: 600; cursor: pointer; }
 
         .user-profile {
             display: flex;
@@ -1096,6 +1143,13 @@
                 border-radius: 12px;
                 font-size: 0.92rem;
             }
+            .sidebar .nav-divider {
+                width: 100%;
+                height: 0;
+                border: 0;
+                margin: 4px 0;
+                opacity: 0;
+            }
             .sidebar .logout-btn {
                 width: calc(100% - 32px);
                 margin: 12px 16px 16px;
@@ -1130,6 +1184,224 @@
             }
         }
 
+        /* --- Assignment Cards Redesign --- */
+        .assignment-card {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-left: 4px solid #94a3b8; /* Default fallback */
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.25s ease;
+        }
+        .assignment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        .assignment-card.status-publish {
+            border-left-color: var(--primary);
+        }
+        .assignment-card.status-draft {
+            border-left-color: #cbd5e1;
+        }
+        .assignment-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .assignment-card-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .assignment-card-title {
+            margin: 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+        .assignment-card-class-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+        .assignment-card-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .btn-action-edit {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-action-edit:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .btn-action-delete {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff5f5;
+            border: 1px solid #ffe3e3;
+            color: #e53e3e;
+            padding: 6px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-action-delete:hover {
+            background: #fff0f0;
+            border-color: #e53e3e;
+        }
+        .assignment-card-description {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            min-height: 40px;
+        }
+        .assignment-attachments-container {
+            margin-top: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            padding: 12px 16px;
+            border-radius: 14px;
+        }
+        .assignment-attachments-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+        .assignment-attachments-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .attachment-file-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.78rem;
+            background: var(--white);
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 10px;
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+            transition: all 0.2s;
+        }
+        .attachment-file-card:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            transform: translateY(-1px);
+        }
+        .attachment-file-size {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: normal;
+        }
+        .assignment-card-divider {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 4px 0 0 0;
+        }
+        .assignment-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .assignment-card-stats {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .assignment-stat-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .assignment-status-badge {
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+        .assignment-status-badge.publish {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+        .assignment-status-badge.draft {
+            background: var(--secondary);
+            color: var(--text-muted);
+        }
+
+        /* Responsive tweaks for mobile view */
+        @media (max-width: 600px) {
+            .btn-action-edit .btn-text,
+            .btn-action-delete .btn-text {
+                display: none;
+            }
+            .btn-action-edit,
+            .btn-action-delete {
+                padding: 8px;
+                border-radius: 50%;
+                width: 34px;
+                height: 34px;
+                justify-content: center;
+            }
+            .assignment-card-actions {
+                gap: 6px;
+            }
+            .assignment-card-footer {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .assignment-card-stats {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+                width: 100%;
+            }
+            .assignment-status-badge {
+                align-self: flex-start;
+            }
+        }
+
     </style>
 </head>
 <body class="summary-active">
@@ -1143,13 +1415,14 @@
             <a id="link-attendance" class="nav-link" onclick="switchTab('attendance')"><i class="fa-solid fa-clipboard-user"></i> <span>เช็คชื่อเข้าเรียน</span></a>
             <a id="link-grading" class="nav-link" onclick="switchTab('grading')"><i class="fa-solid fa-square-check"></i> <span>ตรวจการบ้าน</span></a>
             <a id="link-assignments" class="nav-link" onclick="switchTab('assignments')"><i class="fa-solid fa-tasks"></i> <span>การมอบหมายงาน</span></a>
-            <a id="link-materials" class="nav-link" onclick="switchTab('materials')"><i class="fa-solid fa-book-open-reader"></i> <span>จัดการสื่อ/บทเรียน</span></a>
             <a id="link-gamestats" class="nav-link" onclick="switchTab('gamestats')"><i class="fa-solid fa-chart-bar"></i> <span>สถิติเกมและคะแนน</span></a>
+            <a id="link-materials" class="nav-link" onclick="switchTab('materials')"><i class="fa-solid fa-book-open-reader"></i> <span>จัดการสื่อ/บทเรียน</span></a>
+            <div class="nav-divider"></div>
+            <a id="link-students" class="nav-link" onclick="switchTab('students')"><i class="fa-solid fa-address-book"></i> <span>บัญชีนักเรียน</span></a>
             <a id="link-notifications" class="nav-link" onclick="switchTab('notifications')"><i class="fa-solid fa-bell"></i> <span>การแจ้งเตือน</span></a>
             <a id="link-rules" class="nav-link" onclick="switchTab('rules')"><i class="fa-solid fa-scroll"></i> <span>กฎของระบบ</span></a>
-            <a id="link-students" class="nav-link" onclick="switchTab('students')"><i class="fa-solid fa-address-book"></i> <span>บัญชีนักเรียน</span></a>
         </div>
-        <button class="logout-btn"><i class="fa-solid fa-sign-out-alt"></i> <span>ออกจากระบบ</span></button>
+        <button class="logout-btn" onclick="window.location.href='index.html'"><i class="fa-solid fa-sign-out-alt"></i> <span>ออกจากระบบ</span></button>
     </aside>
 
     <main class="main-content">
@@ -1162,13 +1435,29 @@
         <!-- Topbar (Always visible) -->
         <header class="topbar">
             <div class="greeting">
-                <h1 id="greeting-title">สวัสดี, ครูสมชาย! 👨‍🏫</h1>
+                <h1 id="greeting-title">สวัสดี, ครูสมชาย! </h1>
                 <p id="greeting-subtitle">ภาพรวมการเรียนการสอน ห้อง ม.3/1 ประจำวันนี้</p>
             </div>
             <div class="topbar-actions">
-                <div class="notify-btn" onclick="switchTab('notifications')" style="cursor: pointer;">
-                    <i class="fa-regular fa-bell"></i>
-                    <div class="notify-badge"></div>
+                <!-- Notification Bell with Dropdown -->
+                <div class="notify-wrapper" id="notify-wrapper">
+                    <div class="notify-btn" id="notify-btn" onclick="toggleNotify()">
+                        <i class="fa-regular fa-bell"></i>
+                        <div class="notify-badge" id="notify-badge">3</div>
+                    </div>
+                    <!-- Dropdown Panel -->
+                    <div class="notify-dropdown" id="notify-dropdown">
+                        <div class="notify-header">
+                            <h4><i class="fa-solid fa-bell" style="color:var(--primary);margin-right:6px;"></i>การแจ้งเตือน</h4>
+                            <button class="notify-read-all" onclick="markAllRead()">อ่านทั้งหมดแล้ว</button>
+                        </div>
+                        <div class="notify-list" id="notify-list">
+                            <!-- rendered by JS -->
+                        </div>
+                        <div class="notify-footer">
+                            <button onclick="toggleNotify(); switchTab('notifications');">ดูการแจ้งเตือนทั้งหมด</button>
+                        </div>
+                    </div>
                 </div>
                 <div class="user-profile">
                     <div class="avatar">ส</div>
@@ -1208,8 +1497,8 @@
                 <div class="stat-card card-orange">
                     <div class="stat-icon icon-orange"><i class="fa-solid fa-gamepad"></i></div>
                     <div class="stat-details">
-                        <h3>45 คน</h3>
-                        <p>นักเรียนที่ผ่านมินิเกมล่าสุด</p>
+                        <h3>1 เกม</h3>
+                        <p>มินิเกมในระบบทั้งหมด</p>
                     </div>
                 </div>
             </div>
@@ -1262,19 +1551,14 @@
                         <!-- Segmented bar chart -->
                         <div class="attendance-bar-chart" id="summary-att-bar">
                             <div class="attendance-bar-segment segment-present" style="width: 100%;"></div>
-                            <div class="attendance-bar-segment segment-late" style="width: 0%;"></div>
                             <div class="attendance-bar-segment segment-absent" style="width: 0%;"></div>
                         </div>
 
                         <!-- Legend Grid -->
-                        <div class="attendance-legend-grid" id="summary-att-legend">
+                        <div class="attendance-legend-grid" id="summary-att-legend" style="grid-template-columns: repeat(2, 1fr);">
                             <div class="attendance-legend-card present">
                                 <span class="attendance-legend-value present" id="summary-att-present-count">3 คน</span>
                                 <span class="attendance-legend-label">มาเรียน</span>
-                            </div>
-                            <div class="attendance-legend-card late">
-                                <span class="attendance-legend-value late" id="summary-att-late-count">0 คน</span>
-                                <span class="attendance-legend-label">มาสาย</span>
                             </div>
                             <div class="attendance-legend-card absent">
                                 <span class="attendance-legend-value absent" id="summary-att-absent-count">0 คน</span>
@@ -1391,29 +1675,6 @@
         
         <div id="panel-notifications" class="tab-panel" style="display: none;">
             <div class="card">
-                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px;">
-                    <div class="card-title">
-                        <i class="fa-solid fa-bell" style="color: var(--warning);"></i> การแจ้งเตือนระบบ (System Notifications)
-                    </div>
-                    <button class="btn-action" style="background: var(--primary-light); color: var(--primary-dark); font-weight: 600; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;" onclick="clearAllNotifications()">
-                        <i class="fa-solid fa-check-double"></i> อ่านทั้งหมดแล้ว
-                    </button>
-                </div>
-                
-                <div class="summary-details-list" id="notifications-list">
-                    <div class="summary-details-item" style="padding: 16px; border-left: 4px solid var(--primary); display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                        <div style="display: flex; align-items: center; gap: 15px;">
-                            <div style="background: var(--primary-light); color: var(--primary); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
-                                <i class="fa-solid fa-file-arrow-up"></i>
-                            </div>
-                            <div>
-                                <h5 style="margin: 0; font-size: 0.95rem; font-weight: 600;">ภัทรพล เรียนดี ส่งใบงานที่ 1 แล้ว</h5>
-                                <p style="margin: 3px 0 0 0; font-size: 0.8rem; color: var(--text-muted);">การบ้าน: ใบงานที่ 1 | เมื่อเวลา 15:30 น. (รอตรวจประเมิน)</p>
-                            </div>
-                        </div>
-                        <span style="font-size: 0.8rem; color: var(--primary); font-weight: 600; background: var(--primary-light); padding: 4px 8px; border-radius: 12px;">ใหม่</span>
-                    </div>
-
                     <div class="summary-details-item" style="padding: 16px; border-left: 4px solid var(--warning); display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                         <div style="display: flex; align-items: center; gap: 15px;">
                             <div style="background: #fef3c7; color: var(--warning); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem;">
@@ -1627,7 +1888,7 @@
                 <!-- Toolbar: Filter + Search + Add Button -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                        <select id="student-list-filter-class" onchange="onClassFilterChange()" style="padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer; background: var(--white); color: var(--text-main);">
+                        <select id="student-list-filter-class" onchange="renderStudentList()" style="padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer; background: var(--white); color: var(--text-main);">
                             <option value="all">ทุกระดับชั้น</option>
                             <option value="m1">ม.1</option>
                             <option value="m2">ม.2</option>
@@ -1711,12 +1972,12 @@
                             <input type="number" id="modal-student-number" placeholder="-" min="1" max="60" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; background: var(--white); color: var(--text-main);">
                         </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 14px;">
                         <div>
                             <label style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">เบอร์โทรผู้ปกครอง</label>
                             <input type="tel" id="modal-student-phone" placeholder="เช่น 081-234-5678" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; background: var(--white); color: var(--text-main);">
                         </div>
-                        <div>
+                        <div style="display: none;">
                             <label style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">อีเมล</label>
                             <input type="email" id="modal-student-email" placeholder="เช่น student@school.ac.th" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; background: var(--white); color: var(--text-main);">
                         </div>
@@ -1726,9 +1987,9 @@
                     <button class="btn-cancel" onclick="closeStudentModal()" style="padding: 10px 20px; font-weight: 600; cursor: pointer;">ยกเลิก</button>
                     <button class="btn-submit" onclick="saveStudentFromModal()" style="padding: 10px 25px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                         <i class="fa-solid fa-floppy-disk"></i> <span id="studentModalSubmitText">เพิ่มนักเรียน</span>
-                    </button>
                 </div>
             </div>
+        </div>
 
         <!-- Edit Student Modal -->
         <div id="editStudentModal" class="modal" style="display:none;">
@@ -1782,18 +2043,18 @@
                             </select>
                         </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
                         <div>
                             <label style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">เบอร์โทรผู้ปกครอง</label>
                             <input type="tel" id="edit-student-phone" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; background: var(--white); color: var(--text-main);">
                         </div>
-                        <div>
+                        <div style="display: none;">
                             <label style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">อีเมล</label>
                             <input type="email" id="edit-student-email" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; background: var(--white); color: var(--text-main);">
                         </div>
                         <div>
                             <label style="font-size: 0.82rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;">คะแนน</label>
-                            <input type="number" id="edit-student-score" min="0" style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; background: var(--white); color: var(--text-main);">
+                            <input type="number" id="edit-student-score" min="0" readonly style="width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; background: var(--secondary); color: var(--text-muted); cursor: not-allowed;" title="ไม่สามารถแก้ไขคะแนนได้โดยตรง">
                         </div>
                     </div>
                 </div>
@@ -2146,22 +2407,10 @@
                 </div>
 
                 <div style="display:grid; gap:16px;">
-                    <div id="assignment-summary-stats" style="display:grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px;">
+                    <div id="assignment-summary-stats" style="display:grid; grid-template-columns: 1fr; gap: 14px;">
                         <div class="attendance-legend-card" style="background: var(--secondary); border-color: rgba(226,232,240,0.85);">
                             <span class="attendance-legend-value" style="color: var(--text-main);">0</span>
                             <span class="attendance-legend-label">งานทั้งหมด</span>
-                        </div>
-                        <div class="attendance-legend-card" style="background: var(--success-bg); border-color: var(--success-border);">
-                            <span class="attendance-legend-value present" style="color: var(--success-text);">0</span>
-                            <span class="attendance-legend-label">เผยแพร่</span>
-                        </div>
-                        <div class="attendance-legend-card" style="background: var(--secondary); border-color: rgba(226,232,240,0.85);">
-                            <span class="attendance-legend-value" style="color: var(--text-main);">0</span>
-                            <span class="attendance-legend-label">ยังเป็นร่าง</span>
-                        </div>
-                        <div class="attendance-legend-card" style="background: var(--danger-bg); border-color: var(--danger-border);">
-                            <span class="attendance-legend-value absent" style="color: var(--danger-text);">0</span>
-                            <span class="attendance-legend-label">เกินกำหนด</span>
                         </div>
                     </div>
 
@@ -2180,8 +2429,6 @@
                                 <option value="all">ทุกสถานะ</option>
                                 <option value="published">เผยแพร่</option>
                                 <option value="draft">ร่าง</option>
-                                <option value="late">ส่งงานล่าช้า</option>
-                                <option value="closed">ปิดรับงาน</option>
                             </select>
                         </div>
                     </div>
@@ -2366,6 +2613,8 @@
         const DEFAULT_ATTENDANCE_HISTORY = [
             {
                 date: '10 มิ.ย. 2569',
+                class: 'm3',
+                room: '1',
                 total: 3,
                 present: 2,
                 late: 1,
@@ -2379,6 +2628,8 @@
             },
             {
                 date: '09 มิ.ย. 2569',
+                class: 'm3',
+                room: '1',
                 total: 3,
                 present: 3,
                 late: 0,
@@ -2392,6 +2643,8 @@
             },
             {
                 date: '08 มิ.ย. 2569',
+                class: 'm3',
+                room: '1',
                 total: 3,
                 present: 2,
                 late: 0,
@@ -2518,7 +2771,9 @@
 
             const thaiDate = formatToThaiDate(val);
             const history = getAttendanceHistory();
-            const entry = history.find(h => h.date === thaiDate);
+            const classVal = document.getElementById('class-select') ? document.getElementById('class-select').value : 'm3';
+            const roomVal = document.getElementById('room-select') ? document.getElementById('room-select').value : '1';
+            const entry = history.find(h => h.date === thaiDate && (h.class || 'm3') === classVal && (h.room || '1') === roomVal);
 
             const studentIds = ['stu-1', 'stu-2', 'stu-3'];
             studentIds.forEach(id => {
@@ -2606,8 +2861,13 @@
             const dateInput = document.querySelector('#panel-attendance #attendance-date-select');
             const targetDateStr = dateInput ? formatToThaiDate(dateInput.value) : getTodayThaiDate();
             
+            const classVal = document.getElementById('class-select') ? document.getElementById('class-select').value : 'm3';
+            const roomVal = document.getElementById('room-select') ? document.getElementById('room-select').value : '1';
+            
             const newEntry = {
                 date: targetDateStr,
+                class: classVal,
+                room: roomVal,
                 total: studentIds.length,
                 present: presentCount,
                 late: lateCount,
@@ -2616,8 +2876,8 @@
                 records: records
             };
             
-            // Avoid duplicate dates by replacing
-            const existingIndex = history.findIndex(h => h.date === targetDateStr);
+            // Avoid duplicate dates, classes, and rooms by replacing
+            const existingIndex = history.findIndex(h => h.date === targetDateStr && (h.class || 'm3') === classVal && (h.room || '1') === roomVal);
             if (existingIndex !== -1) {
                 history[existingIndex] = newEntry;
             } else {
@@ -2625,12 +2885,17 @@
             }
             
             localStorage.setItem('lms-attendance-history', JSON.stringify(history));
-            showToast('บันทึกสำเร็จ', `บันทึกรายงานข้อมูลการเข้าเรียนของวันที่ ${targetDateStr} เรียบร้อยแล้ว!`, 'success');
+            
+            const classLabel = classVal === 'm1' ? 'ม.1' : classVal === 'm2' ? 'ม.2' : classVal === 'm3' ? 'ม.3' : 'ม.3';
+            const roomLabel = roomVal ? `/${roomVal}` : '/1';
+            showToast('บันทึกสำเร็จ', `บันทึกรายงานข้อมูลการเข้าเรียนของห้อง ${classLabel}${roomLabel} วันที่ ${targetDateStr} เรียบร้อยแล้ว!`, 'success');
             
             // Broadcast an event to student dashboard to notify them about saved history
             bc.postMessage({
                 type: 'ATTENDANCE_SAVED',
                 date: targetDateStr,
+                class: classVal,
+                room: roomVal,
                 records: records
             });
             
@@ -2652,10 +2917,12 @@
             let html = '';
             history.forEach((h, index) => {
                 const rateColor = h.rate >= 90 ? 'var(--success)' : h.rate >= 70 ? 'var(--warning)' : 'var(--danger)';
+                const classLabel = h.class === 'm1' ? 'ม.1' : h.class === 'm2' ? 'ม.2' : h.class === 'm3' ? 'ม.3' : 'ม.3';
+                const roomLabel = h.room ? `/${h.room}` : '/1';
                 html += `
                     <div style="background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow-sm);">
                         <div>
-                            <h4 style="margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: var(--text-main);"><i class="fa-regular fa-file-lines" style="color: var(--primary);"></i> รายงานเข้าเรียนประจำวันที่ ${h.date}</h4>
+                            <h4 style="margin: 0 0 4px 0; font-size: 1rem; font-weight: 600; color: var(--text-main);"><i class="fa-regular fa-file-lines" style="color: var(--primary);"></i> รายงานเข้าเรียนประจำวันที่ ${h.date} (ห้อง ${classLabel}${roomLabel})</h4>
                             <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">
                                 นักเรียนทั้งหมด: ${h.total} คน | 
                                 มาเรียน: <span style="color:var(--success); font-weight:600;">${h.present}</span> | 
@@ -2710,7 +2977,7 @@
                                 <div class="student-avatar" style="${sid === 'stu-2' ? 'background: #e0f2fe; color: #0284c7;' : sid === 'stu-3' ? 'background: #ffedd5; color: #ea580c;' : ''}">${student.avatar}</div>
                                 <div>
                                     <div style="font-weight: 500;">${student.name}</div>
-                                    <div style="font-size: 0.8rem; color: var(--text-muted);">${student.email}</div>
+                                    ${student.email ? `<div style="font-size: 0.8rem; color: var(--text-muted);">${student.email}</div>` : ''}
                                 </div>
                             </div>
                         </td>
@@ -2719,9 +2986,11 @@
                 `;
             });
             
-            const modalTitle = `<i class="fa-regular fa-calendar-check" style="color: var(--primary);"></i> ประวัติเข้าเรียนวันที่ ${entry.date}`;
+            const classLabel = entry.class === 'm1' ? 'ม.1' : entry.class === 'm2' ? 'ม.2' : entry.class === 'm3' ? 'ม.3' : 'ม.3';
+            const roomLabel = entry.room ? `/${entry.room}` : '/1';
+            const modalTitle = `<i class="fa-regular fa-calendar-check" style="color: var(--primary);"></i> ประวัติเข้าเรียนวันที่ ${entry.date} (ห้อง ${classLabel}${roomLabel})`;
             const modalBodyHTML = `
-                <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:12px;">รายงานสรุปสิทธิ์ผู้เรียนประจำรายวิชา วิทยาการคำนวณ ม.3</p>
+                <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:12px;">รายงานสรุปสิทธิ์ผู้เรียนประจำรายวิชา วิทยาการคำนวณ ${classLabel}${roomLabel}</p>
                 <table class="data-table" style="border: 1px solid var(--border); border-radius: 8px;">
                     <thead>
                         <tr style="background: var(--secondary);">
@@ -3139,6 +3408,9 @@
             if(classVal === 'm2') classNameDisplay = "ม.2";
             if(classVal === 'm3') classNameDisplay = "ม.3";
             greetingP.innerText = `ภาพรวมการเรียนการสอน ห้อง ${classNameDisplay}/${roomVal} ประจำวันนี้`;
+
+            // Load saved attendance for selected date, class, and room
+            loadAttendanceForSelectedDate();
 
             const tbodies = document.querySelectorAll('.data-table tbody');
             tbodies.forEach(tb => {
@@ -3577,39 +3849,55 @@
             const classVal = document.getElementById('summary-class-select').value;
             const roomVal = document.getElementById('summary-room-select').value;
             
-            const isTargetClass = (classVal === 'm3' && roomVal === '1');
-            
             let present = 0, late = 0, absent = 0, unchecked = 0;
             let total = 0;
             
-            if (isTargetClass) {
-                const studentIds = ['stu-1', 'stu-2', 'stu-3'];
-                studentIds.forEach(id => {
-                    const tabTable = document.getElementById('attendance-today-content');
-                    const actionCell = tabTable ? tabTable.querySelector('#action-' + id) : null;
-                    if (actionCell) {
-                        const badge = actionCell.querySelector('.status-badge');
-                        if (badge) {
-                            if (badge.classList.contains('present')) present++;
-                            else if (badge.classList.contains('late')) late++;
-                            else if (badge.classList.contains('absent')) absent++;
-                        } else {
-                            unchecked++;
-                        }
-                    }
-                });
-                total = studentIds.length;
-            } else {
-                // Generate deterministic mock attendance based on class and room
-                const baseSize = classVal === 'm1' ? 30 : classVal === 'm2' ? 28 : 25;
-                const offset = parseInt(roomVal) * 2;
-                total = baseSize - offset;
-                
-                // Present: ~88%, Late: ~8%, Absent: remainder
-                present = Math.round(total * 0.88);
-                late = Math.round(total * 0.08);
-                absent = total - present - late;
+            const history = getAttendanceHistory();
+            const dateInput = document.querySelector('#panel-attendance #attendance-date-select');
+            const targetDateStr = dateInput ? formatToThaiDate(dateInput.value) : getTodayThaiDate();
+            
+            // Check if there is saved history for this class and room on the active date
+            const entry = history.find(h => h.date === targetDateStr && (h.class || 'm3') === classVal && (h.room || '1') === roomVal);
+            
+            if (entry) {
+                present = entry.present;
+                late = entry.late;
+                absent = entry.absent;
+                total = entry.total;
                 unchecked = 0;
+            } else {
+                // No saved history, fallback to reading DOM if classVal and roomVal are currently selected
+                const curClass = document.getElementById('class-select') ? document.getElementById('class-select').value : '';
+                const curRoom = document.getElementById('room-select') ? document.getElementById('room-select').value : '';
+                
+                if (classVal === curClass && roomVal === curRoom) {
+                    const studentIds = ['stu-1', 'stu-2', 'stu-3'];
+                    studentIds.forEach(id => {
+                        const tabTable = document.getElementById('attendance-today-content');
+                        const actionCell = tabTable ? tabTable.querySelector('#action-' + id) : null;
+                        if (actionCell) {
+                            const badge = actionCell.querySelector('.status-badge');
+                            if (badge) {
+                                if (badge.classList.contains('present')) present++;
+                                else if (badge.classList.contains('late')) late++;
+                                else if (badge.classList.contains('absent')) absent++;
+                            } else {
+                                unchecked++;
+                            }
+                        }
+                    });
+                    total = studentIds.length;
+                } else {
+                    // Fallback to deterministic mock statistics
+                    const baseSize = classVal === 'm1' ? 30 : classVal === 'm2' ? 28 : 25;
+                    const offset = parseInt(roomVal) * 2;
+                    total = baseSize - offset;
+                    
+                    present = Math.round(total * 0.88);
+                    late = Math.round(total * 0.08);
+                    absent = total - present - late;
+                    unchecked = 0;
+                }
             }
             
             const markedTotal = present + late + absent;
@@ -3625,8 +3913,6 @@
             // Update labels
             const pEl = document.getElementById('summary-att-present-count');
             if (pEl) pEl.innerText = `${present} คน`;
-            const lEl = document.getElementById('summary-att-late-count');
-            if (lEl) lEl.innerText = `${late} คน`;
             const aEl = document.getElementById('summary-att-absent-count');
             if (aEl) aEl.innerText = `${absent} คน`;
             
@@ -3635,17 +3921,11 @@
             if (bar) {
                 bar.innerHTML = `
                     <div class="attendance-bar-segment segment-present" style="width: ${presentPct}%; display: ${presentPct > 0 ? 'block' : 'none'};"></div>
-                    <div class="attendance-bar-segment segment-late" style="width: ${latePct}%; display: ${latePct > 0 ? 'block' : 'none'};"></div>
                     <div class="attendance-bar-segment segment-absent" style="width: ${absentPct}%; display: ${absentPct > 0 ? 'block' : 'none'};"></div>
-                    <div class="attendance-bar-segment" style="width: ${uncheckedPct}%; background-color: var(--border); display: ${uncheckedPct > 0 ? 'block' : 'none'};"></div>
                 `;
             }
 
             // Sync average attendance statistics grid
-            const history = getAttendanceHistory();
-            const todayInput = document.querySelector('#panel-attendance #attendance-date-select');
-            const targetDateStr = todayInput ? formatToThaiDate(todayInput.value) : getTodayThaiDate();
-            
             // Find if there's saved history for today/selected date to count into overall average
             let sumRate = 0;
             let dayCount = history.length;
@@ -4587,6 +4867,139 @@
         // ================= Assignments (มอบหมายงาน) - Simple CRUD (localStorage) =================
         const ASSIGN_KEY = 'lms-assignments';
 
+        let currentAttachments = [];
+        let currentAssignmentViewOnly = false;
+
+        function handleAssignmentFileDrop(e) {
+            e.preventDefault();
+            const zone = document.getElementById('assignment-upload-zone');
+            if (zone) zone.style.borderColor = 'var(--border)';
+            if (e.dataTransfer.files) {
+                processUploadedFiles(e.dataTransfer.files);
+            }
+        }
+
+        function handleAssignmentFileSelect(e) {
+            if (e.target.files) {
+                processUploadedFiles(e.target.files);
+            }
+        }
+
+        function processUploadedFiles(files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const attachmentId = 'att_' + Math.random().toString(36).slice(2, 9);
+                const item = {
+                    id: attachmentId,
+                    name: file.name,
+                    size: file.size,
+                    type: file.type || getFallbackMimeType(file.name)
+                };
+
+                // Read content as Base64 if file is small (< 200KB)
+                if (file.size < 200 * 1024) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        item.data = event.target.result;
+                        currentAttachments.push(item);
+                        renderModalAttachments();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    currentAttachments.push(item);
+                    renderModalAttachments();
+                }
+            }
+            // Reset input value so same file can be chosen again
+            const input = document.getElementById('assignment-file-input');
+            if (input) input.value = '';
+        }
+
+        function getFallbackMimeType(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (ext === 'pdf') return 'application/pdf';
+            if (ext === 'doc' || ext === 'docx') return 'application/msword';
+            if (ext === 'xls' || ext === 'xlsx') return 'application/vnd.ms-excel';
+            if (ext === 'ppt' || ext === 'pptx') return 'application/vnd.ms-powerpoint';
+            if (['png', 'jpg', 'jpeg', 'gif', 'svg'].includes(ext)) return 'image/' + (ext === 'jpg' ? 'jpeg' : ext);
+            return 'application/octet-stream';
+        }
+
+        function getFileIcon(type, filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (type.includes('pdf') || ext === 'pdf') return 'fa-solid fa-file-pdf" style="color:#ef4444;"';
+            if (type.includes('word') || ext === 'doc' || ext === 'docx') return 'fa-solid fa-file-word" style="color:#3b82f6;"';
+            if (type.includes('excel') || type.includes('spreadsheet') || ext === 'xls' || ext === 'xlsx') return 'fa-solid fa-file-excel" style="color:#22c55e;"';
+            if (type.includes('powerpoint') || type.includes('presentation') || ext === 'ppt' || ext === 'pptx') return 'fa-solid fa-file-powerpoint" style="color:#f97316;"';
+            if (type.includes('image') || ['png', 'jpg', 'jpeg', 'gif', 'svg'].includes(ext)) return 'fa-solid fa-file-image" style="color:#06b6d4;"';
+            return 'fa-solid fa-file" style="color:#64748b;"';
+        }
+
+        function formatBytes(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        function renderModalAttachments() {
+            const container = document.getElementById('assignment-files-list');
+            if (!container) return;
+            let html = '';
+            currentAttachments.forEach((file) => {
+                const icon = getFileIcon(file.type, file.name);
+                const deleteBtn = currentAssignmentViewOnly ? '' : `
+                    <button type="button" onclick="removeAttachment('${file.id}')" style="background: none; border: none; color: var(--danger-text); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.7" onmouseout="this.style.opacity=1">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                `;
+                html += `
+                    <div style="display: flex; align-items: center; justify-content: space-between; background: var(--secondary); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); font-size: 0.85rem;">
+                        <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                            <i class="${icon}"></i>
+                            <span style="color: var(--text-main); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-right: 6px;" title="${file.name}">${file.name}</span>
+                            <span style="color: var(--text-muted); font-size: 0.75rem; flex-shrink: 0;">(${formatBytes(file.size)})</span>
+                        </div>
+                        ${deleteBtn}
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function removeAttachment(id) {
+            currentAttachments = currentAttachments.filter(f => f.id !== id);
+            renderModalAttachments();
+        }
+
+        function downloadAttachmentFile(assignmentId, attachmentId) {
+            const assignments = getAssignments();
+            const assignment = assignments.find(a => a.id === assignmentId);
+            if (!assignment || !assignment.attachments) return;
+            const file = assignment.attachments.find(f => f.id === attachmentId);
+            if (!file) return;
+
+            let downloadUrl = file.data;
+            if (!downloadUrl) {
+                // Generate a mock text file if data is not stored
+                const content = `เอกสารประกอบการเรียน\n\nหัวข้อ: ${assignment.title}\nไฟล์แนบ: ${file.name}\nขนาด: ${formatBytes(file.size)}\n\nคำชี้แจง: นี่คือไฟล์เอกสารแนบต้นแบบสำหรับชั้นเรียนวิทยาการคำนวณ`;
+                const blob = new Blob([content], { type: file.type || 'text/plain' });
+                downloadUrl = URL.createObjectURL(blob);
+            }
+
+            const a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = file.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            if (!file.data) {
+                URL.revokeObjectURL(downloadUrl);
+            }
+        }
+
         function getAssignments() {
             return JSON.parse(localStorage.getItem(ASSIGN_KEY) || '[]');
         }
@@ -4624,26 +5037,11 @@
             const statsContainer = document.getElementById('assignment-summary-stats');
             if (statsContainer) {
                 const total = arr.length;
-                const draftCount = arr.filter(item => !item.visible).length;
-                const publishedCount = arr.filter(item => item.visible).length;
-                const lateCount = arr.filter(item => item.visible && item.openForSubmissions !== false && item.dueAt && new Date(item.dueAt) < new Date()).length;
 
                 statsContainer.innerHTML = `
                     <div class="attendance-legend-card" style="background: var(--secondary); border-color: rgba(226,232,240,0.85);">
                         <span class="attendance-legend-value" style="color: var(--text-main);">${total}</span>
                         <span class="attendance-legend-label">งานทั้งหมด</span>
-                    </div>
-                    <div class="attendance-legend-card" style="background: var(--success-bg); border-color: var(--success-border);">
-                        <span class="attendance-legend-value present" style="color: var(--success-text);">${publishedCount}</span>
-                        <span class="attendance-legend-label">เผยแพร่</span>
-                    </div>
-                    <div class="attendance-legend-card" style="background: var(--secondary); border-color: rgba(226,232,240,0.85);">
-                        <span class="attendance-legend-value" style="color: var(--text-main);">${draftCount}</span>
-                        <span class="attendance-legend-label">ยังเป็นร่าง</span>
-                    </div>
-                    <div class="attendance-legend-card" style="background: var(--danger-bg); border-color: var(--danger-border);">
-                        <span class="attendance-legend-value absent" style="color: var(--danger-text);">${lateCount}</span>
-                        <span class="attendance-legend-label">ส่งงานล่าช้า</span>
                     </div>
                 `;
             }
@@ -4657,8 +5055,6 @@
 
                 let statusKey = 'published';
                 if (!item.visible) statusKey = 'draft';
-                else if (item.openForSubmissions === false) statusKey = 'closed';
-                else if (item.dueAt && new Date(item.dueAt) < new Date()) statusKey = 'late';
 
                 if (filterStatus !== 'all' && statusKey !== filterStatus) return false;
                 return true;
@@ -4672,30 +5068,79 @@
             let html = '';
             filtered.slice().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).forEach(item => {
                 const dueLabel = item.dueAt ? formatDateShort(item.dueAt) : 'ไม่กำหนด';
-                const statusKey = item.status === 'overdue' ? 'late' : item.status || (!item.visible ? 'draft' : (item.openForSubmissions === false ? 'closed' : (item.dueAt && new Date(item.dueAt) < new Date() ? 'late' : 'publish')));
-                const status = statusKey === 'draft' ? 'ร่าง' : statusKey === 'publish' ? 'เผยแพร่' : statusKey === 'late' ? 'ส่งงานล่าช้า' : statusKey === 'closed' ? 'ปิดรับงาน' : 'เผยแพร่';
+                const statusKey = !item.visible ? 'draft' : 'publish';
+                const status = statusKey === 'draft' ? 'ร่าง' : 'เผยแพร่';
                 const submissions = item.submissions ? item.submissions.length : 0;
-                const statusBg = statusKey === 'publish' ? 'var(--primary-light)' : statusKey === 'late' ? 'var(--success-bg)' : statusKey === 'closed' ? 'var(--warning-bg)' : statusKey === 'draft' ? 'var(--secondary)' : 'var(--danger-bg)';
-                const statusColor = statusKey === 'publish' ? 'var(--primary)' : statusKey === 'late' ? 'var(--success-text)' : statusKey === 'closed' ? 'var(--warning-text)' : statusKey === 'draft' ? 'var(--text-muted)' : 'var(--danger-text)';
+                const statusBg = statusKey === 'publish' ? 'var(--primary-light)' : 'var(--secondary)';
+                const statusColor = statusKey === 'publish' ? 'var(--primary)' : 'var(--text-muted)';
 
-                html += `
-                    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:14px; background: var(--white); border:1px solid rgba(148,163,184,0.18); padding:18px; border-radius:20px; box-shadow: var(--shadow-sm);">
-                        <div style="flex:1; min-width:0;">
-                            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
-                                <div style="font-size:1rem; font-weight:700; color: var(--text-main);">${item.title}</div>
-                                <span style="font-size:0.82rem; color: var(--text-muted);">${formatClassLabel(item.class)}</span>
-                            </div>
-                            <div style="font-size:0.92rem; color: var(--text-muted); line-height:1.6; min-height:52px;">${item.description || '<span style=\"color:var(--border);\">- ไม่มีคำอธิบายเพิ่มเติม -</span>'}</div>
-                            <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; color: var(--text-muted); font-size:0.82rem; align-items:center;">
-                                <span>กำหนดส่ง: <strong style="color: var(--text-main);">${dueLabel}</strong></span>
-                                <span>คะแนนเต็ม: <strong>${item.maxPoints || 0}</strong></span>
-                                <span>ส่งแล้ว: <strong>${submissions}</strong></span>
-                                <span style="padding:6px 10px; border-radius:999px; background:${statusBg}; color:${statusColor}; font-weight:700;">${status}</span>
+                let attachmentsHtml = '';
+                if (item.attachments && item.attachments.length > 0) {
+                    attachmentsHtml += `
+                        <div class="assignment-attachments-container">
+                            <span class="assignment-attachments-label">เอกสารประกอบ:</span>
+                            <div class="assignment-attachments-list">
+                    `;
+                    item.attachments.forEach(file => {
+                        const icon = getFileIcon(file.type, file.name);
+                        attachmentsHtml += `
+                            <a href="javascript:void(0)" onclick="downloadAttachmentFile('${item.id}', '${file.id}')" class="attachment-file-card" title="${file.name}">
+                                <i class="${icon}"></i>
+                                <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">${file.name}</span>
+                                <span class="attachment-file-size">(${formatBytes(file.size)})</span>
+                            </a>
+                        `;
+                    });
+                    attachmentsHtml += `
                             </div>
                         </div>
-                        <div style="display:flex; flex-direction:column; gap:10px; flex-shrink:0; align-items:flex-end;">
-                            <button class="btn-action" onclick="openAssignmentModal('${item.id}')">แก้ไข</button>
-                            <button class="btn-action" style="background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border);" onclick="deleteAssignment('${item.id}')">ลบ</button>
+                    `;
+                }
+
+                html += `
+                    <div class="assignment-card status-${statusKey}">
+                        <!-- Header: Title, Class & Action Buttons -->
+                        <div class="assignment-card-header">
+                            <div class="assignment-card-title-group">
+                                <h4 class="assignment-card-title">${item.title}</h4>
+                                <span class="assignment-card-class-badge">${formatClassLabel(item.class)}</span>
+                            </div>
+                            <div class="assignment-card-actions">
+                                <button class="btn-action-edit" onclick="openAssignmentModal('${item.id}')" title="แก้ไข">
+                                    <i class="fa-regular fa-pen-to-square"></i> <span class="btn-text">แก้ไข</span>
+                                </button>
+                                <button class="btn-action-delete" onclick="deleteAssignment('${item.id}')" title="ลบ">
+                                    <i class="fa-regular fa-trash-can"></i> <span class="btn-text">ลบ</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="assignment-card-description">
+                            ${item.description || '<span style="color:#cbd5e1; font-style:italic;">- ไม่มีคำอธิบายเพิ่มเติม -</span>'}
+                        </div>
+
+                        <!-- Attachments -->
+                        ${attachmentsHtml}
+
+                        <!-- Divider line -->
+                        <hr class="assignment-card-divider" />
+
+                        <!-- Footer Stats & Status Info -->
+                        <div class="assignment-card-footer">
+                            <div class="assignment-card-stats">
+                                <span class="assignment-stat-item">
+                                    <i class="fa-regular fa-calendar" style="color:var(--text-muted); font-size:0.9rem;"></i>
+                                    กำหนดส่ง: <strong style="color:var(--text-main);">${dueLabel}</strong>
+                                </span>
+                                <span class="assignment-stat-item">
+                                    <i class="fa-solid fa-users" style="color:var(--text-muted); font-size:0.85rem;"></i>
+                                    ส่งการบ้านแล้ว: <strong style="color:var(--text-main);">${submissions} คน</strong>
+                                </span>
+                            </div>
+                            <span class="assignment-status-badge ${statusKey}">
+                                ${status}
+                            </span>
                         </div>
                     </div>
                 `;
@@ -4724,6 +5169,20 @@
             document.getElementById('assignment-maxpoints').disabled = false;
             document.getElementById('assignment-status').disabled = false;
 
+            currentAssignmentViewOnly = !!viewOnly;
+            currentAttachments = [];
+
+            const uploadZone = document.getElementById('assignment-upload-zone');
+            if (uploadZone) {
+                if (viewOnly) {
+                    uploadZone.style.pointerEvents = 'none';
+                    uploadZone.style.opacity = '0.6';
+                } else {
+                    uploadZone.style.pointerEvents = 'auto';
+                    uploadZone.style.opacity = '1';
+                }
+            }
+
             if (id) {
                 const arr = getAssignments();
                 const item = arr.find(a=>a.id===id);
@@ -4734,7 +5193,7 @@
                     document.getElementById('assignment-desc').value = item.description || '';
                     document.getElementById('assignment-class').value = item.class || 'm3';
                     document.getElementById('assignment-maxpoints').value = item.maxPoints || 10;
-                    const normalizedStatus = item.status === 'overdue' ? 'late' : item.status || (item.visible === false ? 'draft' : (item.openForSubmissions === false ? 'closed' : 'publish'));
+                    const normalizedStatus = item.visible === false ? 'draft' : 'publish';
                     document.getElementById('assignment-status').value = normalizedStatus;
                     document.getElementById('assignment-publish-group').style.display = 'none';
                     document.getElementById('assignment-status-group').style.display = 'block';
@@ -4746,9 +5205,12 @@
                     document.getElementById('assignment-class').disabled = !!viewOnly;
                     document.getElementById('assignment-maxpoints').disabled = !!viewOnly;
                     document.getElementById('assignment-status').disabled = !!viewOnly;
+
+                    currentAttachments = [...(item.attachments || [])];
                 }
             }
 
+            renderModalAttachments();
             modal.style.display = 'flex';
         }
 
@@ -4800,11 +5262,12 @@
                     arr[idx].status = status;
                     arr[idx].visible = visible;
                     arr[idx].openForSubmissions = openForSubmissions;
+                    arr[idx].attachments = currentAttachments;
                     arr[idx].updatedAt = new Date().toISOString();
                 }
             } else {
                 const id = 'as_' + Math.random().toString(36).slice(2,9);
-                arr.push({ id, title, description: desc, class: cls, dueAt: due, maxPoints, status, visible, openForSubmissions, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), submissions: [] });
+                arr.push({ id, title, description: desc, class: cls, dueAt: due, maxPoints, status, visible, openForSubmissions, attachments: currentAttachments, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(), submissions: [] });
             }
 
             saveAssignments(arr);
@@ -4898,6 +5361,98 @@
             return cls || '';
         }
 
+        // --- Notification System ---
+        let notifications = [
+            { id: 1, type: 'hw', title: 'ภัทรพล เรียนดี ส่งใบงานที่ 1 แล้ว', desc: 'การบ้าน: ใบงานที่ 1 (รอตรวจประเมิน)', time: '10 นาทีที่แล้ว', unread: true, link: 'grading' },
+            { id: 2, type: 'attendance', title: 'แจ้งเตือนการขาดเรียน', desc: 'มีนักเรียนขาดเรียน 2 คน (ม.3/1)', time: '1 ชั่วโมงที่แล้ว', unread: true, link: 'attendance' },
+            { id: 3, type: 'system', title: 'ระบบบันทึกคะแนนอัตโนมัติสำเร็จ', desc: 'ดึงข้อมูลคะแนนเข้าฐานข้อมูลเรียบร้อยแล้ว', time: '2 ชั่วโมงที่แล้ว', unread: true, link: 'summary' },
+            { id: 4, type: 'game', title: 'อัปเดตสถิติมินิเกม', desc: 'นักเรียนเล่นเกม "ล่าบั๊ก" ผ่านเกณฑ์แล้ว 80%', time: 'เมื่อวานนี้', unread: false, link: 'gamestats' }
+        ];
+
+        function toggleNotify() {
+            const dropdown = document.getElementById('notify-dropdown');
+            dropdown.classList.toggle('open');
+            if (dropdown.classList.contains('open')) {
+                renderNotifications();
+            }
+        }
+
+        function renderNotifications() {
+            const dropdownList = document.getElementById('notify-list');
+            const fullList = document.getElementById('full-notify-list');
+            const badge = document.getElementById('notify-badge');
+            
+            const unreadCount = notifications.filter(n => n.unread).length;
+            
+            if (unreadCount > 0) {
+                if(badge) { badge.style.display = 'flex'; badge.innerText = unreadCount; }
+            } else {
+                if(badge) badge.style.display = 'none';
+            }
+
+            if (notifications.length === 0) {
+                const emptyHTML = `
+                    <div class="notify-empty">
+                        <i class="fa-regular fa-bell-slash" style="font-size:2rem; margin-bottom:10px; opacity:0.5;"></i>
+                        <p style="margin:0;">ไม่มีการแจ้งเตือนใหม่</p>
+                    </div>`;
+                if (dropdownList) dropdownList.innerHTML = emptyHTML;
+                if (fullList) fullList.innerHTML = emptyHTML;
+                return;
+            }
+
+            const itemsHTML = notifications.map(n => {
+                let iconClass = '', iconHtml = '';
+                if (n.type === 'hw') { iconClass = 'blue'; iconHtml = '<i class="fa-solid fa-file-arrow-up"></i>'; }
+                else if (n.type === 'attendance') { iconClass = 'orange'; iconHtml = '<i class="fa-solid fa-triangle-exclamation"></i>'; }
+                else if (n.type === 'system') { iconClass = 'green'; iconHtml = '<i class="fa-solid fa-bullhorn"></i>'; }
+                else if (n.type === 'game') { iconClass = 'purple'; iconHtml = '<i class="fa-solid fa-gamepad"></i>'; }
+                else { iconClass = 'blue'; iconHtml = '<i class="fa-solid fa-bell"></i>'; }
+
+                return `
+                    <div class="notify-item ${n.unread ? 'unread' : ''}" onclick="clickNotify(${n.id}, '${n.link}')" style="border-radius: 12px; margin-bottom: 4px; border: 1px solid transparent; ${n.unread ? 'border-color: rgba(14, 165, 233, 0.2);' : ''}">
+                        <div class="notify-icon ${iconClass}">${iconHtml}</div>
+                        <div class="notify-body">
+                            <p>${n.title}</p>
+                            <span>${n.desc}</span>
+                            <div style="font-size:0.7rem; color:var(--text-muted); margin-top:4px;">${n.time}</div>
+                        </div>
+                        ${n.unread ? '<div class="notify-dot"></div>' : ''}
+                    </div>
+                `;
+            }).join('');
+
+            if (dropdownList) dropdownList.innerHTML = itemsHTML;
+            if (fullList) fullList.innerHTML = itemsHTML;
+        }
+
+        function markAllRead() {
+            notifications.forEach(n => n.unread = false);
+            renderNotifications();
+        }
+
+        function clickNotify(id, linkId) {
+            const notif = notifications.find(n => n.id === id);
+            if (notif) notif.unread = false;
+            
+            toggleNotify(); // close dropdown
+            if (linkId) switchTab(linkId);
+            renderNotifications(); // update badge
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const wrapper = document.getElementById('notify-wrapper');
+            const dropdown = document.getElementById('notify-dropdown');
+            if (wrapper && !wrapper.contains(event.target) && dropdown) {
+                dropdown.classList.remove('open');
+            }
+        });
+
+        // Initial render on load
+        window.addEventListener('load', () => {
+            renderNotifications();
+        });
     </script>
     <!-- Assignment Modal -->
     <div id="assignmentModal" class="modal">
@@ -4923,9 +5478,21 @@
                         <option value="m3">มัธยมศึกษาปีที่ 3</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="display: none;">
                     <label for="assignment-maxpoints">คะแนนเต็ม</label>
                     <input id="assignment-maxpoints" type="number" class="form-input" min="0" value="10" />
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 8px; color: var(--text-main);">เอกสารประกอบ</label>
+                    <div id="assignment-upload-zone" style="border: 2px dashed var(--border); padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; transition: all 0.2s;" ondragover="event.preventDefault(); this.style.borderColor='var(--primary)';" ondragleave="this.style.borderColor='var(--border)';" ondrop="handleAssignmentFileDrop(event)" onclick="document.getElementById('assignment-file-input').click()">
+                        <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2rem; color: var(--text-muted); margin-bottom: 8px;"></i>
+                        <p style="margin: 0; font-size: 0.9rem; color: var(--text-main);">ลากไฟล์มาวางที่นี่ หรือ <span style="color: var(--primary); font-weight: 600;">คลิกเพื่อเลือกไฟล์</span></p>
+                        <p style="margin: 4px 0 0 0; font-size: 0.75rem; color: var(--text-muted);">รองรับไฟล์ PDF, Word, PowerPoint, Excel, รูปภาพ</p>
+                        <input type="file" id="assignment-file-input" style="display: none;" multiple onchange="handleAssignmentFileSelect(event)" />
+                    </div>
+                    <div id="assignment-files-list" style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+                        <!-- รายการไฟล์แนบจะแสดงตรงนี้ -->
+                    </div>
                 </div>
                 <div class="form-group" id="assignment-publish-group">
                     <label style="display:flex; align-items:center; gap:10px; cursor:pointer;">
@@ -4939,8 +5506,6 @@
                     <select id="assignment-status" class="form-input">
                         <option value="publish">เผยแพร่</option>
                         <option value="draft">ร่าง</option>
-                        <option value="late">ส่งงานล่าช้า</option>
-                        <option value="closed">ปิดรับงาน</option>
                     </select>
                     <div style="font-size:0.85rem; color: var(--text-muted); margin-top:8px;">ใช้เมื่อแก้ไขมอบหมายงาน</div>
                 </div>

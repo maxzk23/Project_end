@@ -131,10 +131,10 @@
         /* Instruction guide slider */
         .guide-container {
             background-color: #1e293b;
-            padding: 8px 24px;
+            padding: 8px 16px;
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             overflow-x: auto;
             border-bottom: 1px solid var(--border);
             white-space: nowrap;
@@ -168,18 +168,19 @@
             color: var(--text-light);
         }
 
-        /* Split-screen Sandbox layout */
         .sandbox-body {
             flex: 1;
             display: flex;
             background-color: #090d16;
+            overflow: hidden; /* Prevent body scroll during resize */
         }
 
         .panel {
-            flex: 1;
+            flex: 1; /* Default to 50% */
             display: flex;
             flex-direction: column;
             position: relative;
+            min-width: 300px; /* Prevent shrinking too much */
         }
 
         .panel-header {
@@ -216,14 +217,15 @@
         }
 
         .panel-divider {
-            width: 4px;
+            width: 6px;
             background-color: var(--border);
             position: relative;
             cursor: col-resize;
             transition: background-color 0.2s;
+            z-index: 10;
         }
 
-        .panel-divider:hover {
+        .panel-divider:hover, .panel-divider.dragging {
             background-color: var(--primary);
         }
 
@@ -232,6 +234,11 @@
             height: 100%;
             border: none;
             background-color: #f1f5f9;
+        }
+        
+        /* Utility class applied to body during drag to prevent iframe stealing mouse events */
+        body.is-dragging iframe {
+            pointer-events: none;
         }
     </style>
 </head>
@@ -277,7 +284,8 @@
     <div class="sandbox-body">
         
         <!-- Left Frame: Teacher Dashboard -->
-        <div class="panel">
+        <!-- Left Frame: Teacher Dashboard -->
+        <div class="panel" id="left-panel">
             <div class="panel-header">
                 <span><i class="fa-solid fa-chalkboard-user badge-teacher"></i> คุณครู (TEACHER VIEW)</span>
                 <a href="teacher_dashboard (1).html" target="_blank" class="btn-popout"><i class="fa-solid fa-up-right-from-square"></i> เปิดหน้าต่างใหม่</a>
@@ -286,7 +294,8 @@
         </div>
 
         <!-- Divider line -->
-        <div class="panel-divider"></div>
+        <!-- Divider line -->
+        <div class="panel-divider" id="drag-divider"></div>
 
         <!-- Right Frame: Student Dashboard -->
         <div class="panel">
@@ -320,6 +329,40 @@
                 btn.style.borderColor = 'rgba(239, 68, 68, 0.3)';
             }, 1500);
         }
+
+        // --- Split Screen Draggable Resizer ---
+        const resizer = document.getElementById('drag-divider');
+        const leftPanel = document.getElementById('left-panel');
+        let isDragging = false;
+
+        resizer.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            resizer.classList.add('dragging');
+            document.body.classList.add('is-dragging'); // prevent iframe pointer events
+        });
+
+        document.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            
+            // Calculate new width percentage based on mouse X position
+            const containerWidth = document.querySelector('.sandbox-body').offsetWidth;
+            let newWidth = (e.clientX / containerWidth) * 100;
+            
+            // Restrict bounds between 20% and 80%
+            if (newWidth < 20) newWidth = 20;
+            if (newWidth > 80) newWidth = 80;
+            
+            // Apply width to left panel, right panel flexes automatically
+            leftPanel.style.flex = `0 0 ${newWidth}%`;
+        });
+
+        document.addEventListener('mouseup', function(e) {
+            if (isDragging) {
+                isDragging = false;
+                resizer.classList.remove('dragging');
+                document.body.classList.remove('is-dragging');
+            }
+        });
     </script>
 </body>
 </html>

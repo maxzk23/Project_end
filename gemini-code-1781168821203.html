@@ -344,7 +344,94 @@
       </div>
     </section>
 
-    <!-- Slide 9: Live Demo -->
+    <!-- Slide 9: Database Design -->
+    <section class="slide">
+      <h2>Database Schema (Core Entities)</h2>
+      <p style="margin-bottom: 30px; font-size: 1.2rem; color: var(--text-light);">ออกแบบโครงสร้างฐานข้อมูลเชิงสัมพันธ์แบบ Normalize ง่ายต่อการขยายสเกล</p>
+      
+      <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; width: 100%; max-width: 1100px;">
+        
+        <!-- User Table -->
+        <div style="background: var(--white); border: 1px solid #cbd5e1; border-radius: 12px; width: 320px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: left;">
+          <div style="background: var(--primary-dark); color: white; padding: 12px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between;"><i class="fa-solid fa-users"></i> <span>Users</span></div>
+          <div style="padding: 0;">
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-key" style="color:#eab308; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">id</span><span style="color:#64748b; font-size:0.85rem;">UUID</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">role</span><span style="color:#64748b; font-size:0.85rem;">ENUM</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">name</span><span style="color:#64748b; font-size:0.85rem;">VARCHAR</span></div>
+            <div style="padding: 10px 20px; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">class_room</span><span style="color:#64748b; font-size:0.85rem;">VARCHAR</span></div>
+          </div>
+        </div>
+
+        <!-- Assignments Table -->
+        <div style="background: var(--white); border: 1px solid #cbd5e1; border-radius: 12px; width: 320px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: left;">
+          <div style="background: #0f172a; color: white; padding: 12px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between;"><i class="fa-solid fa-file-signature"></i> <span>Assignments</span></div>
+          <div style="padding: 0;">
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-key" style="color:#eab308; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">id</span><span style="color:#64748b; font-size:0.85rem;">UUID</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">title</span><span style="color:#64748b; font-size:0.85rem;">VARCHAR</span></div>
+            <div style="padding: 10px 20px; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">due_date</span><span style="color:#64748b; font-size:0.85rem;">DATETIME</span></div>
+          </div>
+        </div>
+
+        <!-- Submissions Table -->
+        <div style="background: var(--white); border: 1px solid #cbd5e1; border-radius: 12px; width: 320px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: left;">
+          <div style="background: #10b981; color: white; padding: 12px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between;"><i class="fa-solid fa-file-arrow-up"></i> <span>Submissions</span></div>
+          <div style="padding: 0;">
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-key" style="color:#eab308; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">id</span><span style="color:#64748b; font-size:0.85rem;">UUID</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-link" style="color:#0ea5e9; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">user_id</span><span style="color:#64748b; font-size:0.85rem;">FK</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-link" style="color:#0ea5e9; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">assign_id</span><span style="color:#64748b; font-size:0.85rem;">FK</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">status</span><span style="color:#64748b; font-size:0.85rem;">ENUM</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">score</span><span style="color:#64748b; font-size:0.85rem;">DECIMAL</span></div>
+            <div style="padding: 10px 20px; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">feedback</span><span style="color:#64748b; font-size:0.85rem;">TEXT</span></div>
+          </div>
+        </div>
+
+        <!-- Attendance Table -->
+        <div style="background: var(--white); border: 1px solid #cbd5e1; border-radius: 12px; width: 320px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: left;">
+          <div style="background: #f59e0b; color: white; padding: 12px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between;"><i class="fa-solid fa-calendar-check"></i> <span>Attendance</span></div>
+          <div style="padding: 0;">
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-key" style="color:#eab308; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">id</span><span style="color:#64748b; font-size:0.85rem;">UUID</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-link" style="color:#0ea5e9; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">user_id</span><span style="color:#64748b; font-size:0.85rem;">FK</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">date</span><span style="color:#64748b; font-size:0.85rem;">DATE</span></div>
+            <div style="padding: 10px 20px; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">status</span><span style="color:#64748b; font-size:0.85rem;">ENUM</span></div>
+          </div>
+        </div>
+
+        <!-- Game Scores Table -->
+        <div style="background: var(--white); border: 1px solid #cbd5e1; border-radius: 12px; width: 320px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: left;">
+          <div style="background: #ec4899; color: white; padding: 12px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between;"><i class="fa-solid fa-gamepad"></i> <span>Game Scores</span></div>
+          <div style="padding: 0;">
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-key" style="color:#eab308; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">id</span><span style="color:#64748b; font-size:0.85rem;">UUID</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-link" style="color:#0ea5e9; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">user_id</span><span style="color:#64748b; font-size:0.85rem;">FK</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">game_type</span><span style="color:#64748b; font-size:0.85rem;">VARCHAR</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">points</span><span style="color:#64748b; font-size:0.85rem;">INT</span></div>
+            <div style="padding: 10px 20px; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">date_earned</span><span style="color:#64748b; font-size:0.85rem;">DATETIME</span></div>
+          </div>
+        </div>
+
+        <!-- Leaderboard Table -->
+        <div style="background: var(--white); border: 1px solid #cbd5e1; border-radius: 12px; width: 320px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: left;">
+          <div style="background: #8b5cf6; color: white; padding: 12px 20px; font-weight: 600; font-size: 1.1rem; display: flex; justify-content: space-between;"><i class="fa-solid fa-crown"></i> <span>Leaderboard</span></div>
+          <div style="padding: 0;">
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-key" style="color:#eab308; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">id</span><span style="color:#64748b; font-size:0.85rem;">UUID</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><i class="fa-solid fa-link" style="color:#0ea5e9; margin-right:10px; margin-top:3px;"></i><span style="flex:1; font-family:monospace; font-weight:bold;">user_id</span><span style="color:#64748b; font-size:0.85rem;">FK</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">total_points</span><span style="color:#64748b; font-size:0.85rem;">INT</span></div>
+            <div style="padding: 10px 20px; border-bottom: 1px solid #e2e8f0; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">rank</span><span style="color:#64748b; font-size:0.85rem;">INT</span></div>
+            <div style="padding: 10px 20px; display: flex;"><span style="flex:1; font-family:monospace; font-weight:bold; padding-left:26px;">updated_at</span><span style="color:#64748b; font-size:0.85rem;">DATETIME</span></div>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Key Guide -->
+      <div style="margin-top: 30px; display: flex; gap: 20px; flex-wrap: wrap; font-size: 0.9rem; color: var(--text-light); background: var(--white); padding: 15px 20px; border-radius: 30px; border: 1px solid #e2e8f0;">
+        <span><i class="fa-solid fa-key" style="color:#eab308;"></i> PK (Primary Key)</span>
+        <span><i class="fa-solid fa-link" style="color:#0ea5e9;"></i> FK (Foreign Key)</span>
+        <span><b>1:N</b> (One-to-Many Relationships)</span>
+        <span style="flex: 0 0 100%; border-top: 1px solid #e2e8f0; margin-top: 10px; padding-top: 10px; font-size: 0.85rem; color: #64748b;"><i class="fa-solid fa-circle-info"></i> Game Scores → User (1:N) • Leaderboard → User (1:1) • Submissions: score/feedback เก็บจากการประเมิน</span>
+      </div>
+    </section>
+
+    <!-- Slide 10: Live Demo -->
     <section class="slide">
       <div style="text-align: center;">
         <i class="fa-solid fa-laptop-code" style="font-size: 5rem; color: var(--primary); margin-bottom: 20px;"></i>
@@ -356,7 +443,7 @@
       </div>
     </section>
 
-    <!-- Slide 10: Q&A -->
+    <!-- Slide 11: Q&A -->
     <section class="slide">
       <div style="text-align: center;">
         <h1 style="font-size: 6rem; color: var(--primary);">Q & A</h1>
@@ -369,7 +456,7 @@
   <!-- Navigation Controls -->
   <div class="controls">
     <button class="btn" id="prevBtn" title="Previous Slide"><i class="fa-solid fa-chevron-left"></i></button>
-    <div class="slide-counter"><span id="currentSlide">1</span> / 10</div>
+    <div class="slide-counter"><span id="currentSlide">1</span> / 11</div>
     <button class="btn" id="nextBtn" title="Next Slide"><i class="fa-solid fa-chevron-right"></i></button>
   </div>
 
@@ -414,6 +501,22 @@
       } else if (e.key === 'ArrowLeft') {
         prevSlide();
       }
+    });
+  </script>
+
+  <!-- Mermaid JS for ER Diagram -->
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    mermaid.initialize({ 
+      startOnLoad: true, 
+      theme: 'base', 
+      themeVariables: { 
+        primaryColor: '#e0f2fe', 
+        primaryTextColor: '#0f172a', 
+        primaryBorderColor: '#0ea5e9', 
+        lineColor: '#0ea5e9',
+        fontFamily: 'Prompt, sans-serif'
+      } 
     });
   </script>
 
