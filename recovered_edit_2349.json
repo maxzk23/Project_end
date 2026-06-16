@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Increase maximum height and visual presentation of the retained student list container.",
+  "EndLine": 1806,
+  "Instruction": "Change max-height and style attributes of retained-list-container.",
+  "ReplacementContent": "                            <div id=\"retained-list-container\" style=\"max-height: 380px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 4px; font-size: 0.85rem; border: 1px solid var(--border); border-radius: 6px; padding: 10px; background: var(--bg-main);\">\n                                <!-- Dynamic list of students with checkboxes -->\n                            </div>",
+  "StartLine": 1803,
+  "TargetContent": "                            <div id=\"retained-list-container\" style=\"max-height: 120px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding-right: 4px; font-size: 0.85rem; border: 1px solid var(--border); border-radius: 6px; padding: 8px;\">\n                                <!-- Dynamic list of students with checkboxes -->\n                            </div>",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Updating retained list HTML container",
+  "toolSummary": "Edit container style in teacher dashboard"
+}

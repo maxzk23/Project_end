@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Add nav-divider CSS style to sidebar style section",
+  "EndLine": 152,
+  "Instruction": "Insert nav-divider style after .nav-link i style",
+  "ReplacementContent": "        .nav-link i { font-size: 1.2rem; width: 24px; text-align: center; }\n\n        .nav-divider {\n            height: 1px;\n            background-color: var(--border);\n            margin: 8px 16px;\n            opacity: 0.6;\n        }",
+  "StartLine": 150,
+  "TargetContent": "        .nav-link i { font-size: 1.2rem; width: 24px; text-align: center; }",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Adding nav-divider style to CSS",
+  "toolSummary": "Nav-divider CSS edit"
+}

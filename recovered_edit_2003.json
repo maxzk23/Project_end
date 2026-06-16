@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Remove history-period-filter element from history tab.",
+  "EndLine": 2455,
+  "Instruction": "Remove the div container containing history-period-filter.",
+  "ReplacementContent": "                            <option value=\"all\" selected>ทั้งหมดทุกห้อง</option>\n                            <option value=\"1\">/1</option>\n                            <option value=\"2\">/2</option>\n                            <option value=\"3\">/3</option>\n                        </select>\n                    </div>\n                </div>",
+  "StartLine": 2430,
+  "TargetContent": "                            <option value=\"all\" selected>ทั้งหมดทุกห้อง</option>\n                            <option value=\"1\">/1</option>\n                            <option value=\"2\">/2</option>\n                            <option value=\"3\">/3</option>\n                        </select>\n                    </div>\n                    <div style=\"display: flex; align-items: center; gap: 8px;\">\n                        <label style=\"font-size: 0.9rem; font-weight: 500; color: var(--text-main);\">ตอน/คาบเรียน:</label>\n                        <select id=\"history-period-filter\" style=\"padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); outline: none; cursor: pointer;\" onchange=\"renderAttendanceHistory()\">\n                            <option value=\"all\" selected>ทั้งหมดทุกคาบ</option>\n                            <option value=\"1\">คาบเรียนที่ 1 (เช้า)</option>\n                            <option value=\"2\">คาบเรียนที่ 2 (บ่าย)</option>\n                        </select>\n                    </div>\n                </div>",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Removing period filter in history view",
+  "toolSummary": "Replace file content"
+}

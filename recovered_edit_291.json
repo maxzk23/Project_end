@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Hide the assignment score (คะแนนเต็ม) input field in the assignment modal.",
+  "EndLine": 4930,
+  "Instruction": "Add style=\"display: none;\" to the form-group containing assignment-maxpoints input.",
+  "ReplacementContent": "                <div class=\"form-group\" style=\"display: none;\">\n                    <label for=\"assignment-maxpoints\">คะแนนเต็ม</label>\n                    <input id=\"assignment-maxpoints\" type=\"number\" class=\"form-input\" min=\"0\" value=\"10\" />\n                </div>",
+  "StartLine": 4925,
+  "TargetContent": "                <div class=\"form-group\">\n                    <label for=\"assignment-maxpoints\">คะแนนเต็ม</label>\n                    <input id=\"assignment-maxpoints\" type=\"number\" class=\"form-input\" min=\"0\" value=\"10\" />\n                </div>",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Hide assignment-maxpoints in HTML modal",
+  "toolSummary": "Edit teacher_dashboard (1).html"
+}

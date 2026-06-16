@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Make the edit-student-score input readonly and style it as non-editable",
+  "EndLine": 2010,
+  "Instruction": "Add readonly attribute and update background style and cursor to indicate read-only state for edit-student-score",
+  "ReplacementContent": "                        <div>\n                            <label style=\"font-size: 0.82rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;\">คะแนน</label>\n                            <input type=\"number\" id=\"edit-student-score\" min=\"0\" readonly style=\"width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; background: var(--secondary); color: var(--text-muted); cursor: not-allowed;\" title=\"ไม่สามารถแก้ไขคะแนนได้โดยตรง\">\n                        </div>",
+  "StartLine": 2007,
+  "TargetContent": "                        <div>\n                            <label style=\"font-size: 0.82rem; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 6px;\">คะแนน</label>\n                            <input type=\"number\" id=\"edit-student-score\" min=\"0\" style=\"width: 100%; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; background: var(--white); color: var(--text-main);\">\n                        </div>",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Making score input readonly",
+  "toolSummary": "Score input edit"
+}

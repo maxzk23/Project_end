@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Conditionally display student.email in the overview table.",
+  "EndLine": 2933,
+  "Instruction": "Wrap student.email in a conditional check to prevent blank line or null display.",
+  "ReplacementContent": "                                    ${student.email ? `<div style=\"font-size: 0.8rem; color: var(--text-muted);\">${student.email}</div>` : ''}",
+  "StartLine": 2931,
+  "TargetContent": "                                    <div style=\"font-size: 0.8rem; color: var(--text-muted);\">${student.email}</div>",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Conditionally display email in table",
+  "toolSummary": "Edit teacher_dashboard (1).html"
+}

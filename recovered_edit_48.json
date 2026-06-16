@@ -1,0 +1,28 @@
+{
+  "ArtifactMetadata": {
+    "RequestFeedback": false,
+    "Summary": "Removed On-time (มาเรียน) and Late (มาสาย) options/labels/bars from the Daily Attendance Summary card on the teacher dashboard.",
+    "UserFacing": false
+  },
+  "Description": "Remove On-time and Late statistics from Daily Attendance Summary.",
+  "Instruction": "Remove the present and late legend cards and bar chart segments from the Daily Attendance Summary widget in teacher_dashboard (1).html.",
+  "ReplacementChunks": [
+    {
+      "AllowMultiple": false,
+      "EndLine": 1283,
+      "ReplacementContent": "                        <!-- Segmented bar chart -->\n                        <div class=\"attendance-bar-chart\" id=\"summary-att-bar\">\n                            <div class=\"attendance-bar-segment segment-absent\" style=\"width: 0%;\"></div>\n                        </div>\n\n                        <!-- Legend Grid -->\n                        <div class=\"attendance-legend-grid\" id=\"summary-att-legend\" style=\"grid-template-columns: 1fr;\">\n                            <div class=\"attendance-legend-card absent\">\n                                <span class=\"attendance-legend-value absent\" id=\"summary-att-absent-count\">0 คน</span>\n                                <span class=\"attendance-legend-label\">ขาดเรียน ⚠️</span>\n                            </div>\n                        </div>",
+      "StartLine": 1262,
+      "TargetContent": "                        <!-- Segmented bar chart -->\n                        <div class=\"attendance-bar-chart\" id=\"summary-att-bar\">\n                            <div class=\"attendance-bar-segment segment-present\" style=\"width: 100%;\"></div>\n                            <div class=\"attendance-bar-segment segment-late\" style=\"width: 0%;\"></div>\n                            <div class=\"attendance-bar-segment segment-absent\" style=\"width: 0%;\"></div>\n                        </div>\n\n                        <!-- Legend Grid -->\n                        <div class=\"attendance-legend-grid\" id=\"summary-att-legend\">\n                            <div class=\"attendance-legend-card present\">\n                                <span class=\"attendance-legend-value present\" id=\"summary-att-present-count\">3 คน</span>\n                                <span class=\"attendance-legend-label\">มาเรียน</span>\n                            </div>\n                            <div class=\"attendance-legend-card late\">\n                                <span class=\"attendance-legend-value late\" id=\"summary-att-late-count\">0 คน</span>\n                                <span class=\"attendance-legend-label\">มาสาย</span>\n                            </div>\n                            <div class=\"attendance-legend-card absent\">\n                                <span class=\"attendance-legend-value absent\" id=\"summary-att-absent-count\">0 คน</span>\n                                <span class=\"attendance-legend-label\">ขาดเรียน ⚠️</span>\n                            </div>\n                        </div>"
+    },
+    {
+      "AllowMultiple": false,
+      "EndLine": 3643,
+      "ReplacementContent": "            // Update labels\n            const aEl = document.getElementById('summary-att-absent-count');\n            if (aEl) aEl.innerText = `${absent} คน`;\n            \n            // Update bar chart segments (no text inside, purely visual)\n            const bar = document.getElementById('summary-att-bar');\n            if (bar) {\n                bar.innerHTML = `\n                    <div class=\"attendance-bar-segment segment-absent\" style=\"width: ${absentPct}%; display: ${absentPct > 0 ? 'block' : 'none'};\"></div>\n                `;\n            }",
+      "StartLine": 3625,
+      "TargetContent": "            // Update labels\n            const pEl = document.getElementById('summary-att-present-count');\n            if (pEl) pEl.innerText = `${present} คน`;\n            const lEl = document.getElementById('summary-att-late-count');\n            if (lEl) lEl.innerText = `${late} คน`;\n            const aEl = document.getElementById('summary-att-absent-count');\n            if (aEl) aEl.innerText = `${absent} คน`;\n            \n            // Update bar chart segments (no text inside, purely visual)\n            const bar = document.getElementById('summary-att-bar');\n            if (bar) {\n                bar.innerHTML = `\n                    <div class=\"attendance-bar-segment segment-present\" style=\"width: ${presentPct}%; display: ${presentPct > 0 ? 'block' : 'none'};\"></div>\n                    <div class=\"attendance-bar-segment segment-late\" style=\"width: ${latePct}%; display: ${latePct > 0 ? 'block' : 'none'};\"></div>\n                    <div class=\"attendance-bar-segment segment-absent\" style=\"width: ${absentPct}%; display: ${absentPct > 0 ? 'block' : 'none'};\"></div>\n                    <div class=\"attendance-bar-segment\" style=\"width: ${uncheckedPct}%; background-color: var(--border); display: ${uncheckedPct > 0 ? 'block' : 'none'};\"></div>\n                `;\n            }"
+    }
+  ],
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Removing present and late stats from summary card in html and js",
+  "toolSummary": "Modify teacher dashboard file"
+}

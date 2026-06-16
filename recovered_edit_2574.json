@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Skip empty rows during Excel parsing in teacher_dashboard (1).html",
+  "EndLine": 5185,
+  "Instruction": "Add a check to skip rows where all fields are empty, right after reading fields.",
+  "ReplacementContent": "                const rawName = String(row[0] || '').trim();\n                const rawCode = String(row[1] || '').trim();\n                const rawClass = String(row[2] || '').trim().toLowerCase();\n                const rawRoom = String(row[3] || '').trim();\n                const rawPhone = String(row[4] || '').trim();\n                \n                if (!rawName && !rawCode && !rawClass && !rawRoom && !rawPhone) continue;\n                \n                let errors = [];",
+  "StartLine": 5179,
+  "TargetContent": "                const rawName = String(row[0] || '').trim();\n                const rawCode = String(row[1] || '').trim();\n                const rawClass = String(row[2] || '').trim().toLowerCase();\n                const rawRoom = String(row[3] || '').trim();\n                const rawPhone = String(row[4] || '').trim();\n                \n                let errors = [];",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html"
+}

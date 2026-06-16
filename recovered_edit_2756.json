@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Change logout button action in teacher_dashboard (1).html",
+  "EndLine": 1488,
+  "Instruction": "Update the logout button's onclick attribute to call handleTeacherLogout() instead of redirecting directly.",
+  "ReplacementContent": "        <button class=\"logout-btn\" onclick=\"handleTeacherLogout()\"><i class=\"fa-solid fa-sign-out-alt\"></i> <span>ออกจากระบบ</span></button>",
+  "StartLine": 1487,
+  "TargetContent": "        <button class=\"logout-btn\" onclick=\"window.location.href='index.html'\"><i class=\"fa-solid fa-sign-out-alt\"></i> <span>ออกจากระบบ</span></button>",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html"
+}

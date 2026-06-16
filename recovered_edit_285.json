@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Remove assignment score (คะแนนเต็ม) display from the assignments list in teacher dashboard.",
+  "EndLine": 4700,
+  "Instruction": "Remove the 'คะแนนเต็ม' span from renderAssignmentsList.",
+  "ReplacementContent": "                            <div style=\"margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; color: var(--text-muted); font-size:0.82rem; align-items:center;\">\n                                <span>กำหนดส่ง: <strong style=\"color: var(--text-main);\">${dueLabel}</strong></span>\n                                <span>ส่งแล้ว: <strong>${submissions}</strong></span>\n                                <span style=\"padding:6px 10px; border-radius:999px; background:${statusBg}; color:${statusColor}; font-weight:700;\">${status}</span>\n                            </div>",
+  "StartLine": 4690,
+  "TargetContent": "                            <div style=\"margin-top:14px; display:flex; flex-wrap:wrap; gap:10px; color: var(--text-muted); font-size:0.82rem; align-items:center;\">\n                                <span>กำหนดส่ง: <strong style=\"color: var(--text-main);\">${dueLabel}</strong></span>\n                                <span>คะแนนเต็ม: <strong>${item.maxPoints || 0}</strong></span>\n                                <span>ส่งแล้ว: <strong>${submissions}</strong></span>\n                                <span style=\"padding:6px 10px; border-radius:999px; background:${statusBg}; color:${statusColor}; font-weight:700;\">${status}</span>\n                            </div>",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Remove assignment score from renderAssignmentsList",
+  "toolSummary": "Edit teacher_dashboard (1).html"
+}

@@ -1,0 +1,28 @@
+{
+  "ArtifactMetadata": {
+    "RequestFeedback": false,
+    "Summary": "Brought back 'มาเรียน' (Present) statistics to the Daily Attendance Summary card while keeping 'มาสาย' (Late) removed, and updated the grid and bar chart rendering.",
+    "UserFacing": false
+  },
+  "Description": "Restore Present (มาเรียน) statistics on the Daily Attendance Summary widget while keeping Late (มาสาย) removed.",
+  "Instruction": "Add the Present (มาเรียน) legend card and segment back to the Daily Attendance Summary card in teacher_dashboard (1).html.",
+  "ReplacementChunks": [
+    {
+      "AllowMultiple": false,
+      "EndLine": 1274,
+      "ReplacementContent": "                        <!-- Segmented bar chart -->\n                        <div class=\"attendance-bar-chart\" id=\"summary-att-bar\">\n                            <div class=\"attendance-bar-segment segment-present\" style=\"width: 100%;\"></div>\n                            <div class=\"attendance-bar-segment segment-absent\" style=\"width: 0%;\"></div>\n                        </div>\n\n                        <!-- Legend Grid -->\n                        <div class=\"attendance-legend-grid\" id=\"summary-att-legend\" style=\"grid-template-columns: repeat(2, 1fr);\">\n                            <div class=\"attendance-legend-card present\">\n                                <span class=\"attendance-legend-value present\" id=\"summary-att-present-count\">3 คน</span>\n                                <span class=\"attendance-legend-label\">มาเรียน</span>\n                            </div>\n                            <div class=\"attendance-legend-card absent\">\n                                <span class=\"attendance-legend-value absent\" id=\"summary-att-absent-count\">0 คน</span>\n                                <span class=\"attendance-legend-label\">ขาดเรียน ⚠️</span>\n                            </div>\n                        </div>",
+      "StartLine": 1262,
+      "TargetContent": "                        <!-- Segmented bar chart -->\n                        <div class=\"attendance-bar-chart\" id=\"summary-att-bar\">\n                            <div class=\"attendance-bar-segment segment-absent\" style=\"width: 0%;\"></div>\n                        </div>\n\n                        <!-- Legend Grid -->\n                        <div class=\"attendance-legend-grid\" id=\"summary-att-legend\" style=\"grid-template-columns: 1fr;\">\n                            <div class=\"attendance-legend-card absent\">\n                                <span class=\"attendance-legend-value absent\" id=\"summary-att-absent-count\">0 คน</span>\n                                <span class=\"attendance-legend-label\">ขาดเรียน ⚠️</span>\n                            </div>\n                        </div>"
+    },
+    {
+      "AllowMultiple": false,
+      "EndLine": 3626,
+      "ReplacementContent": "            // Update labels\n            const pEl = document.getElementById('summary-att-present-count');\n            if (pEl) pEl.innerText = `${present} คน`;\n            const aEl = document.getElementById('summary-att-absent-count');\n            if (aEl) aEl.innerText = `${absent} คน`;\n            \n            // Update bar chart segments (no text inside, purely visual)\n            const bar = document.getElementById('summary-att-bar');\n            if (bar) {\n                bar.innerHTML = `\n                    <div class=\"attendance-bar-segment segment-present\" style=\"width: ${presentPct}%; display: ${presentPct > 0 ? 'block' : 'none'};\"></div>\n                    <div class=\"attendance-bar-segment segment-absent\" style=\"width: ${absentPct}%; display: ${absentPct > 0 ? 'block' : 'none'};\"></div>\n                `;\n            }",
+      "StartLine": 3615,
+      "TargetContent": "            // Update labels\n            const aEl = document.getElementById('summary-att-absent-count');\n            if (aEl) aEl.innerText = `${absent} คน`;\n            \n            // Update bar chart segments (no text inside, purely visual)\n            const bar = document.getElementById('summary-att-bar');\n            if (bar) {\n                bar.innerHTML = `\n                    <div class=\"attendance-bar-segment segment-absent\" style=\"width: ${absentPct}%; display: ${absentPct > 0 ? 'block' : 'none'};\"></div>\n                `;\n            }"
+    }
+  ],
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Restoring present statistics in HTML and JS",
+  "toolSummary": "Modify teacher dashboard file"
+}

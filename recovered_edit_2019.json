@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Update initAttendanceDatabase to seed mock history.",
+  "EndLine": 2886,
+  "Instruction": "Replace default seeding logic with initializeMockAttendanceHistory.",
+  "ReplacementContent": "        function initAttendanceDatabase() {\n            initializeMockAttendanceHistory();",
+  "StartLine": 2881,
+  "TargetContent": "        function initAttendanceDatabase() {\n            const history = localStorage.getItem('lms-attendance-history');\n            if (!history) {\n                localStorage.setItem('lms-attendance-history', JSON.stringify(DEFAULT_ATTENDANCE_HISTORY));\n            }",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Updating initAttendanceDatabase",
+  "toolSummary": "Replace file content"
+}

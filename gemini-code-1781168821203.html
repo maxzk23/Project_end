@@ -319,27 +319,62 @@
 
     <!-- Slide 8: Under the Hood -->
     <section class="slide">
-      <h2>สถาปัตยกรรมระดับองค์กร (Production-Ready)</h2>
+      <h2>ทำไมถึงใช้เทคโนโลยีเหล่านี้? (Why We Use This Stack)</h2>
       <div class="grid-4" style="margin-top: 20px; width: 100%;">
-        <div class="card" style="text-align: center;">
-          <i class="fa-brands fa-react" style="font-size: 4rem; color: #61dafb;"></i>
-          <h3 style="margin-top: 15px; font-size: 1.2rem;">Next.js 14</h3>
-          <p style="font-size: 0.9rem;">เฟรมเวิร์กแกนหลัก ทำงานรวดเร็ว</p>
+        <!-- Next.js 14 -->
+        <div class="card" style="text-align: left; padding: 25px 20px;">
+          <div style="text-align: center; margin-bottom: 12px;">
+            <i class="fa-brands fa-react" style="font-size: 3rem; color: #61dafb;"></i>
+            <h3 style="margin-top: 10px; font-size: 1.15rem; color: var(--text-dark); font-weight: 700; margin-bottom: 4px;">Next.js 14</h3>
+            <p style="font-size: 0.85rem; font-weight: bold; color: var(--primary); margin: 0;">เฟรมเวิร์กแกนหลัก ทำงานรวดเร็ว</p>
+          </div>
+          <ul style="padding: 0; margin: 10px 0 0 0; list-style-type: none;">
+            <li style="font-size: 0.8rem !important; margin-bottom: 6px !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>รองรับ SSR โหลดหน้าเว็บและคะแนนได้รวดเร็วมาก</span></li>
+            <li style="font-size: 0.8rem !important; margin-bottom: 6px !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>มี API Routes ในตัว ไม่ต้องสร้าง Backend แยก</span></li>
+            <li style="font-size: 0.8rem !important; margin-bottom: 0 !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>Dynamic Routing จัดการห้องเรียนต่างชั้นเรียนได้ง่าย</span></li>
+          </ul>
         </div>
-        <div class="card" style="text-align: center;">
-          <i class="fa-solid fa-database" style="font-size: 4rem; color: #336791;"></i>
-          <h3 style="margin-top: 15px; font-size: 1.2rem;">PostgreSQL & Prisma</h3>
-          <p style="font-size: 0.9rem;">ฐานข้อมูลเสถียร จัดการง่าย</p>
+        
+        <!-- PostgreSQL & Prisma -->
+        <div class="card" style="text-align: left; padding: 25px 20px;">
+          <div style="text-align: center; margin-bottom: 12px;">
+            <i class="fa-solid fa-database" style="font-size: 3rem; color: #336791;"></i>
+            <h3 style="margin-top: 10px; font-size: 1.15rem; color: var(--text-dark); font-weight: 700; margin-bottom: 4px;">PostgreSQL & Prisma</h3>
+            <p style="font-size: 0.85rem; font-weight: bold; color: var(--primary); margin: 0;">ฐานข้อมูลเสถียร จัดการง่าย</p>
+          </div>
+          <ul style="padding: 0; margin: 10px 0 0 0; list-style-type: none;">
+            <li style="font-size: 0.8rem !important; margin-bottom: 6px !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>รองรับข้อมูลสัมพันธ์เชิงโครงสร้างและ JSONB ค้นหาเร็ว</span></li>
+            <li style="font-size: 0.8rem !important; margin-bottom: 6px !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>Prisma ORM เขียนคิวรีหลังบ้านและจัดตารางปลอดภัย</span></li>
+            <li style="font-size: 0.8rem !important; margin-bottom: 0 !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>Transaction ป้องกันคะแนนหรือสถิติเช็คชื่อคลาดเคลื่อน</span></li>
+          </ul>
         </div>
-        <div class="card" style="text-align: center;">
-          <i class="fa-brands fa-docker" style="font-size: 4rem; color: #2496ed;"></i>
-          <h3 style="margin-top: 15px; font-size: 1.2rem;">Docker Compose</h3>
-          <p style="font-size: 0.9rem;">ติดตั้งง่าย ปลอดภัย ไม่รบกวนระบบอื่น</p>
+
+        <!-- Docker Compose -->
+        <div class="card" style="text-align: left; padding: 25px 20px;">
+          <div style="text-align: center; margin-bottom: 12px;">
+            <i class="fa-brands fa-docker" style="font-size: 3rem; color: #2496ed;"></i>
+            <h3 style="margin-top: 10px; font-size: 1.15rem; color: var(--text-dark); font-weight: 700; margin-bottom: 4px;">Docker Compose</h3>
+            <p style="font-size: 0.85rem; font-weight: bold; color: var(--primary); margin: 0;">ติดตั้งง่าย ปลอดภัย ไม่รบกวนระบบอื่น</p>
+          </div>
+          <ul style="padding: 0; margin: 10px 0 0 0; list-style-type: none;">
+            <li style="font-size: 0.8rem !important; margin-bottom: 6px !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>Containerization แยกส่วนเซิร์ฟเวอร์กับฐานข้อมูลชัดเจน</span></li>
+            <li style="font-size: 0.8rem !important; margin-bottom: 6px !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>รันคอมมานด์เดียว ติดตั้งระบบพร้อมใช้ได้ในทุกสภาพแวดล้อม</span></li>
+            <li style="font-size: 0.8rem !important; margin-bottom: 0 !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>ปลอดภัยสูง ไม่เกิดปัญหาไลบรารีชนกับซอฟต์แวร์อื่นบนเครื่อง</span></li>
+          </ul>
         </div>
-        <div class="card" style="text-align: center;">
-          <i class="fa-solid fa-hard-drive" style="font-size: 4rem; color: #64748b;"></i>
-          <h3 style="margin-top: 15px; font-size: 1.2rem;">Auto Backup</h3>
-          <p style="font-size: 0.9rem;">สคริปต์สำรองข้อมูล ป้องกันสูญหาย</p>
+
+        <!-- Auto Backup -->
+        <div class="card" style="text-align: left; padding: 25px 20px;">
+          <div style="text-align: center; margin-bottom: 12px;">
+            <i class="fa-solid fa-hard-drive" style="font-size: 3rem; color: #64748b;"></i>
+            <h3 style="margin-top: 10px; font-size: 1.15rem; color: var(--text-dark); font-weight: 700; margin-bottom: 4px;">Auto Backup</h3>
+            <p style="font-size: 0.85rem; font-weight: bold; color: var(--primary); margin: 0;">สคริปต์สำรองข้อมูล ป้องกันสูญหาย</p>
+          </div>
+          <ul style="padding: 0; margin: 10px 0 0 0; list-style-type: none;">
+            <li style="font-size: 0.8rem !important; margin-bottom: 6px !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>สคริปต์ Backup อัตโนมัติทุกๆ คืน ป้องกันข้อมูลสูญหาย</span></li>
+            <li style="font-size: 0.8rem !important; margin-bottom: 6px !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>ทำความสะอาดข้อมูลประวัติและบีบอัดส่งไปคลาวด์ภายนอก</span></li>
+            <li style="font-size: 0.8rem !important; margin-bottom: 0 !important; display: flex !important; align-items: flex-start !important; gap: 8px !important; color: var(--text-light); line-height: 1.3;"><i class="fa-solid fa-circle-check" style="color: var(--success); margin-top: 3px !important; font-size: 0.8rem !important; flex-shrink: 0;"></i><span>กู้ข้อมูลกลับมาใช้งาน (Recovery) ได้รวดเร็วหากเกิดเหตุฉุกเฉิน</span></li>
+          </ul>
         </div>
       </div>
     </section>

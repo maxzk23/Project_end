@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Simplify status badge styles and mapping in renderAssignmentsList.",
+  "EndLine": 4810,
+  "Instruction": "Map all statuses to publish/draft and update background/color variables.",
+  "ReplacementContent": "                const statusKey = !item.visible ? 'draft' : 'publish';\n                const status = statusKey === 'draft' ? 'ร่าง' : 'เผยแพร่';\n                const submissions = item.submissions ? item.submissions.length : 0;\n                const statusBg = statusKey === 'publish' ? 'var(--primary-light)' : 'var(--secondary)';\n                const statusColor = statusKey === 'publish' ? 'var(--primary)' : 'var(--text-muted)';",
+  "StartLine": 4805,
+  "TargetContent": "                const statusKey = item.status === 'overdue' ? 'late' : item.status || (!item.visible ? 'draft' : (item.openForSubmissions === false ? 'closed' : (item.dueAt && new Date(item.dueAt) < new Date() ? 'late' : 'publish')));\n                const status = statusKey === 'draft' ? 'ร่าง' : statusKey === 'publish' ? 'เผยแพร่' : statusKey === 'late' ? 'ส่งงานล่าช้า' : statusKey === 'closed' ? 'ปิดรับงาน' : 'เผยแพร่';\n                const submissions = item.submissions ? item.submissions.length : 0;\n                const statusBg = statusKey === 'publish' ? 'var(--primary-light)' : statusKey === 'late' ? 'var(--success-bg)' : statusKey === 'closed' ? 'var(--warning-bg)' : statusKey === 'draft' ? 'var(--secondary)' : 'var(--danger-bg)';\n                const statusColor = statusKey === 'publish' ? 'var(--primary)' : statusKey === 'late' ? 'var(--success-text)' : statusKey === 'closed' ? 'var(--warning-text)' : statusKey === 'draft' ? 'var(--text-muted)' : 'var(--danger-text)';",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Simplify status badges in HTML",
+  "toolSummary": "Edit teacher_dashboard (1).html"
+}

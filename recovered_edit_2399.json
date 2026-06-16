@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Clear the persistent set of selected student IDs upon successful year rollover.",
+  "EndLine": 6253,
+  "Instruction": "Clear window.retainedStudentIds before rendering the updated list.",
+  "ReplacementContent": "                    // Refresh UI\n                    if (window.retainedStudentIds) window.retainedStudentIds.clear();\n                    renderRetainedStudentsList();",
+  "StartLine": 6250,
+  "TargetContent": "                    // Refresh UI\n                    renderRetainedStudentsList();",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Clearing selected IDs on rollover success",
+  "toolSummary": "Update refresh UI block in teacher dashboard JS"
+}

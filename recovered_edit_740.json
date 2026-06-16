@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Fix student-list-filter-class onchange event handler to point to renderStudentList()",
+  "EndLine": 1848,
+  "Instruction": "Change onchange handler from onClassFilterChange() to renderStudentList()",
+  "ReplacementContent": "                        <select id=\"student-list-filter-class\" onchange=\"renderStudentList()\" style=\"padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer; background: var(--white); color: var(--text-main);\">",
+  "StartLine": 1840,
+  "TargetContent": "                        <select id=\"student-list-filter-class\" onchange=\"onClassFilterChange()\" style=\"padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); font-family: 'Prompt', sans-serif; font-size: 0.85rem; font-weight: 600; outline: none; cursor: pointer; background: var(--white); color: var(--text-main);\">",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Updating class filter onchange handler",
+  "toolSummary": "Class filter edit"
+}

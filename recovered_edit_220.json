@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Restore the outer display grid container tag for the assignments list to maintain correct HTML tag hierarchy.",
+  "EndLine": 2145,
+  "Instruction": "Add back the opening div with style display:grid; gap:16px; above the stats card.",
+  "ReplacementContent": "                <div style=\"display:grid; gap:16px;\">\n                    <div id=\"assignment-summary-stats\" style=\"display:grid; grid-template-columns: 1fr; gap: 14px;\">\n                        <div class=\"attendance-legend-card\" style=\"background: var(--secondary); border-color: rgba(226,232,240,0.85);\">",
+  "StartLine": 2143,
+  "TargetContent": "                    <div id=\"assignment-summary-stats\" style=\"display:grid; grid-template-columns: 1fr; gap: 14px;\">\n                        <div class=\"attendance-legend-card\" style=\"background: var(--secondary); border-color: rgba(226,232,240,0.85);\">",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Restoring outer grid tag in assignments template",
+  "toolSummary": "Modify teacher dashboard file"
+}

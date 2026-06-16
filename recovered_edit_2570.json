@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Trigger saveAndSyncStudentData on student score updates in teacher_dashboard (1).html",
+  "EndLine": 4160,
+  "Instruction": "Update ASSIGNMENT_GRADED and STUDENT_SCORE_UPDATED handlers to call saveAndSyncStudentData() for data persistence.",
+  "ReplacementContent": "            } else if (data.type === 'ASSIGNMENT_GRADED') {\n                if (data.assignmentName === 'มินิเกมสะสมแต้ม') {\n                    const pat = leaderboardDatabase.find(it => it.name === 'ภัทรพล เรียนดี');\n                    if (pat) {\n                        pat.score = 1350;\n                        saveAndSyncStudentData();\n                        updateClassLeaderboardUI();\n                    }\n                }\n            } else if (data.type === 'STUDENT_SCORE_UPDATED') {\n                const stu = leaderboardDatabase.find(it => it.name === data.studentName);\n                if (stu) {\n                    stu.score = data.score;\n                    saveAndSyncStudentData();\n                    updateClassLeaderboardUI();\n                }\n            }",
+  "StartLine": 4148,
+  "TargetContent": "            } else if (data.type === 'ASSIGNMENT_GRADED') {\n                if (data.assignmentName === 'มินิเกมสะสมแต้ม') {\n                    const pat = leaderboardDatabase.find(it => it.name === 'ภัทรพล เรียนดี');\n                    if (pat) pat.score = 1350;\n                    updateClassLeaderboardUI();\n                }\n            } else if (data.type === 'STUDENT_SCORE_UPDATED') {\n                const stu = leaderboardDatabase.find(it => it.name === data.studentName);\n                if (stu) {\n                    stu.score = data.score;\n                    updateClassLeaderboardUI();\n                }\n            }",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html"
+}

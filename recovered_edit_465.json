@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Remove 'ส่งงานล่าช้า' and 'ปิดรับงาน' from the edit status dropdown.",
+  "EndLine": 5131,
+  "Instruction": "Remove late and closed status options from assignment-status select.",
+  "ReplacementContent": "                    <select id=\"assignment-status\" class=\"form-input\">\n                        <option value=\"publish\">เผยแพร่</option>\n                        <option value=\"draft\">ร่าง</option>\n                    </select>",
+  "StartLine": 5123,
+  "TargetContent": "                    <select id=\"assignment-status\" class=\"form-input\">\n                        <option value=\"publish\">เผยแพร่</option>\n                        <option value=\"draft\">ร่าง</option>\n                        <option value=\"late\">ส่งงานล่าช้า</option>\n                        <option value=\"closed\">ปิดรับงาน</option>\n                    </select>",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Remove status options in Modal HTML",
+  "toolSummary": "Edit teacher_dashboard (1).html"
+}

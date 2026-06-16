@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Remove duplicate history and targetDateStr declarations in updateAttendanceSummary function to fix JS syntax error.",
+  "EndLine": 3681,
+  "Instruction": "Remove redeclared variables (history, todayInput, targetDateStr) from updateAttendanceSummary function to fix SyntaxError.",
+  "ReplacementContent": "            // Sync average attendance statistics grid\n            // Find if there's saved history for today/selected date to count into overall average\n            let sumRate = 0;",
+  "StartLine": 3676,
+  "TargetContent": "            // Sync average attendance statistics grid\n            const history = getAttendanceHistory();\n            const todayInput = document.querySelector('#panel-attendance #attendance-date-select');\n            const targetDateStr = todayInput ? formatToThaiDate(todayInput.value) : getTodayThaiDate();\n            \n            // Find if there's saved history for today/selected date to count into overall average\n            let sumRate = 0;",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Removing redeclared variables to fix script error",
+  "toolSummary": "Modify teacher dashboard file"
+}

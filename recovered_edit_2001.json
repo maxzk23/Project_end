@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Remove period-select element from today attendance view.",
+  "EndLine": 2334,
+  "Instruction": "Remove the div container for period-select.",
+  "ReplacementContent": "                            <option value=\"2\">/2</option>\n                            <option value=\"3\">/3</option>\n                        </select>\n                    </div>\n                    <div style=\"display: flex; align-items: center; gap: 8px; margin-left: auto;\">\n                        <label style=\"font-size: 0.9rem; font-weight: 500; color: var(--text-main);\"><i class=\"fa-solid fa-calendar-days\" style=\"color: var(--primary);\"></i> วันที่เช็คชื่อ:</label>",
+  "StartLine": 2320,
+  "TargetContent": "                            <option value=\"2\">/2</option>\n                            <option value=\"3\">/3</option>\n                        </select>\n                    </div>\n                    <div style=\"display: flex; align-items: center; gap: 8px;\">\n                        <label style=\"font-size: 0.9rem; font-weight: 500; color: var(--text-main);\">ตอน/คาบเรียน:</label>\n                        <select id=\"period-select\" style=\"padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); outline: none; cursor: pointer;\" onchange=\"loadAttendanceForSelectedDate()\">\n                            <option value=\"1\" selected>คาบเรียนที่ 1 (เช้า)</option>\n                            <option value=\"2\">คาบเรียนที่ 2 (บ่าย)</option>\n                        </select>\n                    </div>\n                    <div style=\"display: flex; align-items: center; gap: 8px; margin-left: auto;\">\n                        <label style=\"font-size: 0.9rem; font-weight: 500; color: var(--text-main);\"><i class=\"fa-solid fa-calendar-days\" style=\"color: var(--primary);\"></i> วันที่เช็คชื่อ:</label>",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Removing period select in today's attendance view",
+  "toolSummary": "Replace file content"
+}

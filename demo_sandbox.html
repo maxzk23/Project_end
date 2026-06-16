@@ -300,7 +300,7 @@
         <!-- Right Frame: Student Dashboard -->
         <div class="panel">
             <div class="panel-header">
-                <span><i class="fa-solid fa-user-graduate badge-student"></i> นักเรียน (STUDENT VIEW - ภัทรพล)</span>
+                <span><i class="fa-solid fa-user-graduate badge-student"></i> นักเรียน (STUDENT VIEW)</span>
                 <a href="student_dashboard (1).html" target="_blank" class="btn-popout"><i class="fa-solid fa-up-right-from-square"></i> เปิดหน้าต่างใหม่</a>
             </div>
             <iframe src="student_dashboard (1).html" id="studentFrame"></iframe>
@@ -310,6 +310,12 @@
 
     <script>
         function resetSandbox() {
+            // Clear auth sessions to force login overlay test
+            try {
+                document.getElementById('teacherFrame').contentWindow.sessionStorage.removeItem('lms-teacher-auth');
+                document.getElementById('studentFrame').contentWindow.sessionStorage.removeItem('lms-student-auth-id');
+            } catch(e) {}
+            
             // Reload both iframes to reset local states
             document.getElementById('teacherFrame').contentWindow.location.reload();
             document.getElementById('studentFrame').contentWindow.location.reload();

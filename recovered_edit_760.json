@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Fix missing closing div tag for studentModal to prevent nesting editStudentModal inside it",
+  "EndLine": 1947,
+  "Instruction": "Add closing div tag for studentModal before editStudentModal starts",
+  "ReplacementContent": "                </div>\n            </div>\n        </div>\n\n        <!-- Edit Student Modal -->\n        <div id=\"editStudentModal\" class=\"modal\" style=\"display:none;\">",
+  "StartLine": 1942,
+  "TargetContent": "                    </button>\n                </div>\n            </div>\n\n        <!-- Edit Student Modal -->\n        <div id=\"editStudentModal\" class=\"modal\" style=\"display:none;\">",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Adding missing closing div tag for studentModal",
+  "toolSummary": "StudentModal close tag fix"
+}

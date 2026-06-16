@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Add dynamic studentId and password checker to teacher_dashboard (1).html",
+  "EndLine": 3963,
+  "Instruction": "Insert a loop to guarantee that all student records have password and studentId attributes when loaded from LocalStorage in teacher dashboard.",
+  "ReplacementContent": "            localStorage.setItem('lms-leaderboard-database', JSON.stringify(leaderboardDatabase));\n        }\n\n        let dbUpdated = false;\n        leaderboardDatabase.forEach((student, idx) => {\n            if (!student.password) {\n                student.password = '1234';\n                dbUpdated = true;\n            }\n            if (!student.studentId) {\n                const roomNum = student.room ? (student.room.match(/\\d+$/)?.[0] || '1') : '1';\n                const gradeNum = student.class === 'm1' ? '8' : student.class === 'm2' ? '7' : '6';\n                student.studentId = `6${gradeNum}0${roomNum}` + String(idx + 1).padStart(2, '0');\n                dbUpdated = true;\n            }\n        });\n        if (dbUpdated) {\n            localStorage.setItem('lms-leaderboard-database', JSON.stringify(leaderboardDatabase));\n        }",
+  "StartLine": 3961,
+  "TargetContent": "            localStorage.setItem('lms-leaderboard-database', JSON.stringify(leaderboardDatabase));\n        }",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html"
+}

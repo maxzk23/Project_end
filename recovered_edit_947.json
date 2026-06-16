@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Add onclick redirect to main portal index.html on teacher dashboard logout button",
+  "EndLine": 1386,
+  "Instruction": "Add onclick=\"window.location.href='index.html'\" to the logout button.",
+  "ReplacementContent": "        <button class=\"logout-btn\" onclick=\"window.location.href='index.html'\"><i class=\"fa-solid fa-sign-out-alt\"></i> <span>ออกจากระบบ</span></button>",
+  "StartLine": 1384,
+  "TargetContent": "        <button class=\"logout-btn\"><i class=\"fa-solid fa-sign-out-alt\"></i> <span>ออกจากระบบ</span></button>",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html"
+}

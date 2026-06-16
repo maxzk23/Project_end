@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Add teacher login and logout helper functions to teacher_dashboard (1).html",
+  "EndLine": 4244,
+  "Instruction": "Add handleTeacherLogin, quickTeacherLogin, and handleTeacherLogout functions to the script.",
+  "ReplacementContent": "        // Simulated Sync Connection State Variables\n        let isOnlineSimulated = true;\n\n        window.handleTeacherLogin = function(e) {\n            if (e) e.preventDefault();\n            const idInput = document.getElementById('teacher-login-id').value.trim();\n            const pwInput = document.getElementById('teacher-login-password').value.trim();\n            \n            if (idInput === 'teacher' && pwInput === '1234') {\n                sessionStorage.setItem('lms-teacher-auth', 'true');\n                const overlay = document.getElementById('teacher-login-overlay');\n                if (overlay) overlay.style.setProperty('display', 'none', 'important');\n                showToast('เข้าสู่ระบบสำเร็จ', 'ยินดีต้อนรับคุณครูเข้าสู่ระบบจัดการ', 'success');\n            } else {\n                const errEl = document.getElementById('teacher-login-error');\n                if (errEl) errEl.style.display = 'block';\n            }\n        };\n\n        window.quickTeacherLogin = function() {\n            document.getElementById('teacher-login-id').value = 'teacher';\n            document.getElementById('teacher-login-password').value = '1234';\n            handleTeacherLogin();\n        };\n\n        window.handleTeacherLogout = function() {\n            sessionStorage.removeItem('lms-teacher-auth');\n            window.location.href = 'index.html';\n        };\n\n        let lastSyncTime = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });",
+  "StartLine": 4241,
+  "TargetContent": "        // Simulated Sync Connection State Variables\n        let isOnlineSimulated = true;\n        let lastSyncTime = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html"
+}

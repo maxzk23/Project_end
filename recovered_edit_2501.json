@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Handle STUDENTS_DATABASE_SYNC messages in the BroadcastChannel receiver to keep multiple windows in sync.",
+  "EndLine": 4127,
+  "Instruction": "Add STUDENTS_DATABASE_SYNC handler inside bc.onmessage.",
+  "ReplacementContent": "            if (data.type === 'ASSIGNMENT_SUBMITTED') {\n                handleAssignmentSubmission(data);\n            } else if (data.type === 'STUDENTS_DATABASE_SYNC') {\n                leaderboardDatabase = data.leaderboardDatabase;\n                studentRosters = data.studentRosters;\n                if (typeof renderStudentList === 'function') renderStudentList();\n                if (typeof updateClassLeaderboardUI === 'function') updateClassLeaderboardUI();\n                if (typeof updateStudentStatCards === 'function') updateStudentStatCards();\n            } else if (data.type === 'PING') {",
+  "StartLine": 4124,
+  "TargetContent": "            if (data.type === 'ASSIGNMENT_SUBMITTED') {\n                handleAssignmentSubmission(data);\n            } else if (data.type === 'PING') {",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Adding STUDENTS_DATABASE_SYNC message receiver",
+  "toolSummary": "Edit bc.onmessage block in teacher dashboard JS"
+}

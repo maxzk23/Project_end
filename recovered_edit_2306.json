@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Update the sidebar menu link label and icon for the rules panel to reflect that it is now specifically for Academic Year Rollover.",
+  "EndLine": 1433,
+  "Instruction": "Update rules tab link in teacher sidebar to say \"จัดการปีการศึกษา\".",
+  "ReplacementContent": "            <a id=\"link-rules\" class=\"nav-link\" onclick=\"switchTab('rules')\"><i class=\"fa-solid fa-graduation-cap\"></i> <span>จัดการปีการศึกษา</span></a>",
+  "StartLine": 1431,
+  "TargetContent": "            <a id=\"link-rules\" class=\"nav-link\" onclick=\"switchTab('rules')\"><i class=\"fa-solid fa-scroll\"></i> <span>กฎของระบบ</span></a>",
+  "TargetFile": "C:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html"
+}

@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Add period-select checks to loadAttendanceForSelectedDate function.",
+  "EndLine": 2836,
+  "Instruction": "Get period-select value from DOM and find the history record matching date, class, room, and period.",
+  "ReplacementContent": "            const classVal = document.getElementById('class-select') ? document.getElementById('class-select').value : 'm3';\n            const roomVal = document.getElementById('room-select') ? document.getElementById('room-select').value : '1';\n            const periodVal = document.getElementById('period-select') ? document.getElementById('period-select').value : '1';\n            const entry = history.find(h => h.date === thaiDate && (h.class || 'm3') === classVal && (h.room || '1') === roomVal && (h.period || '1') === periodVal);",
+  "StartLine": 2833,
+  "TargetContent": "            const classVal = document.getElementById('class-select') ? document.getElementById('class-select').value : 'm3';\n            const roomVal = document.getElementById('room-select') ? document.getElementById('room-select').value : '1';\n            const entry = history.find(h => h.date === thaiDate && (h.class || 'm3') === classVal && (h.room || '1') === roomVal);",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Adding period to loadAttendanceForSelectedDate lookup",
+  "toolSummary": "Replace loadAttendanceForSelectedDate entry query"
+}

@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Include class and room in BroadcastChannel ATTENDANCE_CHANGED event.",
+  "EndLine": 3470,
+  "Instruction": "Modify bc.postMessage inside markAttendance to include the selected class and room.",
+  "ReplacementContent": "            // Broadcast the attendance status change (only stu-1 for pat check-in update)\n            bc.postMessage({\n                type: 'ATTENDANCE_CHANGED',\n                studentId: studentId,\n                status: status,\n                class: document.getElementById('class-select') ? document.getElementById('class-select').value : 'm3',\n                room: document.getElementById('room-select') ? document.getElementById('room-select').value : '1'\n            });\n            \n            updateAttendanceSummary();\n        }",
+  "StartLine": 3461,
+  "TargetContent": "            // Broadcast the attendance status change (only stu-1 for pat check-in update)\n            bc.postMessage({\n                type: 'ATTENDANCE_CHANGED',\n                studentId: studentId,\n                status: status\n            });\n            \n            updateAttendanceSummary();\n        }",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Adding class and room to real-time attendance message",
+  "toolSummary": "Replace file content"
+}

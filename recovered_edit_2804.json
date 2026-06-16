@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Add random password column header to Excel import preview table in teacher_dashboard (1).html",
+  "EndLine": 2025,
+  "Instruction": "Insert a new th element for the random password column in the table thead.",
+  "ReplacementContent": "                                        <th style=\"padding: 8px 12px;\">ห้อง</th>\n                                        <th style=\"padding: 8px 12px;\">เบอร์โทรผู้ปกครอง</th>\n                                        <th style=\"padding: 8px 12px;\">รหัสผ่าน (สุ่ม)</th>\n                                        <th style=\"padding: 8px 12px;\">สถานะการตรวจสอบ</th>",
+  "StartLine": 2018,
+  "TargetContent": "                                        <th style=\"padding: 8px 12px;\">ห้อง</th>\n                                        <th style=\"padding: 8px 12px;\">เบอร์โทรผู้ปกครอง</th>\n                                        <th style=\"padding: 8px 12px;\">สถานะการตรวจสอบ</th>",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html"
+}

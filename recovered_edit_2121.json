@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Update toggleMonthAccordion to behave as a single-active accordion.",
+  "EndLine": 3311,
+  "Instruction": "Modify toggleMonthAccordion to close all other monthly accordions and reset their arrows when expanding the clicked month.",
+  "ReplacementContent": "        function toggleMonthAccordion(key) {\n            const targetContent = document.getElementById(`month-content-${key}`);\n            const targetArrow = document.getElementById(`arrow-icon-${key}`);\n            if (!targetContent || !targetArrow) return;\n            \n            const isCurrentlyClosed = targetContent.style.display === 'none';\n            \n            // Close all month contents and reset arrows\n            document.querySelectorAll('[id^=\"month-content-\"]').forEach(content => {\n                content.style.display = 'none';\n            });\n            document.querySelectorAll('[id^=\"arrow-icon-\"]').forEach(arrow => {\n                arrow.style.transform = 'rotate(-90deg)';\n            });\n            \n            // If the clicked one was closed, open it now\n            if (isCurrentlyClosed) {\n                targetContent.style.display = 'block';\n                targetArrow.style.transform = 'rotate(0deg)';\n            }\n        }",
+  "StartLine": 3299,
+  "TargetContent": "        function toggleMonthAccordion(key) {\n            const content = document.getElementById(`month-content-${key}`);\n            const arrow = document.getElementById(`arrow-icon-${key}`);\n            if (!content || !arrow) return;\n            \n            if (content.style.display === 'none') {\n                content.style.display = 'block';\n                arrow.style.transform = 'rotate(0deg)';\n            } else {\n                content.style.display = 'none';\n                arrow.style.transform = 'rotate(-90deg)';\n            }\n        }",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Updating toggleMonthAccordion function for single accordion mode",
+  "toolSummary": "Replace file content"
+}

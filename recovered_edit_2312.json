@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Update switchTab case rules tab header titles to match Academic Year Rollover naming.",
+  "EndLine": 2094,
+  "Instruction": "Update rules header titles to say \"จัดการปีการศึกษาและการเลื่อนชั้น 🎓\".",
+  "ReplacementContent": "            } else if (tabId === 'rules') {\n                titleEl.innerText = \"จัดการปีการศึกษาและการเลื่อนชั้น 🎓\";\n                subtitleEl.innerText = \"แผงควบคุมหลักสำหรับการเลื่อนระดับชั้นเรียนและจำลองกระบวนการเปิดปีการศึกษาใหม่\";\n                renderRetainedStudentsList();",
+  "StartLine": 2090,
+  "TargetContent": "            } else if (tabId === 'rules') {\n                titleEl.innerText = \"ตั้งค่าระบบและเกณฑ์คะแนน ⚙️\";\n                subtitleEl.innerText = \"ปรับแต่งค่าเกณฑ์เวลา เกณฑ์คะแนน และข้อกำหนดต่างๆ ของวิชาเรียน\";\n                renderRetainedStudentsList();",
+  "TargetFile": "C:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html"
+}

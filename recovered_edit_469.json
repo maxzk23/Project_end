@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Simplify statusKey filter conditions in renderAssignmentsList.",
+  "EndLine": 4796,
+  "Instruction": "Remove late and closed checks from filtering.",
+  "ReplacementContent": "                let statusKey = 'published';\n                if (!item.visible) statusKey = 'draft';\n\n                if (filterStatus !== 'all' && statusKey !== filterStatus) return false;\n                return true;",
+  "StartLine": 4790,
+  "TargetContent": "                let statusKey = 'published';\n                if (!item.visible) statusKey = 'draft';\n                else if (item.openForSubmissions === false) statusKey = 'closed';\n                else if (item.dueAt && new Date(item.dueAt) < new Date()) statusKey = 'late';\n\n                if (filterStatus !== 'all' && statusKey !== filterStatus) return false;\n                return true;",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Simplify status filter logic",
+  "toolSummary": "Edit teacher_dashboard (1).html"
+}

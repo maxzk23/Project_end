@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Remove 'ส่งงานล่าช้า' and 'ปิดรับงาน' from the status filter dropdown.",
+  "EndLine": 2169,
+  "Instruction": "Remove the options for 'late' and 'closed' from assignment-filter-status.",
+  "ReplacementContent": "                            <select id=\"assignment-filter-status\" class=\"form-input\" onchange=\"renderAssignmentsList()\" style=\"flex:1; min-width:180px;\">\n                                <option value=\"all\">ทุกสถานะ</option>\n                                <option value=\"published\">เผยแพร่</option>\n                                <option value=\"draft\">ร่าง</option>\n                            </select>",
+  "StartLine": 2162,
+  "TargetContent": "                            <select id=\"assignment-filter-status\" class=\"form-input\" onchange=\"renderAssignmentsList()\" style=\"flex:1; min-width:180px;\">\n                                <option value=\"all\">ทุกสถานะ</option>\n                                <option value=\"published\">เผยแพร่</option>\n                                <option value=\"draft\">ร่าง</option>\n                                <option value=\"late\">ส่งงานล่าช้า</option>\n                                <option value=\"closed\">ปิดรับงาน</option>\n                            </select>",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Remove status filter options from HTML",
+  "toolSummary": "Edit teacher_dashboard (1).html"
+}

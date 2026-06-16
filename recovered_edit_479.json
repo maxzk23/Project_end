@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Simplify status selection initialization in openAssignmentModal.",
+  "EndLine": 4906,
+  "Instruction": "Simplify normalizedStatus determination to publish or draft.",
+  "ReplacementContent": "                    const normalizedStatus = item.visible === false ? 'draft' : 'publish';\n                    document.getElementById('assignment-status').value = normalizedStatus;",
+  "StartLine": 4903,
+  "TargetContent": "                    const normalizedStatus = item.status === 'overdue' ? 'late' : item.status || (item.visible === false ? 'draft' : (item.openForSubmissions === false ? 'closed' : 'publish'));\n                    document.getElementById('assignment-status').value = normalizedStatus;",
+  "TargetFile": "c:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html",
+  "toolAction": "Simplify modal status assignment",
+  "toolSummary": "Edit teacher_dashboard (1).html"
+}

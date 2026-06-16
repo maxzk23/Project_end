@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Add call to renderRetainedStudentsList inside switchTab when clicking the rules tab in the teacher dashboard.",
+  "EndLine": 2218,
+  "Instruction": "Insert renderRetainedStudentsList() into switchTab rules tab handler.",
+  "ReplacementContent": "            } else if (tabId === 'rules') {\n                titleEl.innerText = \"ตั้งค่าระบบและเกณฑ์คะแนน ⚙️\";\n                subtitleEl.innerText = \"ปรับแต่งค่าเกณฑ์เวลา เกณฑ์คะแนน และข้อกำหนดต่างๆ ของวิชาเรียน\";\n                renderRetainedStudentsList();\n            }",
+  "StartLine": 2213,
+  "TargetContent": "            } else if (tabId === 'rules') {\n                titleEl.innerText = \"ตั้งค่าระบบและเกณฑ์คะแนน ⚙️\";\n                subtitleEl.innerText = \"ปรับแต่งค่าเกณฑ์เวลา เกณฑ์คะแนน และข้อกำหนดต่างๆ ของวิชาเรียน\";\n            }",
+  "TargetFile": "C:/Users/ssheo/Downloads/presen/teacher_dashboard (1).html"
+}

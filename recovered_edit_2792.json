@@ -1,0 +1,10 @@
+{
+  "AllowMultiple": false,
+  "Description": "Display student password in teacher registry row info in teacher_dashboard (1).html",
+  "EndLine": 5665,
+  "Instruction": "Append the password field into the infoParts array so it displays on each student row.",
+  "ReplacementContent": "                let infoParts = [];\n                if (student.studentNumber) infoParts.push(`เลขที่ ${student.studentNumber}`);\n                if (student.studentId) infoParts.push(`รหัส: ${student.studentId}`);\n                infoParts.push(`รหัสผ่าน: <code style=\"background: rgba(16, 185, 129, 0.1); padding: 1px 6px; border-radius: 4px; font-family: monospace; font-weight: bold; color: #10b981;\">${student.password || '1234'}</code>`);\n                infoParts.push(student.room);\n                if (student.nickname) infoParts.push(`\"${student.nickname}\"`);",
+  "StartLine": 5661,
+  "TargetContent": "                let infoParts = [];\n                if (student.studentNumber) infoParts.push(`เลขที่ ${student.studentNumber}`);\n                if (student.studentId) infoParts.push(`รหัส: ${student.studentId}`);\n                infoParts.push(student.room);\n                if (student.nickname) infoParts.push(`\"${student.nickname}\"`);",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html"
+}

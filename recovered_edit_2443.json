@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Include the SheetJS (xlsx.full.min.js) library from jsdelivr CDN in the HTML head.",
+  "EndLine": 16,
+  "Instruction": "Insert the SheetJS script tag in the head.",
+  "ReplacementContent": "    <!-- FontAwesome -->\n    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\">\n    \n    <!-- SheetJS for Excel Import -->\n    <script src=\"https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js\"></script>",
+  "StartLine": 13,
+  "TargetContent": "    <!-- FontAwesome -->\n    <link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css\">",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Adding SheetJS dependency to HTML head",
+  "toolSummary": "Edit head in teacher dashboard HTML"
+}

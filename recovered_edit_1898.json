@@ -1,0 +1,12 @@
+{
+  "AllowMultiple": false,
+  "Description": "Fix typo in Class 3 option label (มัยม -> มัธยม).",
+  "EndLine": 2317,
+  "Instruction": "Change 'มัยมศึกษาปีที่ 3' to 'มัธยมศึกษาปีที่ 3'.",
+  "ReplacementContent": "                            <option value=\"m3\" selected>มัธยมศึกษาปีที่ 3</option>",
+  "StartLine": 2308,
+  "TargetContent": "                            <option value=\"m3\" selected>มัยมศึกษาปีที่ 3</option>",
+  "TargetFile": "c:\\Users\\ssheo\\Downloads\\presen\\teacher_dashboard (1).html",
+  "toolAction": "Correcting spelling typo in class selector",
+  "toolSummary": "Replace typo in teacher_dashboard (1).html"
+}
