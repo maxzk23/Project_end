@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LMS Student Dashboard</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         :root {
             --primary: #0ea5e9;
@@ -197,6 +198,7 @@
         .notify-wrapper {
             position: relative;
         }
+
         .notify-dropdown {
             display: none;
             position: absolute;
@@ -206,16 +208,28 @@
             background: var(--white);
             border: 1px solid var(--border);
             border-radius: 16px;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
             z-index: 9999;
             overflow: hidden;
             animation: dropIn 0.2s ease;
         }
-        .notify-dropdown.open { display: block; }
-        @keyframes dropIn {
-            from { opacity: 0; transform: translateY(-8px); }
-            to   { opacity: 1; transform: translateY(0); }
+
+        .notify-dropdown.open {
+            display: block;
         }
+
+        @keyframes dropIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .notify-header {
             display: flex;
             align-items: center;
@@ -223,7 +237,13 @@
             padding: 16px 18px 12px;
             border-bottom: 1px solid var(--border);
         }
-        .notify-header h4 { margin: 0; font-size: 0.95rem; font-weight: 700; }
+
+        .notify-header h4 {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
         .notify-read-all {
             font-size: 0.78rem;
             color: var(--primary);
@@ -233,11 +253,16 @@
             font-weight: 600;
             padding: 0;
         }
-        .notify-read-all:hover { text-decoration: underline; }
+
+        .notify-read-all:hover {
+            text-decoration: underline;
+        }
+
         .notify-list {
             max-height: 380px;
             overflow-y: auto;
         }
+
         .notify-item {
             display: flex;
             gap: 12px;
@@ -247,43 +272,100 @@
             transition: background 0.15s;
             position: relative;
         }
-        .notify-item:last-child { border-bottom: none; }
-        .notify-item:hover { background: var(--secondary); }
-        .notify-item.unread { background: #f0f9ff; }
-        .notify-item.unread:hover { background: #e0f2fe; }
+
+        .notify-item:last-child {
+            border-bottom: none;
+        }
+
+        .notify-item:hover {
+            background: var(--secondary);
+        }
+
+        .notify-item.unread {
+            background: #f0f9ff;
+        }
+
+        .notify-item.unread:hover {
+            background: #e0f2fe;
+        }
+
         .notify-dot {
             position: absolute;
-            top: 16px; right: 16px;
-            width: 8px; height: 8px;
+            top: 16px;
+            right: 16px;
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
             background: var(--primary);
         }
+
         .notify-icon {
-            width: 38px; height: 38px;
+            width: 38px;
+            height: 38px;
             border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 1rem;
             flex-shrink: 0;
         }
-        .notify-icon.blue   { background: #dbeafe; color: #1d4ed8; }
-        .notify-icon.green  { background: #dcfce7; color: #16a34a; }
-        .notify-icon.orange { background: #ffedd5; color: #c2410c; }
-        .notify-icon.purple { background: #ede9fe; color: #7c3aed; }
-        .notify-icon.red    { background: #fee2e2; color: #dc2626; }
-        .notify-body { flex: 1; min-width: 0; }
-        .notify-body p { margin: 0 0 3px 0; font-size: 0.85rem; font-weight: 500; color: var(--text-main); line-height: 1.4; }
-        .notify-body span { font-size: 0.75rem; color: var(--text-muted); }
+
+        .notify-icon.blue {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .notify-icon.green {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .notify-icon.orange {
+            background: #ffedd5;
+            color: #c2410c;
+        }
+
+        .notify-icon.purple {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+        .notify-icon.red {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .notify-body {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notify-body p {
+            margin: 0 0 3px 0;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-main);
+            line-height: 1.4;
+        }
+
+        .notify-body span {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
         .notify-empty {
             text-align: center;
             padding: 36px 20px;
             color: var(--text-muted);
             font-size: 0.88rem;
         }
+
         .notify-footer {
             padding: 12px 18px;
             border-top: 1px solid var(--border);
             text-align: center;
         }
+
         .notify-footer button {
             background: none;
             border: none;
@@ -319,6 +401,7 @@
             font-size: 0.95rem;
             margin: 0;
         }
+
         .user-info p {
             font-size: 0.8rem;
             color: var(--text-muted);
@@ -353,9 +436,20 @@
             font-size: 1.8rem;
         }
 
-        .icon-blue { background: #e0f2fe; color: #0284c7; }
-        .icon-orange { background: #ffedd5; color: #ea580c; }
-        .icon-green { background: #dcfce7; color: #16a34a; }
+        .icon-blue {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .icon-orange {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        .icon-green {
+            background: #dcfce7;
+            color: #16a34a;
+        }
 
         .stat-details h3 {
             font-size: 1.8rem;
@@ -423,14 +517,22 @@
             margin-bottom: 16px;
         }
 
-        .upload-area h4 { margin-bottom: 8px; }
-        .upload-area p { color: var(--text-muted); font-size: 0.9rem; }
+        .upload-area h4 {
+            margin-bottom: 8px;
+        }
+
+        .upload-area p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
         .file-types {
             display: flex;
             justify-content: center;
             gap: 8px;
             margin-top: 16px;
         }
+
         .tag {
             background: #e2e8f0;
             padding: 4px 10px;
@@ -452,9 +554,16 @@
             box-shadow: var(--shadow-lg);
         }
 
-        .game-info h2 { margin-bottom: 8px; font-size: 1.5rem; }
-        .game-info p { opacity: 0.9; margin-bottom: 20px; }
-        
+        .game-info h2 {
+            margin-bottom: 8px;
+            font-size: 1.5rem;
+        }
+
+        .game-info p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
         .btn-play {
             background: var(--white);
             color: #4f46e5;
@@ -472,7 +581,7 @@
 
         .btn-play:hover {
             transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .game-illustration {
@@ -509,13 +618,35 @@
             color: var(--text-muted);
         }
 
-        .rank-1 { background: #fef08a; color: #a16207; }
-        .rank-2 { background: #e2e8f0; color: #475569; }
-        .rank-3 { background: #fed7aa; color: #9a3412; }
+        .rank-1 {
+            background: #fef08a;
+            color: #a16207;
+        }
 
-        .leader-info { flex: 1; }
-        .leader-info h5 { margin: 0; font-size: 1rem; }
-        .leader-info p { margin: 0; font-size: 0.8rem; color: var(--text-muted); }
+        .rank-2 {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .rank-3 {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .leader-info {
+            flex: 1;
+        }
+
+        .leader-info h5 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .leader-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
 
         .leader-score {
             font-weight: 700;
@@ -528,6 +659,7 @@
             flex-direction: column;
             gap: 8px;
         }
+
         .podium-item {
             display: flex;
             align-items: center;
@@ -538,12 +670,14 @@
             border: 1px solid var(--border);
             transition: all 0.2s ease;
         }
+
         .podium-item:hover {
             transform: translateX(4px);
             border-color: var(--primary);
             background: var(--white);
             box-shadow: var(--shadow-sm);
         }
+
         .podium-rank {
             width: 32px;
             height: 32px;
@@ -556,18 +690,35 @@
             border: 1px solid var(--border);
             flex-shrink: 0;
         }
-        .podium-rank.first  { background: #fef08a; color: #854d0e; border-color: #fde047; }
-        .podium-rank.second { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
-        .podium-rank.third  { background: #ffedd5; color: #9a3412; border-color: #fed7aa; }
+
+        .podium-rank.first {
+            background: #fef08a;
+            color: #854d0e;
+            border-color: #fde047;
+        }
+
+        .podium-rank.second {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .podium-rank.third {
+            background: #ffedd5;
+            color: #9a3412;
+            border-color: #fed7aa;
+        }
 
         /* --- Quick Check-in --- */
         .checkin-card {
             background: var(--white);
             border: 1px solid var(--border);
         }
+
         .checkin-card .card-title {
             color: var(--text-main);
         }
+
         .attendance-status {
             width: 100%;
             padding: 16px;
@@ -580,26 +731,31 @@
             gap: 12px;
             transition: all 0.3s ease;
         }
+
         .attendance-status.pending {
             background-color: #fffbeb;
             border: 1px dashed #f59e0b;
             color: #b45309;
         }
+
         .attendance-status.present {
             background-color: #ecfdf5;
             border: 1px solid #10b981;
             color: #047857;
         }
+
         .attendance-status.late {
             background-color: #fff7ed;
             border: 1px solid #f97316;
             color: #c2410c;
         }
+
         .attendance-status.leave {
             background-color: #f3e8ff;
             border: 1px solid #c084fc;
             color: #6d28d9;
         }
+
         .attendance-status.absent {
             background-color: #fef2f2;
             border: 1px solid #fca5a5;
@@ -607,9 +763,20 @@
         }
 
         @keyframes pulse {
-            0% { transform: scale(0.95); opacity: 0.5; }
-            50% { transform: scale(1.15); opacity: 1; }
-            100% { transform: scale(0.95); opacity: 0.5; }
+            0% {
+                transform: scale(0.95);
+                opacity: 0.5;
+            }
+
+            50% {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.95);
+                opacity: 0.5;
+            }
         }
 
         /* --- Student Select --- */
@@ -627,9 +794,11 @@
             transition: all 0.3s ease;
             margin-bottom: 20px;
         }
+
         .student-select:hover {
             border-color: var(--primary);
         }
+
         .student-select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px var(--primary-light);
@@ -639,6 +808,7 @@
         .lesson-item {
             transition: all 0.3s ease;
         }
+
         .lesson-item:hover {
             transform: translateX(4px);
             border-color: var(--primary) !important;
@@ -655,6 +825,7 @@
             flex-direction: column;
             gap: 10px;
         }
+
         .toast {
             background: var(--white);
             color: var(--text-main);
@@ -669,18 +840,54 @@
             transform: translateX(120%);
             transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
-        .toast.show { transform: translateX(0); }
-        .toast-icon { font-size: 1.25rem; }
-        .toast.success { border-left-color: var(--success); }
-        .toast.success .toast-icon { color: var(--success); }
-        .toast.warning { border-left-color: var(--warning); }
-        .toast.warning .toast-icon { color: var(--warning); }
-        .toast.danger { border-left-color: var(--danger); }
-        .toast.danger .toast-icon { color: var(--danger); }
-        .toast-content { flex: 1; }
-        .toast-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
-        .toast-msg { font-size: 0.85rem; color: var(--text-muted); }
-        
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            font-size: 1.25rem;
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+        }
+
+        .toast.success .toast-icon {
+            color: var(--success);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning);
+        }
+
+        .toast.warning .toast-icon {
+            color: var(--warning);
+        }
+
+        .toast.danger {
+            border-left-color: var(--danger);
+        }
+
+        .toast.danger .toast-icon {
+            color: var(--danger);
+        }
+
+        .toast-content {
+            flex: 1;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+
+        .toast-msg {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
         /* Progress Bar Styles */
         .upload-progress-container {
             width: 100%;
@@ -691,6 +898,7 @@
             overflow: hidden;
             display: none;
         }
+
         .upload-progress-bar {
             height: 100%;
             width: 0%;
@@ -702,9 +910,17 @@
         .tab-panel {
             animation: fadeInTab 0.4s ease-out;
         }
+
         @keyframes fadeInTab {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Modal Styles */
@@ -722,6 +938,7 @@
             align-items: center;
             transition: all 0.3s ease;
         }
+
         .modal-content {
             background-color: var(--white);
             padding: 30px;
@@ -732,10 +949,19 @@
             border: 1px solid var(--border);
             animation: modalSlideIn 0.3s ease;
         }
+
         @keyframes modalSlideIn {
-            from { transform: translateY(20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -744,11 +970,13 @@
             padding-bottom: 10px;
             border-bottom: 1px solid var(--border);
         }
+
         .modal-title {
             font-size: 1.25rem;
             font-weight: 600;
             color: var(--text-main);
         }
+
         .close-modal {
             font-size: 1.5rem;
             color: var(--text-muted);
@@ -757,7 +985,11 @@
             background: transparent;
             transition: 0.2s;
         }
-        .close-modal:hover { color: var(--danger); }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
         .modal-footer {
             display: flex;
             justify-content: flex-end;
@@ -771,47 +1003,58 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-        
+
         @media (max-width: 900px) {
             .sidebar {
                 width: 80px;
                 padding-top: 10px;
             }
+
             .sidebar .brand {
-                font-size: 0; /* Hide text */
+                font-size: 0;
+                /* Hide text */
                 justify-content: center;
                 padding: 15px 0;
             }
+
             .sidebar .brand i {
                 font-size: 1.8rem;
                 margin: 0;
             }
+
             .sidebar .nav-link {
                 justify-content: center;
                 padding: 15px 0;
-                font-size: 0; /* Hide text */
+                font-size: 0;
+                /* Hide text */
             }
+
             .sidebar .nav-link i {
                 margin: 0;
                 font-size: 1.4rem;
             }
+
             .sidebar .logout-btn {
                 font-size: 0;
                 padding: 15px 0;
                 display: flex;
                 justify-content: center;
             }
+
             .sidebar .logout-btn i {
                 margin: 0;
                 font-size: 1.4rem;
             }
+
             .main-content {
                 margin-left: 80px;
                 padding: 20px;
             }
+
             .topbar .greeting h1 {
                 font-size: 1.4rem;
             }
+
             .topbar .greeting p {
                 font-size: 0.85rem;
             }
@@ -821,24 +1064,30 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
+
             .topbar {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
             }
+
             .topbar-actions {
                 width: 100%;
                 justify-content: space-between;
             }
+
             .user-profile .user-info {
-                display: none; /* Hide name on very small screens to save space */
+                display: none;
+                /* Hide name on very small screens to save space */
             }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Student Login Authentication Overlay -->
@@ -847,48 +1096,75 @@
             document.write('<style>#student-login-overlay { display: none !important; }</style>');
         }
     </script>
-    <div id="student-login-overlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; z-index: 99999; display: flex; align-items: center; justify-content: center; font-family: 'Prompt', sans-serif; overflow: hidden; background-image: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(16, 165, 233, 0.15) 0%, transparent 40%);">
-        <div style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; color: #f8fafc; animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
-            <i class="fa-solid fa-user-graduate" style="font-size: 3.5rem; background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; display: inline-block; filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.2));"></i>
-            <h2 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; background: linear-gradient(to right, #ffffff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">พอร์ทัลนักเรียน (Student Portal)</h2>
-            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 30px;">กรุณากรอกรหัสนักเรียนและรหัสผ่านเพื่อเข้าใช้งาน</p>
-            
-            <form onsubmit="handleStudentLogin(event)" style="display: flex; flex-direction: column; gap: 16px; text-align: left;">
+    <div id="student-login-overlay"
+        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; z-index: 99999; display: flex; align-items: center; justify-content: center; font-family: 'Prompt', sans-serif; overflow: hidden; background-image: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(16, 165, 233, 0.15) 0%, transparent 40%);">
+        <div
+            style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 40px; width: 100%; max-width: 420px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); text-align: center; color: #f8fafc; animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);">
+            <i class="fa-solid fa-user-graduate"
+                style="font-size: 3.5rem; background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; display: inline-block; filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.2));"></i>
+            <h2
+                style="font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; background: linear-gradient(to right, #ffffff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                พอร์ทัลนักเรียน (Student Portal)</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 30px;">
+                กรุณากรอกรหัสนักเรียนและรหัสผ่านเพื่อเข้าใช้งาน</p>
+
+            <form onsubmit="handleStudentLogin(event)"
+                style="display: flex; flex-direction: column; gap: 16px; text-align: left;">
                 <div>
-                    <label style="display: block; font-size: 0.82rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">รหัสนักเรียน</label>
+                    <label
+                        style="display: block; font-size: 0.82rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">รหัสนักเรียน</label>
                     <div style="position: relative;">
-                        <i class="fa-solid fa-id-card" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 0.9rem;"></i>
-                        <input type="text" id="student-login-code" required placeholder="ระบุรหัสนักเรียน (เช่น 660101)" style="width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 16px 12px 40px; color: #ffffff; font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; transition: all 0.3s; border-color: rgba(255,255,255,0.08);" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 10px rgba(99, 102, 241, 0.2)';" onblur="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.boxShadow='none';">
-                    </div>
-                </div>
-                
-                <div>
-                    <label style="display: block; font-size: 0.82rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">รหัสผ่าน (PIN 4 หลัก)</label>
-                    <div style="position: relative;">
-                        <i class="fa-solid fa-lock" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 0.9rem;"></i>
-                        <input type="password" id="student-login-password" required maxlength="4" placeholder="••••" style="width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 16px 12px 40px; color: #ffffff; font-family: 'Prompt', sans-serif; font-size: 0.95rem; tracking: 0.2em; outline: none; transition: all 0.3s; border-color: rgba(255,255,255,0.08);" onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 10px rgba(99, 102, 241, 0.2)';" onblur="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.boxShadow='none';">
+                        <i class="fa-solid fa-id-card"
+                            style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 0.9rem;"></i>
+                        <input type="text" id="student-login-code" required placeholder="ระบุรหัสนักเรียน (เช่น 660101)"
+                            style="width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 16px 12px 40px; color: #ffffff; font-family: 'Prompt', sans-serif; font-size: 0.9rem; outline: none; transition: all 0.3s; border-color: rgba(255,255,255,0.08);"
+                            onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 10px rgba(99, 102, 241, 0.2)';"
+                            onblur="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.boxShadow='none';">
                     </div>
                 </div>
 
-                <div id="student-login-error" style="color: #ef4444; font-size: 0.82rem; font-weight: 500; display: none; margin-top: 2px;">
-                    <i class="fa-solid fa-circle-exclamation" style="margin-right: 4px;"></i> รหัสนักเรียนหรือรหัสผ่านไม่ถูกต้อง
+                <div>
+                    <label
+                        style="display: block; font-size: 0.82rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px;">รหัสผ่าน
+                        (PIN 4 หลัก)</label>
+                    <div style="position: relative;">
+                        <i class="fa-solid fa-lock"
+                            style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b; font-size: 0.9rem;"></i>
+                        <input type="password" id="student-login-password" required maxlength="4" placeholder="••••"
+                            style="width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 12px 16px 12px 40px; color: #ffffff; font-family: 'Prompt', sans-serif; font-size: 0.95rem; tracking: 0.2em; outline: none; transition: all 0.3s; border-color: rgba(255,255,255,0.08);"
+                            onfocus="this.style.borderColor='#6366f1'; this.style.boxShadow='0 0 10px rgba(99, 102, 241, 0.2)';"
+                            onblur="this.style.borderColor='rgba(255, 255, 255, 0.08)'; this.style.boxShadow='none';">
+                    </div>
                 </div>
-                
-                <button type="submit" style="background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; font-family: 'Prompt', sans-serif; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+
+                <div id="student-login-error"
+                    style="color: #ef4444; font-size: 0.82rem; font-weight: 500; display: none; margin-top: 2px;">
+                    <i class="fa-solid fa-circle-exclamation" style="margin-right: 4px;"></i>
+                    รหัสนักเรียนหรือรหัสผ่านไม่ถูกต้อง
+                </div>
+
+                <button type="submit"
+                    style="background: linear-gradient(135deg, #6366f1 0%, #3b82f6 100%); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 600; font-family: 'Prompt', sans-serif; font-size: 0.95rem; cursor: pointer; transition: all 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(99, 102, 241, 0.25);"
+                    onmouseover="this.style.transform='translateY(-2px)'"
+                    onmouseout="this.style.transform='translateY(0)'">
                     <i class="fa-solid fa-right-to-bracket"></i> เข้าสู่ระบบนักเรียน
                 </button>
             </form>
 
             <div style="margin-top: 25px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px;">
-                <span style="font-size: 0.78rem; color: #64748b; display: block; margin-bottom: 8px;">สำหรับการทดสอบระบบ (Demo Accounts)</span>
+                <span style="font-size: 0.78rem; color: #64748b; display: block; margin-bottom: 8px;">สำหรับการทดสอบระบบ
+                    (Demo Accounts)</span>
                 <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-                    <button onclick="quickStudentLogin('660101')" style="background: rgba(99, 102, 241, 0.1); border: 1px dashed rgba(99, 102, 241, 0.3); color: #818cf8; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; font-family: 'Prompt', sans-serif; font-weight: 500;">
+                    <button onclick="quickStudentLogin('660101')"
+                        style="background: rgba(99, 102, 241, 0.1); border: 1px dashed rgba(99, 102, 241, 0.3); color: #818cf8; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; font-family: 'Prompt', sans-serif; font-weight: 500;">
                         ภัทรพล (ม.3/1)
                     </button>
-                    <button onclick="quickStudentLogin('660102')" style="background: rgba(16, 185, 129, 0.1); border: 1px dashed rgba(16, 185, 129, 0.3); color: #34d399; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; font-family: 'Prompt', sans-serif; font-weight: 500;">
+                    <button onclick="quickStudentLogin('660102')"
+                        style="background: rgba(16, 185, 129, 0.1); border: 1px dashed rgba(16, 185, 129, 0.3); color: #34d399; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; font-family: 'Prompt', sans-serif; font-weight: 500;">
                         สมหญิง (ม.3/1)
                     </button>
-                    <button onclick="quickStudentLogin('670101')" style="background: rgba(245, 158, 11, 0.1); border: 1px dashed rgba(245, 158, 11, 0.3); color: #fbbf24; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; font-family: 'Prompt', sans-serif; font-weight: 500;">
+                    <button onclick="quickStudentLogin('670101')"
+                        style="background: rgba(245, 158, 11, 0.1); border: 1px dashed rgba(245, 158, 11, 0.3); color: #fbbf24; padding: 6px 12px; border-radius: 8px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s; font-family: 'Prompt', sans-serif; font-weight: 500;">
                         เดชา (ม.2/1)
                     </button>
                 </div>
@@ -904,6 +1180,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -917,19 +1194,26 @@
             <i class="fa-solid fa-graduation-cap"></i> LMS Portal
         </div>
         <div class="nav-links">
-            <a id="link-dashboard" class="nav-link active" onclick="switchTab('dashboard')"><i class="fa-solid fa-house"></i> แดชบอร์ด</a>
-            <a id="link-lessons" class="nav-link" onclick="switchTab('lessons')"><i class="fa-solid fa-book-open"></i> บทเรียนของฉัน</a>
-            <a id="link-assignment" class="nav-link" onclick="switchTab('assignment')"><i class="fa-solid fa-file-arrow-up"></i> ส่งการบ้าน</a>
-            <a id="link-game" class="nav-link" onclick="switchTab('game')"><i class="fa-solid fa-gamepad"></i> มินิเกม &amp; ภารกิจ</a>
-            <a id="link-leaderboard" class="nav-link" onclick="switchTab('leaderboard')"><i class="fa-solid fa-trophy"></i> ลีดเดอร์บอร์ด</a>
-            <a id="link-notify" class="nav-link" onclick="switchTab('notify')"><i class="fa-solid fa-bell"></i> การแจ้งเตือน</a>
+            <a id="link-dashboard" class="nav-link active" onclick="switchTab('dashboard')"><i
+                    class="fa-solid fa-house"></i> แดชบอร์ด</a>
+            <a id="link-lessons" class="nav-link" onclick="switchTab('lessons')"><i class="fa-solid fa-book-open"></i>
+                บทเรียนของฉัน</a>
+            <a id="link-assignment" class="nav-link" onclick="switchTab('assignment')"><i
+                    class="fa-solid fa-file-arrow-up"></i> ส่งการบ้าน</a>
+            <a id="link-game" class="nav-link" onclick="switchTab('game')"><i class="fa-solid fa-gamepad"></i> มินิเกม
+                &amp; ภารกิจ</a>
+            <a id="link-leaderboard" class="nav-link" onclick="switchTab('leaderboard')"><i
+                    class="fa-solid fa-trophy"></i> ลีดเดอร์บอร์ด</a>
+            <a id="link-notify" class="nav-link" onclick="switchTab('notify')"><i class="fa-solid fa-bell"></i>
+                การแจ้งเตือน</a>
         </div>
-        <button class="logout-btn" onclick="handleStudentLogout()"><i class="fa-solid fa-sign-out-alt"></i> ออกจากระบบ</button>
+        <button class="logout-btn" onclick="handleStudentLogout()"><i class="fa-solid fa-sign-out-alt"></i>
+            ออกจากระบบ</button>
     </aside>
 
     <!-- Main Content -->
     <main class="main-content">
-        
+
         <!-- Topbar (Always visible) -->
         <header class="topbar">
             <div class="greeting">
@@ -946,7 +1230,8 @@
                     <!-- Dropdown Panel -->
                     <div class="notify-dropdown" id="notify-dropdown">
                         <div class="notify-header">
-                            <h4><i class="fa-solid fa-bell" style="color:var(--primary);margin-right:6px;"></i>การแจ้งเตือน</h4>
+                            <h4><i class="fa-solid fa-bell"
+                                    style="color:var(--primary);margin-right:6px;"></i>การแจ้งเตือน</h4>
                             <button class="notify-read-all" onclick="markAllRead()">อ่านทั้งหมดแล้ว</button>
                         </div>
                         <div class="notify-list" id="notify-list">
@@ -995,28 +1280,39 @@
         <!-- ================= PANEL 1: DASHBOARD ================= -->
         <div id="panel-dashboard" class="tab-panel">
             <div class="dashboard-grid">
-                
+
                 <!-- Left Column -->
                 <div class="col-left">
-                    
+
                     <!-- Quick Check-in (Urgent Action #1) -->
                     <div class="card checkin-card">
                         <div class="card-header" style="margin-bottom: 15px;">
-                            <div class="card-title"><i class="fa-solid fa-clipboard-user" style="color: var(--primary);"></i> สถานะการเข้าเรียน</div>
+                            <div class="card-title"><i class="fa-solid fa-clipboard-user"
+                                    style="color: var(--primary);"></i> สถานะการเข้าเรียน</div>
                         </div>
-                        <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--text-muted);">วิชา: วิทยาการคำนวณ ม.3 | เวลาปัจจุบัน: <span id="clock" style="font-weight: 600; color: var(--text-main);">08:15 น.</span></p>
+                        <p style="margin-bottom: 15px; font-size: 0.9rem; color: var(--text-muted);">วิชา: วิทยาการคำนวณ
+                            ม.3 | เวลาปัจจุบัน: <span id="clock"
+                                style="font-weight: 600; color: var(--text-main);">08:15 น.</span></p>
                         <div class="attendance-status pending" id="attendanceStatus">
-                            <span class="status-dot" style="width: 10px; height: 10px; border-radius: 50%; background-color: #f59e0b; display: inline-block; box-shadow: 0 0 8px #f59e0b; animation: pulse 1.5s infinite; flex-shrink: 0;"></span>
-                            <span class="status-text" style="font-weight: 600; font-size: 0.95rem;">รอคุณครูเรียกเช็คชื่อ...</span>
+                            <span class="status-dot"
+                                style="width: 10px; height: 10px; border-radius: 50%; background-color: #f59e0b; display: inline-block; box-shadow: 0 0 8px #f59e0b; animation: pulse 1.5s infinite; flex-shrink: 0;"></span>
+                            <span class="status-text"
+                                style="font-weight: 600; font-size: 0.95rem;">รอคุณครูเรียกเช็คชื่อ...</span>
                         </div>
-                        <button class="btn-play" style="width: 100%; margin-top: 15px; background: var(--white); color: var(--primary-dark); border: 1px solid var(--border); font-size: 0.9rem; font-weight: 500;" onclick="openStudentAttendanceReport()"><i class="fa-solid fa-chart-simple"></i> ดูรายงานเช็คชื่อย้อนหลัง</button>
+                        <button class="btn-play"
+                            style="width: 100%; margin-top: 15px; background: var(--white); color: var(--primary-dark); border: 1px solid var(--border); font-size: 0.9rem; font-weight: 500;"
+                            onclick="openStudentAttendanceReport()"><i class="fa-solid fa-chart-simple"></i>
+                            ดูรายงานเช็คชื่อย้อนหลัง</button>
                     </div>
 
                     <!-- Assigned Homework (Urgent Action #2) -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title"><i class="fa-solid fa-file-invoice" style="color: var(--primary);"></i> การบ้านที่ได้รับมอบหมาย (Assigned Homework)</div>
-                            <button class="btn-play" style="padding: 6px 12px; font-size: 0.85rem;" onclick="switchTab('assignment')">ไปที่หน้าส่งงาน</button>
+                            <div class="card-title"><i class="fa-solid fa-file-invoice"
+                                    style="color: var(--primary);"></i> การบ้านที่ได้รับมอบหมาย (Assigned Homework)
+                            </div>
+                            <button class="btn-play" style="padding: 6px 12px; font-size: 0.85rem;"
+                                onclick="switchTab('assignment')">ไปที่หน้าส่งงาน</button>
                         </div>
                         <div id="dashboard-assignments-list" style="display: flex; flex-direction: column; gap: 12px;">
                             <!-- populated dynamically -->
@@ -1026,43 +1322,61 @@
                     <!-- Course Materials Preview -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title"><i class="fa-solid fa-book-open" style="color: #9333ea;"></i> บทเรียนที่เปิดให้เรียนรู้ (Course Materials)</div>
-                            <button class="btn-play" style="padding: 6px 12px; font-size: 0.85rem;" onclick="switchTab('lessons')">ดูทั้งหมด</button>
+                            <div class="card-title"><i class="fa-solid fa-book-open" style="color: #9333ea;"></i>
+                                บทเรียนที่เปิดให้เรียนรู้ (Course Materials)</div>
+                            <button class="btn-play" style="padding: 6px 12px; font-size: 0.85rem;"
+                                onclick="switchTab('lessons')">ดูทั้งหมด</button>
                         </div>
                         <div id="course-materials-container" style="display: flex; flex-direction: column; gap: 12px;">
                             <!-- Slide: Lesson 1 -->
-                            <div class="lesson-item" id="lesson-lock-1" style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--secondary); border-radius: 12px; border: 1px solid var(--border);">
+                            <div class="lesson-item" id="lesson-lock-1"
+                                style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--secondary); border-radius: 12px; border: 1px solid var(--border);">
                                 <div style="display: flex; align-items: center; gap: 12px;">
-                                    <i class="fa-solid fa-file-powerpoint" style="font-size: 1.5rem; color: #ea580c;"></i>
+                                    <i class="fa-solid fa-file-powerpoint"
+                                        style="font-size: 1.5rem; color: #ea580c;"></i>
                                     <div>
-                                        <h5 style="margin: 0; font-size: 0.95rem;">สไลด์บทที่ 1: การเขียนโค้ดเบื้องต้น</h5>
-                                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">เนื้อหาประกอบบทเรียนหลัก</p>
+                                        <h5 style="margin: 0; font-size: 0.95rem;">สไลด์บทที่ 1: การเขียนโค้ดเบื้องต้น
+                                        </h5>
+                                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">
+                                            เนื้อหาประกอบบทเรียนหลัก</p>
                                     </div>
                                 </div>
-                                <a href="#" class="btn-play" style="padding: 6px 12px; font-size: 0.8rem; background: var(--primary); color: white; border-radius: 20px; font-weight: 500;" onclick="alert('กำลังเปิดสไลด์บทที่ 1: การเขียนโค้ดเบื้องต้น')"><i class="fa-solid fa-eye"></i> เปิดดู</a>
+                                <a href="#" class="btn-play"
+                                    style="padding: 6px 12px; font-size: 0.8rem; background: var(--primary); color: white; border-radius: 20px; font-weight: 500;"
+                                    onclick="alert('กำลังเปิดสไลด์บทที่ 1: การเขียนโค้ดเบื้องต้น')"><i
+                                        class="fa-solid fa-eye"></i> เปิดดู</a>
                             </div>
-                            
+
                             <!-- Video: Flowchart -->
-                            <div class="lesson-item" id="lesson-lock-2" style="display: none; justify-content: space-between; align-items: center; padding: 12px; background: var(--secondary); border-radius: 12px; border: 1px solid var(--border);">
+                            <div class="lesson-item" id="lesson-lock-2"
+                                style="display: none; justify-content: space-between; align-items: center; padding: 12px; background: var(--secondary); border-radius: 12px; border: 1px solid var(--border);">
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     <i class="fa-solid fa-file-video" style="font-size: 1.5rem; color: #2563eb;"></i>
                                     <div>
-                                        <h5 style="margin: 0; font-size: 0.95rem;">วิดีโอสอนเสริม: การเขียน Flowchart</h5>
-                                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">วิดีโออธิบายเสริมความเข้าใจ</p>
+                                        <h5 style="margin: 0; font-size: 0.95rem;">วิดีโอสอนเสริม: การเขียน Flowchart
+                                        </h5>
+                                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">
+                                            วิดีโออธิบายเสริมความเข้าใจ</p>
                                     </div>
                                 </div>
-                                <a href="#" class="btn-play" style="padding: 6px 12px; font-size: 0.8rem; background: var(--primary); color: white; border-radius: 20px; font-weight: 500;" onclick="alert('กำลังเปิดดูวิดีโอสอนเสริม: การเขียน Flowchart')"><i class="fa-solid fa-play"></i> เล่นคลิป</a>
+                                <a href="#" class="btn-play"
+                                    style="padding: 6px 12px; font-size: 0.8rem; background: var(--primary); color: white; border-radius: 20px; font-weight: 500;"
+                                    onclick="alert('กำลังเปิดดูวิดีโอสอนเสริม: การเขียน Flowchart')"><i
+                                        class="fa-solid fa-play"></i> เล่นคลิป</a>
                             </div>
                             <!-- Container for student uploaded materials (m3 files visible) -->
-                            <div id="student-uploaded-materials-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
+                            <div id="student-uploaded-materials-container"
+                                style="display: flex; flex-direction: column; gap: 12px;"></div>
                         </div>
                     </div>
 
                     <!-- Upload Assignment -->
                     <div class="card" style="display: none;">
                         <div class="card-header">
-                            <div class="card-title"><i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary);"></i> ส่งงานด่วน (Assignment Upload)</div>
-                            <span style="font-size: 0.9rem; color: var(--warning); font-weight: 500;"><i class="fa-solid fa-clock"></i> กำหนดส่ง: วันพรุ่งนี้</span>
+                            <div class="card-title"><i class="fa-solid fa-cloud-arrow-up"
+                                    style="color: var(--primary);"></i> ส่งงานด่วน (Assignment Upload)</div>
+                            <span style="font-size: 0.9rem; color: var(--warning); font-weight: 500;"><i
+                                    class="fa-solid fa-clock"></i> กำหนดส่ง: วันพรุ่งนี้</span>
                         </div>
                         <div class="upload-area" id="dropzone">
                             <i class="fa-solid fa-file-arrow-up upload-icon"></i>
@@ -1074,7 +1388,8 @@
                                 <span class="tag">.XLSX</span>
                                 <span class="tag">.PNG</span>
                                 <span class="tag">.JPG</span>
-                                <input type="file" id="file-input" style="display:none" accept=".pdf,.docx,.xlsx,.png,.jpg">
+                                <input type="file" id="file-input" style="display:none"
+                                    accept=".pdf,.docx,.xlsx,.png,.jpg">
                             </div>
                         </div>
                     </div>
@@ -1083,15 +1398,22 @@
 
                 <!-- Right Column -->
                 <div class="col-right">
-                    
+
                     <!-- Game Engine Card -->
-                    <div class="card" style="background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%); color: var(--white); border: none; overflow: hidden; position: relative; padding: 24px; border-radius: var(--radius); margin-bottom: 30px;">
+                    <div class="card"
+                        style="background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%); color: var(--white); border: none; overflow: hidden; position: relative; padding: 24px; border-radius: var(--radius); margin-bottom: 30px;">
                         <div style="position: relative; z-index: 2;">
-                            <h4 style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-rocket"></i> มินิเกมตะลุยอวกาศ</h4>
-                            <p style="font-size: 0.85rem; opacity: 0.9; line-height: 1.5; margin-bottom: 15px;">ด่านใหม่เปิดแล้ว! ฝึกเขียนโค้ดแก้ปริศนาเพื่อรับ 500 คะแนนพิเศษ</p>
-                            <button class="btn-play" style="background: var(--white); color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; width: 100%; border: none; padding: 10px; border-radius: 10px; cursor: pointer;" onclick="switchTab('game')"><i class="fa-solid fa-play"></i> เข้าสู่เกมเลย</button>
+                            <h4
+                                style="margin: 0 0 10px 0; font-size: 1.15rem; font-weight: 700; color: var(--white); display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-rocket"></i> มินิเกมตะลุยอวกาศ</h4>
+                            <p style="font-size: 0.85rem; opacity: 0.9; line-height: 1.5; margin-bottom: 15px;">
+                                ด่านใหม่เปิดแล้ว! ฝึกเขียนโค้ดแก้ปริศนาเพื่อรับ 500 คะแนนพิเศษ</p>
+                            <button class="btn-play"
+                                style="background: var(--white); color: var(--primary-dark); font-weight: 600; font-size: 0.85rem; width: 100%; border: none; padding: 10px; border-radius: 10px; cursor: pointer;"
+                                onclick="switchTab('game')"><i class="fa-solid fa-play"></i> เข้าสู่เกมเลย</button>
                         </div>
-                        <div style="position: absolute; right: -20px; bottom: -20px; font-size: 6rem; opacity: 0.15; color: var(--white); z-index: 1; pointer-events: none;">
+                        <div
+                            style="position: absolute; right: -20px; bottom: -20px; font-size: 6rem; opacity: 0.15; color: var(--white); z-index: 1; pointer-events: none;">
                             <i class="fa-solid fa-user-astronaut"></i>
                         </div>
                     </div>
@@ -1099,8 +1421,10 @@
                     <!-- Leaderboard Preview -->
                     <div class="card">
                         <div class="card-header">
-                            <div class="card-title"><i class="fa-solid fa-trophy" style="color: #eab308;"></i> Top 5 Leaderboard</div>
-                            <button class="btn-play" style="padding: 6px 12px; font-size: 0.85rem;" onclick="switchTab('leaderboard')">ดูทั้งหมด</button>
+                            <div class="card-title"><i class="fa-solid fa-trophy" style="color: #eab308;"></i> Top 5
+                                Leaderboard</div>
+                            <button class="btn-play" style="padding: 6px 12px; font-size: 0.85rem;"
+                                onclick="switchTab('leaderboard')">ดูทั้งหมด</button>
                         </div>
                         <ul class="leaderboard-list">
                             <li class="leader-item">
@@ -1119,7 +1443,8 @@
                                 </div>
                                 <div class="leader-score">1,320 pts</div>
                             </li>
-                            <li class="leader-item" id="my-leader-row" style="border: 2px solid var(--primary); background-color: var(--primary-light);">
+                            <li class="leader-item" id="my-leader-row"
+                                style="border: 2px solid var(--primary); background-color: var(--primary-light);">
                                 <div class="rank rank-3">3</div>
                                 <div class="leader-info">
                                     <h5>ภัทรพล เรียนดี</h5>
@@ -1154,34 +1479,48 @@
         <div id="panel-lessons" class="tab-panel" style="display: none;">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-book-open" style="color: #9333ea;"></i> บทเรียนทั้งหมดของฉัน (My Course Material)</div>
+                    <div class="card-title"><i class="fa-solid fa-book-open" style="color: #9333ea;"></i>
+                        บทเรียนทั้งหมดของฉัน (My Course Material)</div>
                 </div>
-                <p style="color: var(--text-muted); margin-bottom: 25px;">หน้าสรุปสื่อการสอนทั้งหมดที่คุณครูเปิดให้เข้าถึงเพื่อทบทวนความรู้</p>
-                
+                <p style="color: var(--text-muted); margin-bottom: 25px;">
+                    หน้าสรุปสื่อการสอนทั้งหมดที่คุณครูเปิดให้เข้าถึงเพื่อทบทวนความรู้</p>
+
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
                     <!-- Lesson Item 1 (Slide) -->
-                    <div id="lessons-tab-lock-1" style="background: var(--secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
-                        <i class="fa-solid fa-file-powerpoint" style="font-size: 2.5rem; color: #ea580c; margin-bottom: 15px;"></i>
+                    <div id="lessons-tab-lock-1"
+                        style="background: var(--secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                        <i class="fa-solid fa-file-powerpoint"
+                            style="font-size: 2.5rem; color: #ea580c; margin-bottom: 15px;"></i>
                         <h4 style="margin-bottom: 8px;">สไลด์บทที่ 1: การเขียนโค้ดเบื้องต้น</h4>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">สไลด์รวบรวมหลักการคิดเชิงนามธรรม ตัวแปร และลูปการทำงานในระบบเบื้องต้น</p>
-                        <button class="btn-play" style="background: var(--primary); color: white;" onclick="alert('เปิดเอกสารสไลด์')"><i class="fa-solid fa-arrow-up-right-from-square"></i> เริ่มเรียนรู้</button>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+                            สไลด์รวบรวมหลักการคิดเชิงนามธรรม ตัวแปร และลูปการทำงานในระบบเบื้องต้น</p>
+                        <button class="btn-play" style="background: var(--primary); color: white;"
+                            onclick="alert('เปิดเอกสารสไลด์')"><i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            เริ่มเรียนรู้</button>
                     </div>
-                    
+
                     <!-- Lesson Item 2 (Video - dynamically locked/unlocked) -->
-                    <div id="lessons-tab-lock-2" style="display: none; background: var(--secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
-                        <i class="fa-solid fa-file-video" style="font-size: 2.5rem; color: #2563eb; margin-bottom: 15px;"></i>
+                    <div id="lessons-tab-lock-2"
+                        style="display: none; background: var(--secondary); border: 1px solid var(--border); border-radius: 12px; padding: 20px;">
+                        <i class="fa-solid fa-file-video"
+                            style="font-size: 2.5rem; color: #2563eb; margin-bottom: 15px;"></i>
                         <h4 style="margin-bottom: 8px;">วิดีโอสอนเสริม: การเขียน Flowchart</h4>
-                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">วิดีโออธิบายการทำงานของผังงานและเงื่อนไขแบบเห็นภาพชัดเจนจากคุณครูสมชาย</p>
-                        <button class="btn-play" style="background: var(--primary); color: white;" onclick="alert('เปิดดูวิดีโอคลิป')"><i class="fa-solid fa-play"></i> รับชมวิดีโอ</button>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px;">
+                            วิดีโออธิบายการทำงานของผังงานและเงื่อนไขแบบเห็นภาพชัดเจนจากคุณครูสมชาย</p>
+                        <button class="btn-play" style="background: var(--primary); color: white;"
+                            onclick="alert('เปิดดูวิดีโอคลิป')"><i class="fa-solid fa-play"></i> รับชมวิดีโอ</button>
                     </div>
-                    
+
                     <!-- Container for student uploaded materials grid -->
                     <div id="student-uploaded-materials-grid" style="display: contents;"></div>
 
-                    <div id="lessons-tab-placeholder" style="border: 2px dashed var(--border); border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; color: var(--text-muted);">
-                        <i class="fa-solid fa-lock" style="font-size: 2.5rem; margin-bottom: 15px; color: var(--text-muted);"></i>
+                    <div id="lessons-tab-placeholder"
+                        style="border: 2px dashed var(--border); border-radius: 12px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 40px; text-align: center; color: var(--text-muted);">
+                        <i class="fa-solid fa-lock"
+                            style="font-size: 2.5rem; margin-bottom: 15px; color: var(--text-muted);"></i>
                         <h4>บทเรียนอื่น ๆ กำลังรอคุณครูปลดล็อก</h4>
-                        <p style="font-size: 0.85rem; max-width: 280px; margin-top: 5px;">ครูผู้สอนสามารถเปิด/ปิด การมองเห็นบทเรียนเสริมผ่านทางแผงควบคุมหลัก</p>
+                        <p style="font-size: 0.85rem; max-width: 280px; margin-top: 5px;">ครูผู้สอนสามารถเปิด/ปิด
+                            การมองเห็นบทเรียนเสริมผ่านทางแผงควบคุมหลัก</p>
                     </div>
                 </div>
             </div>
@@ -1191,15 +1530,18 @@
         <div id="panel-assignment" class="tab-panel" style="display: none;">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"><i class="fa-solid fa-file-arrow-up" style="color: var(--primary);"></i> ส่งงานและติดตามการบ้าน (Assignment Portal)</div>
+                    <div class="card-title"><i class="fa-solid fa-file-arrow-up" style="color: var(--primary);"></i>
+                        ส่งงานและติดตามการบ้าน (Assignment Portal)</div>
                 </div>
                 <div style="display: grid; grid-template-columns: 3fr 2fr; gap: 35px;">
                     <div>
                         <h4 style="margin-bottom: 15px; font-weight: 600;">ส่งใบงานการบ้าน</h4>
                         <!-- Select Assignment Dropdown -->
                         <div id="student-upload-section" style="margin-bottom: 15px;">
-                            <label for="submit-assignment-select" style="font-weight: 600; font-size: 0.9rem; color: var(--text-main); display: block; margin-bottom: 8px;">เลือกหัวข้อการบ้านที่ต้องการส่ง:</label>
-                            <select id="submit-assignment-select" class="student-select" onchange="onSelectedAssignmentChange()">
+                            <label for="submit-assignment-select"
+                                style="font-weight: 600; font-size: 0.9rem; color: var(--text-main); display: block; margin-bottom: 8px;">เลือกหัวข้อการบ้านที่ต้องการส่ง:</label>
+                            <select id="submit-assignment-select" class="student-select"
+                                onchange="onSelectedAssignmentChange()">
                                 <!-- populated dynamically -->
                             </select>
                         </div>
@@ -1208,24 +1550,32 @@
                             <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
                             <h4>ลากไฟล์ใบงานมาวางที่นี่ หรือคลิกเพื่ออัปโหลด</h4>
                             <p>รองรับไฟล์ PDF, Word หรือไฟล์รูปภาพ ขนาดไม่เกิน 25MB</p>
-                            <input type="file" id="file-input-tab" style="display:none" accept=".pdf,.docx,.xlsx,.png,.jpg">
+                            <input type="file" id="file-input-tab" style="display:none"
+                                accept=".pdf,.docx,.xlsx,.png,.jpg">
                         </div>
                     </div>
                     <div>
                         <h4 style="margin-bottom: 15px; font-weight: 600;">ประวัติการส่งงานล่าสุด</h4>
-                        <div style="background: var(--secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border);" id="submission-history">
-                            <div style="display: flex; gap: 12px; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 12px; margin-bottom: 12px;">
-                                <i class="fa-solid fa-circle-check" style="color: var(--success); font-size: 1.25rem;"></i>
+                        <div style="background: var(--secondary); padding: 20px; border-radius: 12px; border: 1px solid var(--border);"
+                            id="submission-history">
+                            <div
+                                style="display: flex; gap: 12px; align-items: center; border-bottom: 1px dashed var(--border); padding-bottom: 12px; margin-bottom: 12px;">
+                                <i class="fa-solid fa-circle-check"
+                                    style="color: var(--success); font-size: 1.25rem;"></i>
                                 <div style="flex: 1;">
                                     <h5 style="margin: 0; font-size: 0.9rem;">แบบทดสอบก่อนเรียนบทที่ 1</h5>
-                                    <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">ส่งเมื่อ: 10 มิ.ย. 2026 | ตรวจแล้ว: </p>
+                                    <p style="margin: 0; font-size: 0.75rem; color: var(--text-muted);">ส่งเมื่อ: 10
+                                        มิ.ย. 2026 | ตรวจแล้ว: </p>
                                 </div>
                             </div>
-                            <div style="display: flex; gap: 12px; align-items: center; color: var(--text-muted);" id="submission-status-placeholder">
+                            <div style="display: flex; gap: 12px; align-items: center; color: var(--text-muted);"
+                                id="submission-status-placeholder">
                                 <i class="fa-regular fa-clock" style="font-size: 1.25rem;"></i>
                                 <div>
-                                    <h5 style="margin: 0; font-size: 0.9rem; font-weight: 500;">ใบงานที่ 1: อัลกอริทึมเบื้องต้น</h5>
-                                    <p style="margin: 0; font-size: 0.75rem;">สถานะ: <span style="color: var(--warning); font-weight: 500;">ยังไม่ได้ส่งงาน</span></p>
+                                    <h5 style="margin: 0; font-size: 0.9rem; font-weight: 500;">ใบงานที่ 1:
+                                        อัลกอริทึมเบื้องต้น</h5>
+                                    <p style="margin: 0; font-size: 0.75rem;">สถานะ: <span
+                                            style="color: var(--warning); font-weight: 500;">ยังไม่ได้ส่งงาน</span></p>
                                 </div>
                             </div>
                         </div>
@@ -1239,66 +1589,101 @@
 
             <!-- Game Hub Header -->
             <div id="game-hub" style="">
-                <div style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a5f 100%); border-radius: 20px; padding: 30px; margin-bottom: 24px; position: relative; overflow: hidden;">
-                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.07; background: radial-gradient(white 1px, transparent 0), radial-gradient(white 1.5px, transparent 0); background-size: 35px 35px, 55px 55px; background-position: 0 0, 17px 17px; pointer-events: none;"></div>
-                    <h2 style="color: white; margin: 0 0 8px 0; font-size: 1.5rem;"><i class="fa-solid fa-gamepad" style="color: #38bdf8;"></i> ห้องมินิเกม วิทยาการคำนวณ</h2>
-                    <p style="color: rgba(255,255,255,0.6); margin: 0; font-size: 0.95rem;">เกมฝึกทักษะ CS สำหรับนักเรียน ม.1–3 · เก็บคะแนนได้ทุกเกม!</p>
+                <div
+                    style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a5f 100%); border-radius: 20px; padding: 30px; margin-bottom: 24px; position: relative; overflow: hidden;">
+                    <div
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.07; background: radial-gradient(white 1px, transparent 0), radial-gradient(white 1.5px, transparent 0); background-size: 35px 35px, 55px 55px; background-position: 0 0, 17px 17px; pointer-events: none;">
+                    </div>
+                    <h2 style="color: white; margin: 0 0 8px 0; font-size: 1.5rem;"><i class="fa-solid fa-gamepad"
+                            style="color: #38bdf8;"></i> ห้องมินิเกม วิทยาการคำนวณ</h2>
+                    <p style="color: rgba(255,255,255,0.6); margin: 0; font-size: 0.95rem;">เกมฝึกทักษะ CS
+                        สำหรับนักเรียน ม.1–3 · เก็บคะแนนได้ทุกเกม!</p>
                 </div>
 
                 <!-- Game Cards Grid -->
                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
 
                     <!-- Game 1: Binary Decoder -->
-                    <div class="game-card" onclick="launchGame('binary')" style="background: linear-gradient(135deg, #0f172a, #1e3a5f); border: 1px solid rgba(56,189,248,0.3); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(56,189,248,0.2)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                    <div class="game-card" onclick="launchGame('binary')"
+                        style="background: linear-gradient(135deg, #0f172a, #1e3a5f); border: 1px solid rgba(56,189,248,0.3); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden;"
+                        onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(56,189,248,0.2)'"
+                        onmouseout="this.style.transform=''; this.style.boxShadow=''">
                         <div style="font-size: 2.8rem; margin-bottom: 14px;">🔢</div>
                         <h3 style="color: #38bdf8; margin: 0 0 8px 0; font-size: 1.1rem;">ถอดรหัสเลขฐานสอง</h3>
-                        <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0 0 16px 0;">แปลงเลขฐานสอง ↔ ฐานสิบ เร็วที่สุดในห้อง!</p>
+                        <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0 0 16px 0;">แปลงเลขฐานสอง
+                            ↔ ฐานสิบ เร็วที่สุดในห้อง!</p>
                         <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <span style="background: rgba(56,189,248,0.15); color: #38bdf8; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">ม.1–3 · คณิต + CS</span>
+                            <span
+                                style="background: rgba(56,189,248,0.15); color: #38bdf8; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">ม.1–3
+                                · คณิต + CS</span>
                             <span style="color: #fbbf24; font-size: 0.8rem;">⭐ +80 คะแนน</span>
                         </div>
                     </div>
 
                     <!-- Game 2: Algorithm Sorter -->
-                    <div class="game-card" onclick="launchGame('algorithm')" style="background: linear-gradient(135deg, #1a0a2e, #2d1b69); border: 1px solid rgba(167,139,250,0.3); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(167,139,250,0.2)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                    <div class="game-card" onclick="launchGame('algorithm')"
+                        style="background: linear-gradient(135deg, #1a0a2e, #2d1b69); border: 1px solid rgba(167,139,250,0.3); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden;"
+                        onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(167,139,250,0.2)'"
+                        onmouseout="this.style.transform=''; this.style.boxShadow=''">
                         <div style="font-size: 2.8rem; margin-bottom: 14px;">🧩</div>
                         <h3 style="color: #a78bfa; margin: 0 0 8px 0; font-size: 1.1rem;">เรียงขั้นตอนอัลกอริทึม</h3>
-                        <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0 0 16px 0;">จัดเรียงขั้นตอนการทำงานให้ถูกลำดับ</p>
+                        <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0 0 16px 0;">
+                            จัดเรียงขั้นตอนการทำงานให้ถูกลำดับ</p>
                         <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <span style="background: rgba(167,139,250,0.15); color: #a78bfa; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">ม.1–3 · Algorithm</span>
+                            <span
+                                style="background: rgba(167,139,250,0.15); color: #a78bfa; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">ม.1–3
+                                · Algorithm</span>
                             <span style="color: #fbbf24; font-size: 0.8rem;">⭐ +100 คะแนน</span>
                         </div>
                     </div>
 
                     <!-- Game 3: Debug Hunt -->
-                    <div class="game-card" onclick="launchGame('debug')" style="background: linear-gradient(135deg, #1c0a0a, #4a1010); border: 1px solid rgba(248,113,113,0.3); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(248,113,113,0.2)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                    <div class="game-card" onclick="launchGame('debug')"
+                        style="background: linear-gradient(135deg, #1c0a0a, #4a1010); border: 1px solid rgba(248,113,113,0.3); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.3s;"
+                        onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(248,113,113,0.2)'"
+                        onmouseout="this.style.transform=''; this.style.boxShadow=''">
                         <div style="font-size: 2.8rem; margin-bottom: 14px;">🐛</div>
                         <h3 style="color: #f87171; margin: 0 0 8px 0; font-size: 1.1rem;">ล่าบั๊ก (Debug Hunt)</h3>
-                        <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0 0 16px 0;">ชี้หาข้อผิดพลาดในโค้ด Scratch / Python</p>
+                        <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0 0 16px 0;">
+                            ชี้หาข้อผิดพลาดในโค้ด Scratch / Python</p>
                         <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <span style="background: rgba(248,113,113,0.15); color: #f87171; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">ม.2–3 · Programming</span>
+                            <span
+                                style="background: rgba(248,113,113,0.15); color: #f87171; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">ม.2–3
+                                · Programming</span>
                             <span style="color: #fbbf24; font-size: 0.8rem;">⭐ +120 คะแนน</span>
                         </div>
                     </div>
 
                     <!-- Game 4: Logic Gates -->
-                    <div class="game-card" onclick="launchGame('logic')" style="background: linear-gradient(135deg, #0a1a0a, #0d3321); border: 1px solid rgba(52,211,153,0.3); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(52,211,153,0.2)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                    <div class="game-card" onclick="launchGame('logic')"
+                        style="background: linear-gradient(135deg, #0a1a0a, #0d3321); border: 1px solid rgba(52,211,153,0.3); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.3s;"
+                        onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(52,211,153,0.2)'"
+                        onmouseout="this.style.transform=''; this.style.boxShadow=''">
                         <div style="font-size: 2.8rem; margin-bottom: 14px;">⚡</div>
                         <h3 style="color: #34d399; margin: 0 0 8px 0; font-size: 1.1rem;">ตรรกะและเงื่อนไข</h3>
-                        <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0 0 16px 0;">ทดสอบ AND / OR / NOT และ True/False</p>
+                        <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0 0 16px 0;">ทดสอบ AND / OR
+                            / NOT และ True/False</p>
                         <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <span style="background: rgba(52,211,153,0.15); color: #34d399; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">ม.2–3 · Logic</span>
+                            <span
+                                style="background: rgba(52,211,153,0.15); color: #34d399; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">ม.2–3
+                                · Logic</span>
                             <span style="color: #fbbf24; font-size: 0.8rem;">⭐ +90 คะแนน</span>
                         </div>
                     </div>
 
                     <!-- Game 5: CS Quiz -->
-                    <div class="game-card" onclick="launchGame('quiz')" style="background: linear-gradient(135deg, #1a1200, #3d2c00); border: 1px solid rgba(251,191,36,0.3); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(251,191,36,0.2)'" onmouseout="this.style.transform=''; this.style.boxShadow=''">
+                    <div class="game-card" onclick="launchGame('quiz')"
+                        style="background: linear-gradient(135deg, #1a1200, #3d2c00); border: 1px solid rgba(251,191,36,0.3); border-radius: 16px; padding: 24px; cursor: pointer; transition: all 0.3s;"
+                        onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 12px 32px rgba(251,191,36,0.2)'"
+                        onmouseout="this.style.transform=''; this.style.boxShadow=''">
                         <div style="font-size: 2.8rem; margin-bottom: 14px;">🏆</div>
                         <h3 style="color: #fbbf24; margin: 0 0 8px 0; font-size: 1.1rem;">ตอบเร็ว CS Quiz</h3>
-                        <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0 0 16px 0;">10 คำถามความรู้ CS ตอบให้เร็วที่สุด!</p>
+                        <p style="color: rgba(255,255,255,0.55); font-size: 0.85rem; margin: 0 0 16px 0;">10
+                            คำถามความรู้ CS ตอบให้เร็วที่สุด!</p>
                         <div style="display: flex; align-items: center; justify-content: space-between;">
-                            <span style="background: rgba(251,191,36,0.15); color: #fbbf24; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">ม.1–3 · ความรู้รอบด้าน</span>
+                            <span
+                                style="background: rgba(251,191,36,0.15); color: #fbbf24; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;">ม.1–3
+                                · ความรู้รอบด้าน</span>
                             <span style="color: #fbbf24; font-size: 0.8rem;">⭐ +150 คะแนน</span>
                         </div>
                     </div>
@@ -1315,25 +1700,29 @@
         <div id="panel-leaderboard" class="tab-panel" style="display: none;">
             <div class="card">
                 <div class="card-header" style="flex-wrap: wrap; gap: 12px;">
-                    <div class="card-title"><i class="fa-solid fa-trophy" style="color: #eab308;"></i> ตารางอันดับคะแนนทั้งหมด (Class Leaderboard)</div>
+                    <div class="card-title"><i class="fa-solid fa-trophy" style="color: #eab308;"></i>
+                        ตารางอันดับคะแนนทั้งหมด (Class Leaderboard)</div>
                     <!-- Filter dropdowns -->
                     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-                        <select id="lb-class-select" onchange="filterLeaderboard()" style="padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--secondary); color: var(--text-main); font-size: 0.85rem; cursor: pointer;">
+                        <select id="lb-class-select" onchange="filterLeaderboard()"
+                            style="padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--secondary); color: var(--text-main); font-size: 0.85rem; cursor: pointer;">
                             <option value="all">ทั้งหมด</option>
                             <option value="m1">มัธยมศึกษาปีที่ 1</option>
                             <option value="m2">มัธยมศึกษาปีที่ 2</option>
                             <option value="m3" selected>มัธยมศึกษาปีที่ 3</option>
                         </select>
-                        <select id="lb-room-select" onchange="filterLeaderboard()" style="padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--secondary); color: var(--text-main); font-size: 0.85rem; cursor: pointer;">
+                        <select id="lb-room-select" onchange="filterLeaderboard()"
+                            style="padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--secondary); color: var(--text-main); font-size: 0.85rem; cursor: pointer;">
                             <option value="all">ทุกห้อง</option>
-                            <option value="1" selected>/1</option>
-                            <option value="2">/2</option>
-                            <option value="3">/3</option>
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
                         </select>
                     </div>
                 </div>
-                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.88rem;">ระบบจัดลำดับและประเมินผลคะแนนตามกิจกรรมการตอบคำถามในห้อง การส่งการบ้าน และคะแนนภารกิจสะสม</p>
-                
+                <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.88rem;">
+                    ระบบจัดลำดับและประเมินผลคะแนนตามกิจกรรมการตอบคำถามในห้อง การส่งการบ้าน และคะแนนภารกิจสะสม</p>
+
                 <!-- Podium leaderboard list (same style as teacher dashboard) -->
                 <div class="podium-list" id="expanded-leaderboard-list">
                     <!-- Rendered by syncLeaderboardUI() -->
@@ -1343,11 +1732,15 @@
         <!-- ================= PANEL 6: NOTIFICATIONS ================= -->
         <div id="panel-notify" class="tab-panel" style="display: none;">
             <div class="card">
-                <div class="card-header" style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 10px;">
-                    <div class="card-title"><i class="fa-solid fa-bell" style="color: var(--primary);"></i> การแจ้งเตือนทั้งหมด</div>
-                    <button onclick="markAllRead()" style="background: none; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; font-size: 0.85rem; cursor: pointer; color: var(--text-main); font-weight: 600;"><i class="fa-solid fa-check-double"></i> ทำเครื่องหมายอ่านทั้งหมดแล้ว</button>
+                <div class="card-header"
+                    style="justify-content: space-between; align-items: center; display: flex; flex-wrap: wrap; gap: 10px;">
+                    <div class="card-title"><i class="fa-solid fa-bell" style="color: var(--primary);"></i>
+                        การแจ้งเตือนทั้งหมด</div>
+                    <button onclick="markAllRead()"
+                        style="background: none; border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px; font-size: 0.85rem; cursor: pointer; color: var(--text-main); font-weight: 600;"><i
+                            class="fa-solid fa-check-double"></i> ทำเครื่องหมายอ่านทั้งหมดแล้ว</button>
                 </div>
-                
+
                 <div id="full-notify-list" style="margin-top: 15px;">
                     <!-- Rendered by renderNotifications() -->
                 </div>
@@ -1374,7 +1767,7 @@
             // Hide all tabs
             const panels = document.querySelectorAll('.tab-panel');
             panels.forEach(p => p.style.display = 'none');
-            
+
             // Remove active style from all links
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(l => l.classList.remove('active'));
@@ -1420,16 +1813,16 @@
         window.addEventListener('load', () => {
             bc.postMessage({ type: 'PING' });
             syncLeaderboardUI();
-            
+
             initializeMockAttendanceHistory();
             try {
                 const stored = localStorage.getItem('lms-primary-lessons-state');
                 if (stored) {
                     updatePrimaryLessonsFromState(JSON.parse(stored));
                 }
-            } catch (e) {}
+            } catch (e) { }
             updateUploadLimitLabels();
-            
+
             if (currentStudentId) {
                 initializeStudentProfile();
             }
@@ -1511,20 +1904,20 @@
                 studentRosters = data.studentRosters;
                 localStorage.setItem('lms-student-rosters', JSON.stringify(studentRosters));
                 localStorage.setItem('lms-leaderboard-database', JSON.stringify(leaderboardDatabase));
-                
+
                 // Re-evaluate current leaderboard filter
                 const classSelect = document.getElementById('lb-class-select');
                 const roomSelect = document.getElementById('lb-room-select');
                 const clsVal = classSelect ? classSelect.value : 'm3';
                 const roomVal = roomSelect ? roomSelect.value : '1';
                 const formattedRoom = `ม.${clsVal === 'm3' ? '3' : clsVal === 'm2' ? '2' : '1'}/${roomVal}`;
-                
+
                 currentLeaderboardData = leaderboardDatabase
                     .filter(d => d.class === clsVal && d.room === formattedRoom)
                     .sort((a, b) => b.score - a.score);
-                
+
                 if (typeof syncLeaderboardUI === 'function') syncLeaderboardUI();
-                
+
                 // Refresh UI elements if attendance report modal is open
                 const modal = document.getElementById('reportModal');
                 if (modal && modal.style.display === 'flex') {
@@ -1547,7 +1940,7 @@
                     const descEl = landingItem.querySelector('p');
                     if (titleEl && item.name) titleEl.innerText = item.name;
                     if (descEl && item.desc) descEl.innerText = item.desc;
-                    
+
                     if (item.deleted) {
                         landingItem.style.display = 'none';
                     } else if (item.visible) {
@@ -1591,7 +1984,7 @@
         function renderStudentMaterials() {
             const container = document.getElementById('student-uploaded-materials-container');
             const gridContainer = document.getElementById('student-uploaded-materials-grid');
-            
+
             const student = findStudentById(currentStudentId) || { classKey: 'm3' };
             const m3Files = store.filter(it => it.class === student.classKey && it.visibleToStudents && it.status === 'stored');
 
@@ -1614,7 +2007,7 @@
                                 <i class="fa-solid ${iconClass}" style="font-size: 1.5rem; color: ${iconColor};"></i>
                                 <div>
                                     <h5 style="margin: 0; font-size: 0.95rem; font-weight:600;">${item.name}</h5>
-                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">สื่อเสริม • ${(item.size/1024/1024).toFixed(2)} MB</p>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">สื่อเสริม • ${(item.size / 1024 / 1024).toFixed(2)} MB</p>
                                 </div>
                             </div>
                             <a href="#" class="btn-play" style="padding: 6px 12px; font-size: 0.8rem; background: var(--primary); color: white; border-radius: 20px; font-weight: 500;" onclick="alert('กำลังเปิดดู: ${item.name}')"><i class="fa-solid ${playIcon}"></i> ${actionText}</a>
@@ -1653,7 +2046,7 @@
             const lock2El = document.getElementById('lessons-tab-lock-2');
             const placeholderEl = document.getElementById('lessons-tab-placeholder');
             const isLock2Visible = lock2El && lock2El.style.display !== 'none';
-            
+
             if (placeholderEl) {
                 if (m3Files.length > 0 || isLock2Visible) {
                     placeholderEl.style.display = 'none';
@@ -2072,7 +2465,7 @@
             // Animate points counter up (add 100 points!)
             const targetScore = currentScore + 100;
             const scoreEl = document.getElementById('student-score');
-            
+
             const interval = setInterval(() => {
                 if (currentScore < targetScore) {
                     currentScore += 5;
@@ -2098,8 +2491,8 @@
                 { name: 'อารียา ใฝันดี', score: 1400, class: 'm1', room: 'ม.1/1', isMe: false },
                 { name: 'นวนรรเวช ขยัน', score: 1280, class: 'm1', room: 'ม.1/1', isMe: false },
                 { name: 'ภูศิตา สุขใจ', score: 1150, class: 'm1', room: 'ม.1/1', isMe: false },
-                { name: 'ธนพล เพียรใหญ่', score: 980,  class: 'm1', room: 'ม.1/1', isMe: false },
-                { name: 'พรทิพย์ สดใส', score: 860,  class: 'm1', room: 'ม.1/1', isMe: false },
+                { name: 'ธนพล เพียรใหญ่', score: 980, class: 'm1', room: 'ม.1/1', isMe: false },
+                { name: 'พรทิพย์ สดใส', score: 860, class: 'm1', room: 'ม.1/1', isMe: false },
                 // ม.1/2
                 { name: 'กวิน หลักแหลม', score: 1350, class: 'm1', room: 'ม.1/2', isMe: false },
                 { name: 'นิชา รักเรียน', score: 1200, class: 'm1', room: 'ม.1/2', isMe: false },
@@ -2109,7 +2502,7 @@
                 { name: 'อรไสย์ สวยใส', score: 1420, class: 'm2', room: 'ม.2/1', isMe: false },
                 { name: 'นรินทร์ อดทน', score: 1300, class: 'm2', room: 'ม.2/1', isMe: false },
                 { name: 'ยุทธนา ใฝันปัน', score: 1180, class: 'm2', room: 'ม.2/1', isMe: false },
-                { name: 'เกรียงไกร ชัยชนะ', score: 980,  class: 'm2', room: 'ม.2/1', isMe: false },
+                { name: 'เกรียงไกร ชัยชนะ', score: 980, class: 'm2', room: 'ม.2/1', isMe: false },
                 // ม.2/2
                 { name: 'สุมิตรา ดีเลิศ', score: 1480, class: 'm2', room: 'ม.2/2', isMe: false },
                 { name: 'ภานุ จริงใจ', score: 1310, class: 'm2', room: 'ม.2/2', isMe: false },
@@ -2117,9 +2510,9 @@
                 // ม.3/1
                 { name: 'สมชาย ขยันเรียน', score: 1500, class: 'm3', room: 'ม.3/1', isMe: false },
                 { name: 'สมหญิง รักดี', score: 1320, class: 'm3', room: 'ม.3/1', isMe: false },
-                { name: 'ภัทรพล เรียนดี', score: 1250, class: 'm3', room: 'ม.3/1', isMe: true  },
+                { name: 'ภัทรพล เรียนดี', score: 1250, class: 'm3', room: 'ม.3/1', isMe: true },
                 { name: 'มานะ อดทน', score: 1100, class: 'm3', room: 'ม.3/1', isMe: false },
-                { name: 'ชูใจ ใจดี', score: 950,  class: 'm3', room: 'ม.3/1', isMe: false },
+                { name: 'ชูใจ ใจดี', score: 950, class: 'm3', room: 'ม.3/1', isMe: false },
                 // ม.3/2
                 { name: 'กิตติ์ศักดิ์ เปี่ยมใส', score: 1450, class: 'm3', room: 'ม.3/2', isMe: false },
                 { name: 'พิมลไพลิน จริงใจ', score: 1230, class: 'm3', room: 'ม.3/2', isMe: false },
@@ -2127,7 +2520,7 @@
             ];
             localStorage.setItem('lms-leaderboard-database', JSON.stringify(leaderboardDatabase));
         }
-        
+
         let dbUpdated = false;
         leaderboardDatabase.forEach((student, idx) => {
             if (!student.password) {
@@ -2152,12 +2545,12 @@
 
         function filterLeaderboard() {
             const classVal = document.getElementById('lb-class-select').value;
-            const roomVal  = document.getElementById('lb-room-select').value;
+            const roomVal = document.getElementById('lb-room-select').value;
 
             currentLeaderboardData = leaderboardDatabase.filter(d => {
                 const classMatch = classVal === 'all' || d.class === classVal;
                 const classLabel = d.class === 'm1' ? 'ม.1' : d.class === 'm2' ? 'ม.2' : 'ม.3';
-                const roomMatch  = roomVal === 'all' || d.room === `${classLabel}/${roomVal}`;
+                const roomMatch = roomVal === 'all' || d.room === `${classLabel}/${roomVal}`;
                 return classMatch && roomMatch;
             }).sort((a, b) => b.score - a.score);
 
@@ -2186,9 +2579,9 @@
                     const rank = index + 1;
                     let rankClass = '';
                     let icon = '';
-                    if (rank === 1) { rankClass = 'first';  icon = '🥇'; }
+                    if (rank === 1) { rankClass = 'first'; icon = '🥇'; }
                     else if (rank === 2) { rankClass = 'second'; icon = '🥈'; }
-                    else if (rank === 3) { rankClass = 'third';  icon = '🥉'; }
+                    else if (rank === 3) { rankClass = 'third'; icon = '🥉'; }
 
                     const meStyle = item.isMe
                         ? 'border-color: var(--primary); background: var(--primary-light);'
@@ -2252,10 +2645,10 @@
         // ── Game: Binary Decoder ──────────────────────────────
         const binaryQuestions = [
             { binary: '1010', answer: 10 }, { binary: '1111', answer: 15 },
-            { binary: '1000', answer: 8  }, { binary: '0101', answer: 5  },
-            { binary: '1100', answer: 12 }, { binary: '0011', answer: 3  },
-            { binary: '1110', answer: 14 }, { binary: '0110', answer: 6  },
-            { binary: '10000', answer: 16}, { binary: '10101', answer: 21}
+            { binary: '1000', answer: 8 }, { binary: '0101', answer: 5 },
+            { binary: '1100', answer: 12 }, { binary: '0011', answer: 3 },
+            { binary: '1110', answer: 14 }, { binary: '0110', answer: 6 },
+            { binary: '10000', answer: 16 }, { binary: '10101', answer: 21 }
         ];
         let binaryIdx = 0, binaryScore = 0, binaryStreak = 0;
 
@@ -2264,11 +2657,11 @@
             const area = document.getElementById('game-play-area');
             area.style.display = 'block';
 
-            if (gameId === 'binary')   startBinaryGame(area);
+            if (gameId === 'binary') startBinaryGame(area);
             else if (gameId === 'algorithm') startAlgorithmGame(area);
-            else if (gameId === 'debug')     startDebugGame(area);
-            else if (gameId === 'logic')     startLogicGame(area);
-            else if (gameId === 'quiz')      startQuizGame(area);
+            else if (gameId === 'debug') startDebugGame(area);
+            else if (gameId === 'logic') startLogicGame(area);
+            else if (gameId === 'quiz') startQuizGame(area);
         }
 
         function backToHub() {
@@ -2298,14 +2691,14 @@
         function renderBinaryQ() {
             const q = binaryQuestions[binaryIdx];
             const total = binaryQuestions.length;
-            document.getElementById('bin-bar').style.width = (binaryIdx/total*100)+'%';
+            document.getElementById('bin-bar').style.width = (binaryIdx / total * 100) + '%';
             // Generate 4 choices including correct answer
             const choices = new Set([q.answer]);
-            while(choices.size < 4) choices.add(Math.floor(Math.random()*30)+1);
-            const shuffled = [...choices].sort(() => Math.random()-0.5);
+            while (choices.size < 4) choices.add(Math.floor(Math.random() * 30) + 1);
+            const shuffled = [...choices].sort(() => Math.random() - 0.5);
             document.getElementById('bin-content').innerHTML = `
                 <div style="text-align:center;">
-                    <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:6px;">คำถามที่ ${binaryIdx+1}/${total} · คะแนน: <span style="color:#38bdf8;font-weight:700;">${binaryScore}</span></p>
+                    <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:6px;">คำถามที่ ${binaryIdx + 1}/${total} · คะแนน: <span style="color:#38bdf8;font-weight:700;">${binaryScore}</span></p>
                     <div style="background:rgba(0,0,0,0.4);border:2px solid rgba(56,189,248,0.4);border-radius:16px;padding:32px;margin-bottom:28px;">
                         <p style="color:rgba(255,255,255,0.5);font-size:0.9rem;margin-bottom:8px;">เลขฐานสอง (Binary) นี้คือเลขฐานสิบ (Decimal) เท่าไหร่?</p>
                         <div style="font-size:3rem;font-family:monospace;font-weight:800;color:#38bdf8;letter-spacing:8px;">${q.binary}</div>
@@ -2333,15 +2726,15 @@
 
         // ── GAME 2: Algorithm Sorter ──────────────────────────
         const algoSets = [
-            { title: 'ขั้นตอนการต้มข้าว', steps: ['ตักข้าวลงหม้อ','ใส่น้ำ','เปิดเตา','รอให้สุก','เสิร์ฟ'], correct: [0,1,2,3,4] },
-            { title: 'ขั้นตอนค้นหาข้อมูลบนอินเทอร์เน็ต', steps: ['เปิดเบราว์เซอร์','พิมพ์คำค้น','กด Enter','อ่านผลลัพธ์','เลือกข้อมูลที่ต้องการ'], correct: [0,1,2,3,4] },
-            { title: 'ขั้นตอนแก้ปัญหา (Problem Solving)', steps: ['วิเคราะห์ปัญหา','ออกแบบวิธีแก้','เขียนโปรแกรม','ทดสอบ','แก้ไขข้อผิดพลาด'], correct: [0,1,2,3,4] }
+            { title: 'ขั้นตอนการต้มข้าว', steps: ['ตักข้าวลงหม้อ', 'ใส่น้ำ', 'เปิดเตา', 'รอให้สุก', 'เสิร์ฟ'], correct: [0, 1, 2, 3, 4] },
+            { title: 'ขั้นตอนค้นหาข้อมูลบนอินเทอร์เน็ต', steps: ['เปิดเบราว์เซอร์', 'พิมพ์คำค้น', 'กด Enter', 'อ่านผลลัพธ์', 'เลือกข้อมูลที่ต้องการ'], correct: [0, 1, 2, 3, 4] },
+            { title: 'ขั้นตอนแก้ปัญหา (Problem Solving)', steps: ['วิเคราะห์ปัญหา', 'ออกแบบวิธีแก้', 'เขียนโปรแกรม', 'ทดสอบ', 'แก้ไขข้อผิดพลาด'], correct: [0, 1, 2, 3, 4] }
         ];
         let algoSet, algoOrder = [], algoDragging = null;
 
         function startAlgorithmGame(area) {
-            algoSet = algoSets[Math.floor(Math.random()*algoSets.length)];
-            algoOrder = [...algoSet.steps].sort(() => Math.random()-0.5);
+            algoSet = algoSets[Math.floor(Math.random() * algoSets.length)];
+            algoOrder = [...algoSet.steps].sort(() => Math.random() - 0.5);
             area.innerHTML = `
                 <div style="background:linear-gradient(135deg,#1a0a2e,#2d1b69);border-radius:20px;padding:28px;color:white;">
                     ${gameHeader('เรียงขั้นตอนอัลกอริทึม', '🧩', '#a78bfa')}
@@ -2355,19 +2748,19 @@
 
         function renderAlgoList() {
             const list = document.getElementById('algo-list');
-            list.innerHTML = algoOrder.map((s,i) => `
+            list.innerHTML = algoOrder.map((s, i) => `
                 <div style="display:flex;align-items:center;gap:10px;background:rgba(167,139,250,0.1);border:1.5px solid rgba(167,139,250,0.2);border-radius:12px;padding:14px 16px;">
-                    <span style="background:rgba(167,139,250,0.3);color:#a78bfa;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;">${i+1}</span>
+                    <span style="background:rgba(167,139,250,0.3);color:#a78bfa;font-weight:700;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;">${i + 1}</span>
                     <span style="flex:1;color:white;font-size:0.95rem;">${s}</span>
                     <div style="display:flex;flex-direction:column;gap:4px;">
-                        ${i>0?`<button onclick="moveAlgo(${i},-1)" style="background:rgba(255,255,255,0.1);border:none;color:white;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.8rem;">↑</button>`:''}
-                        ${i<algoOrder.length-1?`<button onclick="moveAlgo(${i},1)" style="background:rgba(255,255,255,0.1);border:none;color:white;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.8rem;">↓</button>`:''}
+                        ${i > 0 ? `<button onclick="moveAlgo(${i},-1)" style="background:rgba(255,255,255,0.1);border:none;color:white;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.8rem;">↑</button>` : ''}
+                        ${i < algoOrder.length - 1 ? `<button onclick="moveAlgo(${i},1)" style="background:rgba(255,255,255,0.1);border:none;color:white;width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:0.8rem;">↓</button>` : ''}
                     </div>
                 </div>`).join('');
         }
 
         function moveAlgo(i, dir) {
-            const tmp = algoOrder[i]; algoOrder[i] = algoOrder[i+dir]; algoOrder[i+dir] = tmp;
+            const tmp = algoOrder[i]; algoOrder[i] = algoOrder[i + dir]; algoOrder[i + dir] = tmp;
             renderAlgoList();
         }
 
@@ -2384,7 +2777,7 @@
         const debugQuestions = [
             {
                 title: 'Python: วนลูปพิมพ์ 1-5', code:
-`x = 1
+                    `x = 1
 while x <= 5:
     print(x)
     x = x - 1   # ← บรรทัดนี้มีบั๊ก`,
@@ -2393,7 +2786,7 @@ while x <= 5:
             },
             {
                 title: 'Python: คำนวณค่าเฉลี่ย', code:
-`scores = [80, 90, 70]
+                    `scores = [80, 90, 70]
 total = scores[0] + scores[1]
 avg = total / 3   # ← บรรทัดนี้มีบั๊ก`,
                 options: ['avg = total / 3', 'total = scores[0] + scores[1]', 'scores = [80, 90, 70]', 'avg = total / 2'],
@@ -2401,7 +2794,7 @@ avg = total / 3   # ← บรรทัดนี้มีบั๊ก`,
             },
             {
                 title: 'Python: เช็คเลขคู่', code:
-`num = 7
+                    `num = 7
 if num % 2 = 0:   # ← บรรทัดนี้มีบั๊ก
     print("คู่")
 else:
@@ -2425,12 +2818,12 @@ else:
         function renderDebugQ() {
             const q = debugQuestions[debugIdx];
             document.getElementById('debug-content').innerHTML = `
-                <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:8px;">คำถามที่ ${debugIdx+1}/${debugQuestions.length} · บรรทัดไหนมีบั๊ก?</p>
+                <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:8px;">คำถามที่ ${debugIdx + 1}/${debugQuestions.length} · บรรทัดไหนมีบั๊ก?</p>
                 <p style="color:#f87171;font-weight:600;margin-bottom:12px;">${q.title}</p>
                 <div style="background:#0d0d0d;border:1px solid rgba(248,113,113,0.3);border-radius:12px;padding:20px;font-family:monospace;font-size:0.9rem;white-space:pre;color:#e2e8f0;margin-bottom:20px;overflow-x:auto;">${q.code}</div>
                 <p style="color:rgba(255,255,255,0.6);margin-bottom:12px;">เลือกบรรทัดที่มีข้อผิดพลาด:</p>
                 <div style="display:flex;flex-direction:column;gap:10px;">
-                    ${q.options.map((o,i) => `<button onclick="checkDebug(${i})" style="background:rgba(248,113,113,0.1);border:1.5px solid rgba(248,113,113,0.2);color:white;padding:12px 16px;border-radius:10px;font-family:monospace;text-align:left;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(248,113,113,0.25)'" onmouseout="this.style.background='rgba(248,113,113,0.1)'">${o}</button>`).join('')}
+                    ${q.options.map((o, i) => `<button onclick="checkDebug(${i})" style="background:rgba(248,113,113,0.1);border:1.5px solid rgba(248,113,113,0.2);color:white;padding:12px 16px;border-radius:10px;font-family:monospace;text-align:left;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(248,113,113,0.25)'" onmouseout="this.style.background='rgba(248,113,113,0.1)'">${o}</button>`).join('')}
                 </div>`;
         }
 
@@ -2450,11 +2843,11 @@ else:
         // ── GAME 4: Logic Gates ───────────────────────────────
         const logicQuestions = [
             { expr: 'True AND False', answer: 'False', note: 'AND จะได้ True ก็ต่อเมื่อทั้งสองข้างเป็น True' },
-            { expr: 'True OR False',  answer: 'True',  note: 'OR ได้ True ถ้าข้างใดข้างหนึ่งเป็น True' },
-            { expr: 'NOT True',       answer: 'False', note: 'NOT กลับค่า True → False' },
+            { expr: 'True OR False', answer: 'True', note: 'OR ได้ True ถ้าข้างใดข้างหนึ่งเป็น True' },
+            { expr: 'NOT True', answer: 'False', note: 'NOT กลับค่า True → False' },
             { expr: 'False AND False', answer: 'False', note: 'AND ทั้งคู่ False → False' },
-            { expr: 'NOT False',      answer: 'True',  note: 'NOT กลับค่า False → True' },
-            { expr: 'True AND True',  answer: 'True',  note: 'AND ทั้งคู่ True → True' },
+            { expr: 'NOT False', answer: 'True', note: 'NOT กลับค่า False → True' },
+            { expr: 'True AND True', answer: 'True', note: 'AND ทั้งคู่ True → True' },
             { expr: 'False OR False', answer: 'False', note: 'OR ทั้งคู่ False → False' },
             { expr: '(True OR False) AND NOT False', answer: 'True', note: 'True AND True = True' }
         ];
@@ -2472,10 +2865,10 @@ else:
 
         function renderLogicQ() {
             const q = logicQuestions[logicIdx];
-            const pct = (logicIdx/logicQuestions.length*100).toFixed(0);
+            const pct = (logicIdx / logicQuestions.length * 100).toFixed(0);
             document.getElementById('logic-content').innerHTML = `
                 <div style="background:rgba(255,255,255,0.05);border-radius:10px;height:8px;margin-bottom:24px;"><div style="background:#34d399;height:8px;border-radius:10px;width:${pct}%;transition:width 0.4s;"></div></div>
-                <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:6px;">ข้อที่ ${logicIdx+1}/${logicQuestions.length}</p>
+                <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:6px;">ข้อที่ ${logicIdx + 1}/${logicQuestions.length}</p>
                 <div style="background:rgba(0,0,0,0.4);border:2px solid rgba(52,211,153,0.3);border-radius:16px;padding:28px;text-align:center;margin-bottom:24px;">
                     <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;margin-bottom:10px;">ผลลัพธ์ของนิพจน์นี้คืออะไร?</p>
                     <div style="font-size:1.6rem;font-weight:700;font-family:monospace;color:#34d399;">${q.expr}</div>
@@ -2502,16 +2895,16 @@ else:
 
         // ── GAME 5: CS Quiz ───────────────────────────────────
         const quizQuestions = [
-            { q: 'ข้อใดคือตัวอย่างของ Input Device?', choices: ['จอมอนิเตอร์','คีย์บอร์ด','ลำโพง','เครื่องพิมพ์'], answer: 1 },
-            { q: 'อัลกอริทึม (Algorithm) หมายถึงอะไร?', choices: ['โปรแกรมคอมพิวเตอร์','ขั้นตอนการแก้ปัญหาที่ชัดเจน','ฮาร์ดแวร์ของคอมพิวเตอร์','ภาษาโปรแกรม'], answer: 1 },
-            { q: '1 Byte มีกี่ Bit?', choices: ['4 Bit','16 Bit','8 Bit','32 Bit'], answer: 2 },
-            { q: 'ภาษาโปรแกรมใดเหมาะสำหรับผู้เริ่มต้น?', choices: ['Assembly','C++','Python','Fortran'], answer: 2 },
-            { q: 'Flowchart ใช้สัญลักษณ์รูปสี่เหลี่ยมผืนผ้าแทนอะไร?', choices: ['การตัดสินใจ','จุดเริ่ม/จุดสิ้นสุด','กระบวนการ/คำสั่ง','การรับ/แสดงผล'], answer: 2 },
-            { q: 'ข้อใดคือตัวอย่างของ Software?', choices: ['CPU','RAM','Microsoft Word','เมาส์'], answer: 2 },
-            { q: 'Loop (วนซ้ำ) ใช้ทำอะไร?', choices: ['แสดงผล','รับข้อมูล','ทำคำสั่งซ้ำหลายรอบ','ตัดสินใจ'], answer: 2 },
-            { q: 'Debug หมายความว่าอะไร?', choices: ['เขียนโค้ดใหม่','หาและแก้ไขข้อผิดพลาดในโปรแกรม','ลบโปรแกรม','คอมไพล์โปรแกรม'], answer: 1 },
-            { q: 'ข้อมูล (Data) ต่างจากสารสนเทศ (Information) อย่างไร?', choices: ['ข้อมูลผ่านการประมวลผลแล้ว','ข้อมูลคือข้อเท็จจริงดิบ สารสนเทศคือข้อมูลที่ผ่านการประมวลผล','ทั้งสองคือสิ่งเดียวกัน','สารสนเทศมีขนาดใหญ่กว่า'], answer: 1 },
-            { q: 'Internet ย่อมาจากอะไร?', choices: ['International Network','Interconnected Network','Internal Network','Integrated Network'], answer: 1 }
+            { q: 'ข้อใดคือตัวอย่างของ Input Device?', choices: ['จอมอนิเตอร์', 'คีย์บอร์ด', 'ลำโพง', 'เครื่องพิมพ์'], answer: 1 },
+            { q: 'อัลกอริทึม (Algorithm) หมายถึงอะไร?', choices: ['โปรแกรมคอมพิวเตอร์', 'ขั้นตอนการแก้ปัญหาที่ชัดเจน', 'ฮาร์ดแวร์ของคอมพิวเตอร์', 'ภาษาโปรแกรม'], answer: 1 },
+            { q: '1 Byte มีกี่ Bit?', choices: ['4 Bit', '16 Bit', '8 Bit', '32 Bit'], answer: 2 },
+            { q: 'ภาษาโปรแกรมใดเหมาะสำหรับผู้เริ่มต้น?', choices: ['Assembly', 'C++', 'Python', 'Fortran'], answer: 2 },
+            { q: 'Flowchart ใช้สัญลักษณ์รูปสี่เหลี่ยมผืนผ้าแทนอะไร?', choices: ['การตัดสินใจ', 'จุดเริ่ม/จุดสิ้นสุด', 'กระบวนการ/คำสั่ง', 'การรับ/แสดงผล'], answer: 2 },
+            { q: 'ข้อใดคือตัวอย่างของ Software?', choices: ['CPU', 'RAM', 'Microsoft Word', 'เมาส์'], answer: 2 },
+            { q: 'Loop (วนซ้ำ) ใช้ทำอะไร?', choices: ['แสดงผล', 'รับข้อมูล', 'ทำคำสั่งซ้ำหลายรอบ', 'ตัดสินใจ'], answer: 2 },
+            { q: 'Debug หมายความว่าอะไร?', choices: ['เขียนโค้ดใหม่', 'หาและแก้ไขข้อผิดพลาดในโปรแกรม', 'ลบโปรแกรม', 'คอมไพล์โปรแกรม'], answer: 1 },
+            { q: 'ข้อมูล (Data) ต่างจากสารสนเทศ (Information) อย่างไร?', choices: ['ข้อมูลผ่านการประมวลผลแล้ว', 'ข้อมูลคือข้อเท็จจริงดิบ สารสนเทศคือข้อมูลที่ผ่านการประมวลผล', 'ทั้งสองคือสิ่งเดียวกัน', 'สารสนเทศมีขนาดใหญ่กว่า'], answer: 1 },
+            { q: 'Internet ย่อมาจากอะไร?', choices: ['International Network', 'Interconnected Network', 'Internal Network', 'Integrated Network'], answer: 1 }
         ];
         let quizIdx = 0, quizScore = 0, quizStartTime;
 
@@ -2527,10 +2920,10 @@ else:
 
         function renderQuizQ() {
             const q = quizQuestions[quizIdx];
-            const pct = (quizIdx/quizQuestions.length*100).toFixed(0);
+            const pct = (quizIdx / quizQuestions.length * 100).toFixed(0);
             document.getElementById('quiz-content').innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span style="color:rgba(255,255,255,0.5);font-size:0.85rem;">ข้อ ${quizIdx+1}/${quizQuestions.length}</span>
+                    <span style="color:rgba(255,255,255,0.5);font-size:0.85rem;">ข้อ ${quizIdx + 1}/${quizQuestions.length}</span>
                     <span style="color:#fbbf24;font-weight:600;">คะแนน: ${quizScore}</span>
                 </div>
                 <div style="background:rgba(255,255,255,0.07);border-radius:10px;height:8px;margin-bottom:22px;"><div style="background:#fbbf24;height:8px;border-radius:10px;width:${pct}%;transition:width 0.4s;"></div></div>
@@ -2538,7 +2931,7 @@ else:
                     <p style="color:white;font-size:1rem;font-weight:600;margin:0;">${q.q}</p>
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                    ${q.choices.map((c,i) => `<button onclick="checkQuiz(${i})" style="background:rgba(251,191,36,0.08);border:1.5px solid rgba(251,191,36,0.2);color:white;padding:14px 12px;border-radius:12px;font-size:0.9rem;cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.background='rgba(251,191,36,0.2)'" onmouseout="this.style.background='rgba(251,191,36,0.08)'"><span style="color:#fbbf24;font-weight:700;margin-right:6px;">${['A','B','C','D'][i]}.</span>${c}</button>`).join('')}
+                    ${q.choices.map((c, i) => `<button onclick="checkQuiz(${i})" style="background:rgba(251,191,36,0.08);border:1.5px solid rgba(251,191,36,0.2);color:white;padding:14px 12px;border-radius:12px;font-size:0.9rem;cursor:pointer;text-align:left;transition:all 0.2s;" onmouseover="this.style.background='rgba(251,191,36,0.2)'" onmouseout="this.style.background='rgba(251,191,36,0.08)'"><span style="color:#fbbf24;font-weight:700;margin-right:6px;">${['A', 'B', 'C', 'D'][i]}.</span>${c}</button>`).join('')}
                 </div>`;
         }
 
@@ -2559,7 +2952,7 @@ else:
         function finishGame(gameId, score, maxPts) {
             const pct = Math.round(score / (maxPts) * 100);
             const stars = pct >= 90 ? '⭐⭐⭐' : pct >= 60 ? '⭐⭐' : '⭐';
-            const msg   = pct >= 90 ? 'ยอดเยี่ยม! คุณเก่งมาก!' : pct >= 60 ? 'ดีมาก! ยังปรับปรุงได้อีก' : 'ลองใหม่อีกครั้งนะ!';
+            const msg = pct >= 90 ? 'ยอดเยี่ยม! คุณเก่งมาก!' : pct >= 60 ? 'ดีมาก! ยังปรับปรุงได้อีก' : 'ลองใหม่อีกครั้งนะ!';
             document.getElementById('game-play-area').innerHTML = `
                 <div style="background:linear-gradient(135deg,#1e1b4b,#312e81);border-radius:20px;padding:40px;text-align:center;color:white;">
                     <div style="font-size:4rem;margin-bottom:16px;">${stars}</div>
@@ -2580,8 +2973,8 @@ else:
             const target = currentScore + pts;
             const el = document.getElementById('student-score');
             const iv = setInterval(() => {
-                if (currentScore < target) { currentScore += 5; if(el) el.innerText = currentScore.toLocaleString(); }
-                else { currentScore = target; if(el) el.innerText = currentScore.toLocaleString(); clearInterval(iv); }
+                if (currentScore < target) { currentScore += 5; if (el) el.innerText = currentScore.toLocaleString(); }
+                else { currentScore = target; if (el) el.innerText = currentScore.toLocaleString(); clearInterval(iv); }
             }, 30);
             const student = findStudentById(currentStudentId || 'stu-1');
             const studentName = student ? student.name : 'ภัทรพล เรียนดี';
@@ -2663,21 +3056,21 @@ else:
 
         function updateUploadLimitLabels() {
             const s = getSystemSettings();
-            
+
             // Format labels text
             const sizeText = `ระบบตรวจสอบไฟล์อัตโนมัติ (Magic Bytes) รองรับขนาดไม่เกิน ${s.maxFileSize}MB`;
             const dropzoneP = document.querySelector('#dropzone p');
             if (dropzoneP) dropzoneP.innerText = sizeText;
             const dropzoneTabP = document.querySelector('#dropzone-tab p');
             if (dropzoneTabP) dropzoneTabP.innerText = sizeText;
-            
+
             // Render tags
             let tagsHTML = '';
             if (s.extPdf) tagsHTML += '<span class="tag">.PDF</span> ';
             if (s.extDocx) tagsHTML += '<span class="tag">.DOCX</span> ';
             if (s.extXlsx) tagsHTML += '<span class="tag">.XLSX</span> ';
             if (s.extImages) tagsHTML += '<span class="tag">.PNG</span> <span class="tag">.JPG</span> ';
-            
+
             const fileTypesDivs = document.querySelectorAll('.file-types');
             fileTypesDivs.forEach(div => {
                 const fileInput = div.querySelector('input[type="file"]');
@@ -2705,9 +3098,9 @@ else:
             if (s.extDocx) allowedExts.push('docx');
             if (s.extXlsx) allowedExts.push('xlsx');
             if (s.extImages) { allowedExts.push('png'); allowedExts.push('jpg'); allowedExts.push('jpeg'); }
-            
+
             const fileExt = file.name.split('.').pop().toLowerCase();
-            
+
             if (!allowedExts.includes(fileExt)) {
                 showToast('อัปโหลดล้มเหลว', 'นามสกุลไฟล์ไม่ได้รับการสนับสนุนโดยนโยบายวิชาเรียนของคุณครู', 'danger');
                 return;
@@ -2741,7 +3134,7 @@ else:
                     progress += 10;
                     const progressBars = document.querySelectorAll('#progressBar');
                     progressBars.forEach(bar => bar.style.width = progress + '%');
-                    
+
                     const statusTexts = document.querySelectorAll('#upload-status-text');
                     if (progress === 40) {
                         statusTexts.forEach(t => t.innerText = 'วิเคราะห์ Magic Bytes ของไฟล์...');
@@ -2750,7 +3143,7 @@ else:
                     }
                 } else {
                     clearInterval(uploadInterval);
-                    
+
                     // Add submission entry
                     const student = findStudentById(currentStudentId || 'stu-1') || {
                         id: 'stu-1',
@@ -2790,7 +3183,7 @@ else:
                     // Broadcast to teacher dashboard and other tabs
                     try {
                         bc.postMessage({ type: 'assignments:update', assignments: assignments });
-                    } catch (e) {}
+                    } catch (e) { }
 
                     bc.postMessage({
                         type: 'ASSIGNMENT_SUBMITTED',
@@ -2864,10 +3257,10 @@ else:
                 container.className = 'toast-container';
                 document.body.appendChild(container);
             }
-            
+
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            
+
             let iconClass = 'fa-info-circle';
             if (type === 'success') iconClass = 'fa-check-circle';
             if (type === 'warning') iconClass = 'fa-exclamation-circle';
@@ -2905,7 +3298,8 @@ else:
                 <!-- Loaded dynamically -->
             </div>
             <div class="modal-footer">
-                <button class="btn-play" style="background: var(--primary); color: white;" onclick="closeReportModal()">ปิดหน้าต่าง</button>
+                <button class="btn-play" style="background: var(--primary); color: white;"
+                    onclick="closeReportModal()">ปิดหน้าต่าง</button>
             </div>
         </div>
     </div>
@@ -3037,26 +3431,26 @@ else:
             if (!currentStudentId) return;
             const student = findStudentById(currentStudentId);
             if (!student) return;
-            
+
             // 1. Update Profile Badges and Avatar
             const avatarBadge = document.getElementById('student-avatar-badge');
             const nameBadge = document.getElementById('student-name-badge');
             const classBadge = document.getElementById('student-class-badge');
-            
+
             if (avatarBadge) avatarBadge.innerText = student.avatar || student.name.charAt(0);
             if (nameBadge) nameBadge.innerText = student.name;
             if (classBadge) classBadge.innerText = `นักเรียน ` + student.roomName;
-            
+
             // 2. Update Greeting
             const greetingEl = document.getElementById('greeting-title');
             if (greetingEl) greetingEl.innerText = `สวัสดี, ${student.name.split(' ')[0]}! 👋`;
-            
+
             // 3. Update active student in leaderboard database
             leaderboardDatabase.forEach(item => {
                 item.isMe = (item.name === student.name && item.room === student.roomName);
             });
             localStorage.setItem('lms-leaderboard-database', JSON.stringify(leaderboardDatabase));
-            
+
             // 4. Update stats cards
             // Points:
             const myInfo = leaderboardDatabase.find(item => item.isMe);
@@ -3065,14 +3459,14 @@ else:
                 const scoreEl = document.getElementById('student-score');
                 if (scoreEl) scoreEl.innerText = currentScore.toLocaleString();
             }
-            
+
             // Set LB filters
             const classSelect = document.getElementById('lb-class-select');
             const roomSelect = document.getElementById('lb-room-select');
             if (classSelect) classSelect.value = student.classKey;
             if (roomSelect) roomSelect.value = student.roomKey;
             filterLeaderboard();
-            
+
             // 5. Update attendance UI
             const history = JSON.parse(localStorage.getItem('lms-attendance-history') || '[]');
             const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
@@ -3084,18 +3478,18 @@ else:
             } else {
                 updateAttendanceUI(student.id, 'pending');
             }
-            
+
             // 6. Refresh materials and assignments
             renderStudentMaterials();
             renderStudentAssignments();
             renderDropzoneAssignmentSelect();
         }
 
-        window.handleStudentLogin = function(e) {
+        window.handleStudentLogin = function (e) {
             if (e) e.preventDefault();
             const codeInput = document.getElementById('student-login-code').value.trim();
             const pwInput = document.getElementById('student-login-password').value.trim();
-            
+
             let foundStudent = null;
             for (const classKey in studentRosters) {
                 for (const roomKey in studentRosters[classKey]) {
@@ -3110,7 +3504,7 @@ else:
                 }
                 if (foundStudent) break;
             }
-            
+
             // Fallback lookup in leaderboardDatabase
             if (!foundStudent && typeof leaderboardDatabase !== 'undefined') {
                 const lbStudent = leaderboardDatabase.find(s => String(s.studentId || s.code || '').trim() === codeInput);
@@ -3124,14 +3518,14 @@ else:
                     };
                 }
             }
-            
+
             if (foundStudent && String(foundStudent.password || '1234').trim() === pwInput) {
                 sessionStorage.setItem('lms-student-auth-id', foundStudent.id || foundStudent.code);
                 currentStudentId = foundStudent.id || foundStudent.code;
-                
+
                 const overlay = document.getElementById('student-login-overlay');
                 if (overlay) overlay.style.setProperty('display', 'none', 'important');
-                
+
                 initializeStudentProfile();
                 showToast('เข้าสู่ระบบสำเร็จ', `ยินดีต้อนรับ ${foundStudent.name} เข้าสู่ระบบ`, 'success');
             } else {
@@ -3140,13 +3534,13 @@ else:
             }
         };
 
-        window.quickStudentLogin = function(code) {
+        window.quickStudentLogin = function (code) {
             document.getElementById('student-login-code').value = code;
             document.getElementById('student-login-password').value = '1234';
             handleStudentLogin();
         };
 
-        window.handleStudentLogout = function() {
+        window.handleStudentLogout = function () {
             sessionStorage.removeItem('lms-student-auth-id');
             window.location.href = 'index.html';
         };
@@ -3157,7 +3551,7 @@ else:
                 const mockHistory = [];
                 const classes = ['m1', 'm2', 'm3'];
                 const rooms = ['1', '2', '3'];
-                
+
                 const monthsData = [
                     { name: 'มิ.ย.', year: 2569, days: [1, 2, 3, 4, 8, 9, 10, 11] },
                     { name: 'พ.ค.', year: 2569, days: [12, 13, 14, 15, 19, 20, 21, 22] },
@@ -3173,7 +3567,7 @@ else:
                                 const roster = studentRosters[cls]?.[rm] || studentRosters['m3']['1'];
                                 const records = {};
                                 let present = 0, late = 0, leave = 0, absent = 0;
-                                
+
                                 roster.forEach((stu, idx) => {
                                     let status = 'present';
                                     const seed = (d + idx + parseInt(rm)) % 12;
@@ -3223,15 +3617,15 @@ else:
             const history = JSON.parse(localStorage.getItem('lms-attendance-history') || '[]');
             const studentId = currentStudentId || 'stu-1';
             const student = findStudentById(studentId) || { classKey: 'm3' };
-            
+
             let presentCount = 0;
             let lateCount = 0;
             let leaveCount = 0;
             let absentCount = 0;
             let totalDays = 0;
-            
+
             let rowsHTML = '';
-            
+
             history.forEach(h => {
                 const matchRoom = (roomFilter === 'all' || (h.room || '1') === roomFilter);
                 const matchClass = (h.class || 'm3') === student.classKey;
@@ -3254,10 +3648,10 @@ else:
                         statusBadge = '<span class="status-badge absent" style="background:#fee2e2; color:#ef4444; padding:4px 10px; border-radius:20px; font-size:0.85rem; font-weight:600;"><i class="fa-solid fa-xmark-circle"></i> ขาดเรียน</span>';
                         absentCount++;
                     }
-                    
+
                     const classLabel = h.class === 'm1' ? 'ม.1' : h.class === 'm2' ? 'ม.2' : h.class === 'm3' ? 'ม.3' : 'ม.3';
                     const roomLabel = h.room ? `/${h.room}` : '/1';
-                    
+
                     rowsHTML += `
                         <tr>
                             <td style="padding: 12px 16px; border-bottom:1px solid var(--border);">
@@ -3271,25 +3665,25 @@ else:
                     `;
                 }
             });
-            
+
             const attendanceRate = totalDays > 0 ? Math.round(((presentCount + lateCount + leaveCount) / totalDays) * 100) : 0;
             const rateColor = attendanceRate >= 90 ? '#10b981' : attendanceRate >= 70 ? '#f59e0b' : '#ef4444';
-            
+
             const titleHTML = `<i class="fa-solid fa-clipboard-user" style="color: var(--primary);"></i> รายงานสถิติการเข้าเรียนของคุณ`;
-            
+
             let bodyHTML = `
                 <!-- Filter Section for Student -->
                 <div style="display: flex; gap: 10px; margin-bottom: 15px; background: var(--secondary); padding: 10px; border-radius: 8px; border: 1px solid var(--border); align-items: center; flex-wrap: wrap;">
                     <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);"><i class="fa-solid fa-filter"></i> ตัวกรองประวัติห้องเรียน:</span>
                     <select id="student-report-room-filter" style="padding: 4px 8px; border-radius: 6px; border: 1px solid var(--border); font-size: 0.8rem; outline: none; cursor: pointer; background: var(--white); color: var(--text-main);" onchange="onStudentReportFilterChange()">
                         <option value="all" ${roomFilter === 'all' ? 'selected' : ''}>ทั้งหมดทุกห้อง</option>
-                        <option value="1" ${roomFilter === '1' ? 'selected' : ''}>ห้อง /1</option>
-                        <option value="2" ${roomFilter === '2' ? 'selected' : ''}>ห้อง /2</option>
-                        <option value="3" ${roomFilter === '3' ? 'selected' : ''}>ห้อง /3</option>
+                        <option value="1" ${roomFilter === '1' ? 'selected' : ''}>ห้อง 1</option>
+                        <option value="2" ${roomFilter === '2' ? 'selected' : ''}>ห้อง 2</option>
+                        <option value="3" ${roomFilter === '3' ? 'selected' : ''}>ห้อง 3</option>
                     </select>
                 </div>
             `;
-            
+
             if (totalDays === 0) {
                 bodyHTML += `<p style="text-align:center; padding:30px; color:var(--text-muted);">ไม่พบข้อมูลประวัติการเข้าเรียนตามตัวกรองที่เลือก</p>`;
             } else {
@@ -3342,7 +3736,7 @@ else:
                     </table>
                 `;
             }
-            
+
             document.getElementById('reportModalTitle').innerHTML = titleHTML;
             document.getElementById('reportModalBody').innerHTML = bodyHTML;
             document.getElementById('reportModal').style.display = 'flex';
@@ -3377,9 +3771,9 @@ else:
             const dropdownList = document.getElementById('notify-list');
             const fullList = document.getElementById('full-notify-list');
             const badge = document.getElementById('notify-badge');
-            
+
             const unreadCount = notifications.filter(n => n.unread).length;
-            
+
             if (unreadCount > 0) {
                 badge.style.display = 'flex';
                 badge.innerText = unreadCount;
@@ -3431,14 +3825,14 @@ else:
         function clickNotify(id, linkId) {
             const notif = notifications.find(n => n.id === id);
             if (notif) notif.unread = false;
-            
+
             toggleNotify(); // close dropdown
             if (linkId) switchTab(linkId);
             renderNotifications(); // update badge
         }
 
         // Close dropdown when clicking outside
-        document.addEventListener('click', function(event) {
+        document.addEventListener('click', function (event) {
             const wrapper = document.getElementById('notify-wrapper');
             const dropdown = document.getElementById('notify-dropdown');
             if (wrapper && !wrapper.contains(event.target)) {
@@ -3452,4 +3846,5 @@ else:
         });
     </script>
 </body>
+
 </html>

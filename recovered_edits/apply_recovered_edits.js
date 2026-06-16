@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const targetFile = path.join(__dirname, "teacher_dashboard (1).html");
+const targetFile = path.join(__dirname, "..", "teacher_dashboard (1).html");
 let content = fs.readFileSync(targetFile, 'utf8').replace(/\r\n/g, '\n');
 
 // All recovered JSON files in chronological order
