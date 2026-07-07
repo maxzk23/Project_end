@@ -474,7 +474,6 @@ export default function StudentRegistryPage() {
             {Array.from(new Set(students.map(s => s.academicYear).filter(Boolean))).sort((a, b) => b.localeCompare(a)).map(yr => (
               <option key={yr} value={yr}>ปีการศึกษา {yr}</option>
             ))}
-            <option value="all">ทุกปีการศึกษา</option>
           </select>
 
           {/* ระดับชั้น */}
