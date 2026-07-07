@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiber Optic Dash (Phaser Prototype)</title>
+    <!-- โหลด Phaser 3 ผ่าน CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Prompt:wght@400;600;700&display=swap');
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            color: white;
+            font-family: 'Prompt', 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #38bdf8, #818cf8, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+            letter-spacing: 1px;
+        }
+        .header p { margin: 4px 0 0 0; color: #94a3b8; font-size: 0.95rem; }
+
+        #game-container {
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.25), inset 0 0 20px rgba(0,0,0,0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            position: relative;
+            background: #090d16;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔌 FIBER OPTIC DASH</h1>
+        <p>คลิกที่ศูนย์ข้อมูล 📡 แล้วลากเส้นลำแสงเลเซอร์ผ่านช่องแคบไปเชื่อมต่อกับบ้านเรือน 🏠 โดยห้ามชนขอบกำแพง!</p>
+    </div>
+
+    <div id="game-container"></div>
+
+    <script>
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: 'game-container',
+            backgroundColor: '#090d16',
+            physics: {
+                default: 'arcade',
+                arcade: { debug: false }
+            },
+            scene: { preload, create, update }
+        };
+
+        const game = new Phaser.Game(config);
+
+        let laserGraphics;
+        let wallPolygons = [];
+        let isDragging = false;
+        let pathPoints = [];
+        
+        let startZone, endZone;
+        let statusText, speedText;
+        let sparkEmitter;
+        let levelCompleted = false;
+
+        function preload() {
+            // สร้างละอองแสงพาร์ทิเคิลเลเซอร์
+            let pGfx = this.add.graphics();
+            pGfx.fillStyle(0x38bdf8, 1);
+            pGfx.fillCircle(4, 4, 4);
+            pGfx.generateTexture('cyan_spark', 8, 8);
+
+            pGfx.clear();
+            pGfx.fillStyle(0xf43f5e, 1);
+            pGfx.fillCircle(4, 4, 4);
+            pGfx.generateTexture('red_spark', 8, 8);
+            pGfx.destroy();
+        }
+
+        function create() {
+            // --- พื้นหลังตารางไซเบอร์ ---
+            let bgGfx = this.add.graphics();
+            bgGfx.fillStyle(0x0f172a, 1);
+            bgGfx.fillRect(0, 0, 800, 600);
+            for (let x = 0; x < 800; x += 40) {
+                bgGfx.lineStyle(1, 0x1e293b, 0.4);
+                bgGfx.lineBetween(x, 0, x, 600);
+                bgGfx.lineBetween(0, x, 800, x);
+            }
+
+            // --- วาดท่ออุโมงค์เส้นทางสายไฟเบอร์ (Tunnel Polygon Walls) ---
+            // เส้นทางตรงกลางที่มีช่องซิกแซกแคบๆ
+            let wallGfx = this.add.graphics();
+            wallGfx.fillStyle(0x1e293b, 1);
+            wallGfx.lineStyle(3, 0x38bdf8, 0.8);
+
+            // กำแพงโซนบน
+            let topPoly = new Phaser.Geom.Polygon([
+                0, 0,  800, 0,  800, 200,  620, 220,  480, 140,  320, 360,  180, 200,  0, 200
+            ]);
+            wallGfx.fillPoints(topPoly.points, true);
+            wallGfx.strokePoints(topPoly.points, true);
+
+            // กำแพงโซนล่าง
+            let botPoly = new Phaser.Geom.Polygon([
+                0, 600,  800, 600,  800, 400,  620, 400,  480, 320,  320, 520,  180, 380,  0, 380
+            ]);
+            wallGfx.fillPoints(botPoly.points, true);
+            wallGfx.strokePoints(botPoly.points, true);
+
+            wallPolygons = [topPoly, botPoly];
+
+            // --- วาดจุดเริ่มต้น (Data Center 📡) และ จุดปลายทาง (Smart Home 🏠) ---
+            startZone = this.add.circle(90, 290, 42, 0x0284c7, 0.4);
+            this.add.circle(90, 290, 32, 0x38bdf8, 0.8);
+            this.add.text(90, 290, '📡', { fontSize: '36px' }).setOrigin(0.5);
+            this.add.text(90, 345, 'ศูนย์ข้อมูล', { fontSize: '14px', fill: '#38bdf8', fontFamily: 'Prompt' }).setOrigin(0.5);
+
+            endZone = this.add.circle(710, 300, 42, 0x059669, 0.4);
+            this.add.circle(710, 300, 32, 0x34d399, 0.8);
+            this.add.text(710, 300, '🏠', { fontSize: '36px' }).setOrigin(0.5);
+            this.add.text(710, 355, 'บ้านลูกค้า', { fontSize: '14px', fill: '#34d399', fontFamily: 'Prompt' }).setOrigin(0.5);
+
+            // แอนิเมชันจุดเริ่มต้นกระพริบชวนให้กด
+            this.tweens.add({
+                targets: startZone,
+                scale: 1.15,
+                duration: 800,
+                yoyo: true,
+                repeat: -1
+            });
+
+            // --- กราฟิกเส้นเลเซอร์เรืองแสง ---
+            laserGraphics = this.add.graphics();
+
+            // --- UI ข้อความ ---
+            statusText = this.add.text(400, 30, 'READY // กดที่ศูนย์ข้อมูลแล้วลากเส้น!', { 
+                fontSize: '20px', fill: '#38bdf8', fontFamily: 'Orbitron', fontStyle: 'bold' 
+            }).setOrigin(0.5);
+
+            speedText = this.add.text(400, 560, 'SPEED: 0 Mbps', { 
+                fontSize: '22px', fill: '#94a3b8', fontFamily: 'Orbitron', fontStyle: 'bold' 
+            }).setOrigin(0.5);
+
+            // --- ระบบรับการลากเมาส์/สัมผัส ---
+            this.input.on('pointerdown', (pointer) => {
+                if (levelCompleted) return;
+                
+                // เช็คว่ากดเริ่มต้นที่ศูนย์ข้อมูลหรือไม่
+                let distToStart = Phaser.Math.Distance.Between(pointer.x, pointer.y, 90, 290);
+                if (distToStart <= 50) {
+                    isDragging = true;
+                    pathPoints = [{ x: 90, y: 290 }];
+                    statusText.setText('TRANSMITTING // กำลังส่งสัญญาณ...');
+                    statusText.setColor('#fbbf24');
+                }
+            });
+
+            this.input.on('pointermove', (pointer) => {
+                if (!isDragging || levelCompleted) return;
+
+                let px = pointer.x;
+                let py = pointer.y;
+
+                // ตรวจสอบการชนกำแพง (Collision Check)
+                let isHit = false;
+                for (let poly of wallPolygons) {
+                    if (Phaser.Geom.Polygon.Contains(poly, px, py)) {
+                        isHit = true;
+                        break;
+                    }
+                }
+
+                if (isHit) {
+                    // ชนกำแพง! สัญญาณขาด
+                    triggerZap.call(this, px, py);
+                } else {
+                    pathPoints.push({ x: px, y: py });
+                    
+                    // ปล่อยพาร์ทิเคิลเลเซอร์ที่หัวลาก
+                    let em = this.add.particles(px, py, 'cyan_spark', {
+                        speed: { min: 20, max: 80 },
+                        scale: { start: 1, end: 0 },
+                        lifespan: 250,
+                        emitting: false
+                    });
+                    em.explode(4);
+                    this.time.delayedCall(300, () => em.destroy());
+
+                    // ตรวจว่าถึงปลายทางบ้านลูกค้าหรือยัง
+                    let distToEnd = Phaser.Math.Distance.Between(px, py, 710, 300);
+                    if (distToEnd <= 45) {
+                        triggerSuccess.call(this);
+                    }
+                }
+            });
+
+            this.input.on('pointerup', () => {
+                if (isDragging && !levelCompleted) {
+                    // ปล่อยมือกลางทาง
+                    statusText.setText('DISCONNECTED // สัญญาณหลุด ลองลากใหม่!');
+                    statusText.setColor('#ef4444');
+                    isDragging = false;
+                    pathPoints = [];
+                    laserGraphics.clear();
+                    speedText.setText('SPEED: 0 Mbps');
+                }
+            });
+        }
+
+        function update() {
+            if (!isDragging || pathPoints.length < 2) return;
+
+            // วาดเส้นลำแสงเลเซอร์สีฟ้าเรืองแสง
+            laserGraphics.clear();
+
+            // เส้นขอบเรืองแสงสีฟ้าด้านนอก
+            laserGraphics.lineStyle(12, 0x0284c7, 0.5);
+            laserGraphics.beginPath();
+            laserGraphics.moveTo(pathPoints[0].x, pathPoints[0].y);
+            for (let i = 1; i < pathPoints.length; i++) {
+                laserGraphics.lineTo(pathPoints[i].x, pathPoints[i].y);
+            }
+            laserGraphics.strokePath();
+
+            // เส้นแกนกลางเลเซอร์สีขาวสว่าง
+            laserGraphics.lineStyle(4, 0xffffff, 1);
+            laserGraphics.beginPath();
+            laserGraphics.moveTo(pathPoints[0].x, pathPoints[0].y);
+            for (let i = 1; i < pathPoints.length; i++) {
+                laserGraphics.lineTo(pathPoints[i].x, pathPoints[i].y);
+            }
+            laserGraphics.strokePath();
+
+            // อัปเดตความเร็วสปีดเน็ตสมมุติ
+            let curSpeed = Math.floor(pathPoints.length * 12);
+            if (curSpeed > 1000) curSpeed = 1000;
+            speedText.setText(`SPEED: ${curSpeed} Mbps`);
+        }
+
+        function triggerZap(x, y) {
+            isDragging = false;
+            pathPoints = [];
+            laserGraphics.clear();
+            speedText.setText('SPEED: 0 Mbps');
+
+            statusText.setText('⚠️ SIGNAL ZAPPED // สัญญาณชนกำแพงขาดหาย!');
+            statusText.setColor('#ef4444');
+
+            // ระเบิดช็อตสีแดง
+            let zEm = this.add.particles(x, y, 'red_spark', {
+                speed: { min: -180, max: 180 },
+                scale: { start: 1.4, end: 0 },
+                lifespan: 500,
+                emitting: false
+            });
+            zEm.explode(25);
+            this.time.delayedCall(600, () => zEm.destroy());
+        }
+
+        function triggerSuccess() {
+            isDragging = false;
+            levelCompleted = true;
+
+            statusText.setText('🎉 CONNECTED // เชื่อมต่อเน็ต 1000 Mbps สำเร็จ!');
+            statusText.setColor('#10b981');
+            speedText.setText('SPEED: 1000 Mbps ⚡ MAX SPEED!');
+            speedText.setColor('#10b981');
+
+            // เอฟเฟกต์ฉลองบ้านติดเน็ต
+            let sEm = this.add.particles(710, 300, 'cyan_spark', {
+                speed: { min: -220, max: 220 },
+                scale: { start: 1.6, end: 0 },
+                lifespan: 800,
+                emitting: false
+            });
+            sEm.explode(40);
+            this.time.delayedCall(900, () => sEm.destroy());
+
+            // หน้าต่างปุ่มเล่นใหม่
+            this.time.delayedCall(500, () => {
+                let btn = this.add.text(400, 500, '[ คลิกเพื่อเล่นอีกครั้ง ]', { 
+                    fontSize: '24px', fill: '#fbbf24', fontFamily: 'Orbitron', fontStyle: 'bold' 
+                }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+                btn.on('pointerdown', () => {
+                    levelCompleted = false;
+                    statusText.setText('READY // กดที่ศูนย์ข้อมูลแล้วลากเส้น!');
+                    statusText.setColor('#38bdf8');
+                    speedText.setText('SPEED: 0 Mbps');
+                    speedText.setColor('#94a3b8');
+                    laserGraphics.clear();
+                    btn.destroy();
+                });
+            });
+        }
+    </script>
+</body>
+</html>

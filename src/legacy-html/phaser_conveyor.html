@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Conveyor Sort (Cyberpunk Edition)</title>
+    <!-- โหลด Phaser 3 ผ่าน CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Prompt:wght@400;600;700&display=swap');
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 15px;
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            color: white;
+            font-family: 'Prompt', 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #f59e0b, #a78bfa, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+            letter-spacing: 1px;
+        }
+        .header p { margin: 4px 0 0 0; color: #94a3b8; font-size: 0.9rem; }
+
+        #game-container {
+            box-shadow: 0 0 50px rgba(245, 158, 11, 0.25), inset 0 0 20px rgba(0,0,0,0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(245, 158, 11, 0.4);
+            position: relative;
+            background: #090d16;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📦 CYBER CONVEYOR SORT</h1>
+        <p>แยกข้อมูลไฮเทค: กดลูกศร <b style="color:#38bdf8">⬅️ ซ้าย (ฮาร์ดแวร์)</b> หรือ <b style="color:#34d399">➡️ ขวา (ซอฟต์แวร์)</b> เมื่อของผ่านเลเซอร์!</p>
+    </div>
+
+    <div id="game-container"></div>
+
+    <script>
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: 'game-container',
+            backgroundColor: '#090d16',
+            physics: {
+                default: 'arcade',
+                arcade: { debug: false }
+            },
+            scene: { preload, create, update }
+        };
+
+        const game = new Phaser.Game(config);
+
+        const HARDWARE_ICONS = ['💻', '🖱️', '⌨️', '🖨️', '📱'];
+        const SOFTWARE_ICONS = ['🌐', '👾', '💬', '🎵', '☁️'];
+
+        let score = 0;
+        let scoreText, timeText;
+        let timer = 60;
+        let isGameOver = false;
+
+        let itemsGroup;
+        let currentSpeed = 160;
+        let cursors;
+        let leftBtn, rightBtn;
+        let scannerGlow;
+
+        function preload() {
+            // --- 1. สร้าง Texture กล่องพัสดุไฮเทค (Hologram Cargo Box) ---
+            let bGfx = this.add.graphics();
+            bGfx.fillStyle(0x1e293b, 1);
+            bGfx.fillRoundedRect(0, 0, 74, 74, 16);
+            bGfx.lineStyle(3, 0x38bdf8, 1);
+            bGfx.strokeRoundedRect(0, 0, 74, 74, 16);
+            // ตกแต่งมุมกล่อง
+            bGfx.fillStyle(0x38bdf8, 1);
+            bGfx.fillCircle(8, 8, 3);
+            bGfx.fillCircle(66, 8, 3);
+            bGfx.fillCircle(8, 66, 3);
+            bGfx.fillCircle(66, 66, 3);
+            bGfx.generateTexture('cargo_box', 74, 74);
+            bGfx.destroy();
+
+            // --- 2. พาร์ทิเคิลระเบิดแสง ---
+            let pGfx = this.add.graphics();
+            pGfx.fillStyle(0x38bdf8, 1);
+            pGfx.fillCircle(4, 4, 4);
+            pGfx.generateTexture('blue_spark', 8, 8);
+
+            pGfx.clear();
+            pGfx.fillStyle(0x34d399, 1);
+            pGfx.fillCircle(4, 4, 4);
+            pGfx.generateTexture('green_spark', 8, 8);
+
+            pGfx.clear();
+            pGfx.fillStyle(0xef4444, 1);
+            pGfx.fillCircle(4, 4, 4);
+            pGfx.generateTexture('red_spark', 8, 8);
+            pGfx.destroy();
+        }
+
+        function create() {
+            // --- พื้นหลังโรงงานไซเบอร์ ---
+            let bgGfx = this.add.graphics();
+            bgGfx.fillStyle(0x0f172a, 1);
+            bgGfx.fillRect(0, 0, 800, 600);
+            // ตารางฉากหลัง
+            for (let x = 0; x < 800; x += 40) {
+                bgGfx.lineStyle(1, 0x1e293b, 0.5);
+                bgGfx.lineBetween(x, 0, x, 600);
+            }
+
+            // --- สายพานลำเลียงนีออน (Conveyor Belt) ---
+            let belt = this.add.graphics();
+            belt.fillStyle(0x131c2e, 1);
+            belt.fillRect(310, 0, 180, 600);
+            belt.lineStyle(4, 0x3b82f6, 0.8);
+            belt.strokeRect(310, 0, 180, 600);
+
+            // ซี่สายพานขยับได้ (จะเลื่อนใน update)
+            this.beltLanes = this.add.group();
+            for (let y = 0; y < 640; y += 40) {
+                let lane = this.add.rectangle(400, y, 160, 4, 0x1e293b);
+                this.beltLanes.add(lane);
+            }
+
+            // --- เครื่องสแกนเลเซอร์สีส้มเรืองแสง (Laser Scanner) ---
+            scannerGlow = this.add.rectangle(400, 430, 180, 70, 0xf59e0b, 0.25);
+            let scannerLine = this.add.rectangle(400, 430, 180, 4, 0xf59e0b);
+            this.add.text(400, 455, '⚡ SCANNER ZONE ⚡', { 
+                fontSize: '13px', fill: '#fbbf24', fontFamily: 'Orbitron', fontStyle: 'bold' 
+            }).setOrigin(0.5);
+
+            // แอนิเมชันสแกนเนอร์กระพริบเรืองแสง
+            this.tweens.add({
+                targets: scannerGlow,
+                alpha: 0.45,
+                duration: 600,
+                yoyo: true,
+                repeat: -1
+            });
+
+            // --- UI สแกนเนอร์ฝั่งซ้าย (Hardware Bin) ---
+            leftBtn = this.add.container(150, 510);
+            let lBg = this.add.rectangle(0, 0, 240, 90, 0x0284c7, 0.2).setInteractive({ useHandCursor: true });
+            lBg.setStrokeStyle(2, 0x38bdf8);
+            let lTxt1 = this.add.text(0, -14, '💻 HARDWARE', { fontSize: '22px', fill: '#38bdf8', fontFamily: 'Orbitron', fontStyle: 'bold' }).setOrigin(0.5);
+            let lTxt2 = this.add.text(0, 18, '(กดลูกศรซ้าย ⬅️)', { fontSize: '14px', fill: '#94a3b8', fontFamily: 'Prompt' }).setOrigin(0.5);
+            leftBtn.add([lBg, lTxt1, lTxt2]);
+
+            // --- UI สแกนเนอร์ฝั่งขวา (Software Bin) ---
+            rightBtn = this.add.container(650, 510);
+            let rBg = this.add.rectangle(0, 0, 240, 90, 0x059669, 0.2).setInteractive({ useHandCursor: true });
+            rBg.setStrokeStyle(2, 0x34d399);
+            let rTxt1 = this.add.text(0, -14, '💾 SOFTWARE', { fontSize: '22px', fill: '#34d399', fontFamily: 'Orbitron', fontStyle: 'bold' }).setOrigin(0.5);
+            let rTxt2 = this.add.text(0, 18, '(กดลูกศรขวา ➡️)', { fontSize: '14px', fill: '#94a3b8', fontFamily: 'Prompt' }).setOrigin(0.5);
+            rightBtn.add([rBg, rTxt1, rTxt2]);
+
+            // UI คะแนนและเวลาแบบ Sci-Fi
+            scoreText = this.add.text(25, 25, 'SCORE: 0', { fontSize: '28px', fill: '#fff', fontFamily: 'Orbitron', fontStyle: 'bold' });
+            timeText = this.add.text(775, 25, 'TIME: 60', { fontSize: '28px', fill: '#f43f5e', fontFamily: 'Orbitron', fontStyle: 'bold' }).setOrigin(1, 0);
+
+            itemsGroup = this.add.group();
+
+            // จับเวลา
+            this.time.addEvent({
+                delay: 1000,
+                callback: () => {
+                    if (timer > 0 && !isGameOver) {
+                        timer--;
+                        timeText.setText('TIME: ' + timer);
+                        if (timer % 10 === 0 && timer !== 60) currentSpeed += 35;
+                    } else if (timer <= 0 && !isGameOver) {
+                        endGame.call(this);
+                    }
+                },
+                loop: true
+            });
+
+            // สุ่มพัสดุ
+            this.time.addEvent({
+                delay: 1100,
+                callback: spawnItem,
+                callbackScope: this,
+                loop: true
+            });
+
+            cursors = this.input.keyboard.createCursorKeys();
+            lBg.on('pointerdown', () => processSort.call(this, 'hardware'));
+            rBg.on('pointerdown', () => processSort.call(this, 'software'));
+        }
+
+        function spawnItem() {
+            if (isGameOver) return;
+
+            let isHardware = Phaser.Math.Between(0, 1) === 0;
+            let iconText = isHardware ? 
+                Phaser.Utils.Array.GetRandom(HARDWARE_ICONS) : 
+                Phaser.Utils.Array.GetRandom(SOFTWARE_ICONS);
+            
+            let box = this.add.container(400, -60);
+            let bg = this.add.sprite(0, 0, 'cargo_box');
+            let icon = this.add.text(0, 0, iconText, { fontSize: '38px' }).setOrigin(0.5);
+            
+            box.add([bg, icon]);
+            this.physics.world.enable(box);
+            box.body.setVelocityY(currentSpeed);
+            
+            box.itemType = isHardware ? 'hardware' : 'software';
+            box.isProcessed = false;
+
+            itemsGroup.add(box);
+        }
+
+        function processSort(selectedType) {
+            if (isGameOver) return;
+
+            let closestItem = null;
+            let maxObjY = -100;
+
+            itemsGroup.getChildren().forEach((item) => {
+                if (!item.isProcessed && item.y > maxObjY) {
+                    maxObjY = item.y;
+                    closestItem = item;
+                }
+            });
+
+            if (!closestItem || closestItem.y < 280) return;
+
+            closestItem.isProcessed = true;
+            closestItem.body.setVelocityY(0);
+
+            let isCorrect = (closestItem.itemType === selectedType);
+            let targetX = selectedType === 'hardware' ? 150 : 650;
+            let sparkTexture = selectedType === 'hardware' ? 'blue_spark' : 'green_spark';
+            
+            // แอนิเมชันพุ่งลงกล่องพร้อมหมุนตัว
+            this.tweens.add({
+                targets: closestItem,
+                x: targetX,
+                y: 510,
+                scale: 0.6,
+                angle: selectedType === 'hardware' ? -25 : 25,
+                duration: 250,
+                ease: 'Cubic.easeOut',
+                onComplete: () => {
+                    // เอฟเฟกต์ระเบิดแสงนีออน
+                    let em = this.add.particles(closestItem.x, closestItem.y, isCorrect ? sparkTexture : 'red_spark', {
+                        speed: { min: 80, max: 220 },
+                        scale: { start: 1.2, end: 0 },
+                        lifespan: 450,
+                        emitting: false
+                    });
+                    em.explode(16);
+                    this.time.delayedCall(500, () => em.destroy());
+
+                    if (isCorrect) {
+                        score += 20;
+                        scoreText.setText('SCORE: ' + score);
+                        showFloatingText.call(this, closestItem.x, closestItem.y - 50, '+20', '#34d399');
+                    } else {
+                        score -= 10;
+                        scoreText.setText('SCORE: ' + score);
+                        showFloatingText.call(this, closestItem.x, closestItem.y - 50, '-10 ERROR', '#ef4444');
+                    }
+                    closestItem.destroy();
+                }
+            });
+        }
+
+        function showFloatingText(x, y, text, color) {
+            let ft = this.add.text(x, y, text, { fontSize: '26px', fill: color, fontFamily: 'Orbitron', fontStyle: 'bold' }).setOrigin(0.5);
+            this.tweens.add({
+                targets: ft,
+                y: y - 60,
+                alpha: 0,
+                duration: 750,
+                onComplete: () => ft.destroy()
+            });
+        }
+
+        function update() {
+            if (isGameOver) return;
+
+            // เอฟเฟกต์ซี่สายพานเลื่อนลง
+            this.beltLanes.getChildren().forEach(lane => {
+                lane.y += currentSpeed * 0.016;
+                if (lane.y > 600) lane.y = 0;
+            });
+
+            if (Phaser.Input.Keyboard.JustDown(cursors.left)) processSort.call(this, 'hardware');
+            if (Phaser.Input.Keyboard.JustDown(cursors.right)) processSort.call(this, 'software');
+
+            itemsGroup.getChildren().forEach((item) => {
+                if (!item.isProcessed && item.y > 640) {
+                    item.isProcessed = true;
+                    item.destroy();
+                    score -= 5;
+                    scoreText.setText('SCORE: ' + score);
+                    showFloatingText.call(this, 400, 540, 'MISSED -5', '#f59e0b');
+                }
+            });
+        }
+
+        function endGame() {
+            isGameOver = true;
+            itemsGroup.getChildren().forEach(item => item.body.setVelocityY(0));
+
+            this.add.rectangle(400, 300, 800, 600, 0x000000, 0.75);
+            this.add.text(400, 210, 'SHIFT COMPLETED', { fontSize: '48px', fill: '#f59e0b', fontFamily: 'Orbitron', fontStyle: 'bold' }).setOrigin(0.5);
+            this.add.text(400, 290, 'TOTAL SCORE: ' + score, { fontSize: '36px', fill: '#fff', fontFamily: 'Orbitron' }).setOrigin(0.5);
+            
+            let restartBtn = this.add.text(400, 420, '[ START NEW SHIFT ]', { fontSize: '28px', fill: '#38bdf8', fontFamily: 'Orbitron', fontStyle: 'bold' })
+                .setOrigin(0.5)
+                .setInteractive({ useHandCursor: true })
+                .on('pointerdown', () => {
+                    timer = 60; score = 0; currentSpeed = 160; isGameOver = false;
+                    this.scene.restart();
+                });
+        }
+    </script>
+</body>
+</html>

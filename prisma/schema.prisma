@@ -1,0 +1,283 @@
+// ==========================================
+// การตั้งค่าเริ่มต้นสำหรับ Prisma Generator และ Datasource
+// ==========================================
+
+// ตัวสร้าง Client สำหรับเรียกใช้งานฐานข้อมูลในโค้ด Next.js (JavaScript/TypeScript)
+generator client {
+  provider = "prisma-client-js" // กำหนดให้สร้าง Prisma Client สำหรับ Node.js
+}
+
+// การเชื่อมต่อฐานข้อมูลหลักของระบบ
+datasource db {
+  provider = "postgresql" // ใช้ระบบจัดการฐานข้อมูล PostgreSQL
+}
+
+// ==========================================
+// 1. ENUMS (กลุ่มตัวเลือกข้อมูลคงที่)
+// ==========================================
+
+// กำหนดสิทธิ์และบทบาทของผู้ใช้งานในระบบ
+enum Role {
+  STUDENT // บทบาทนักเรียน (ดูงาน, ส่งงาน, เล่นเกม)
+  TEACHER // บทบาทคุณครู (สร้างห้องเรียน, สั่งงาน, ตรวจคะแนน, เช็คชื่อ, จัดการปีการศึกษา)
+  ADMIN   // บทบาทผู้ดูแลระบบสูงสุด
+}
+
+// กำหนดสถานะของนักเรียนในการศึกษา
+enum StudentStatus {
+  ACTIVE     // สถานะกำลังเรียนอยู่ปกติ
+  GRADUATED  // สถานะสำเร็จการศึกษาแล้ว
+  RETAINED   // สถานะซ้ำชั้น (ไม่ผ่านการประเมินจากระบบ Rollover)
+  TRANSFERRED // สถานะย้ายสถานศึกษา
+}
+
+// กำหนดสถานะของการมอบหมายงาน/การบ้าน
+enum AssignmentStatus {
+  DRAFT     // ฉบับร่าง (ครูยังเห็นคนเดียว นักเรียนยังไม่เห็น)
+  PUBLISHED // เผยแพร่แล้ว (นักเรียนเห็นและสามารถส่งงานได้)
+  CLOSED    // ปิดรับงาน (หมดกำหนดเวลาส่งงานแล้ว)
+}
+
+// กำหนดสถานะการส่งงานของนักเรียน
+enum SubmissionStatus {
+  SUBMITTED // ส่งงานแล้ว (รอการตรวจและให้คะแนนจากคุณครู)
+  LATE      // ส่งงานล่าช้ากว่ากำหนด (ส่งหลัง Due Date)
+  GRADED    // ตรวจและบันทึกคะแนนเรียบร้อยแล้ว
+}
+
+// กำหนดสถานะการเช็คชื่อเข้าเรียนประจำวัน
+enum AttendanceStatus {
+  PRESENT // มาเรียนปกติ
+  ABSENT  // ขาดเรียน
+  LATE    // มาสาย
+  LEAVE   // ลาเรียน (มีใบลา)
+}
+
+// กำหนดประเภทของไฟล์สื่อการสอนในบทเรียน
+enum MaterialType {
+  SLIDE // สื่อการสอนแบบสไลด์ (PDF, PowerPoint)
+  VIDEO // สื่อการสอนแบบวิดีโอ (MP4, YouTube)
+  LINK  // ลิงก์เชื่อมโยงไปยังเว็บไซต์ภายนอก
+  FILE  // ไฟล์เอกสารดาวน์โหลดอื่นๆ (.zip, .docx)
+}
+
+// กำหนดประเภทความสำคัญของการแจ้งเตือน (Notifications)
+enum NotificationType {
+  INFO    // ข้อมูลทั่วไป
+  WARNING // คำเตือนความเสี่ยง (เช่น อัตราเข้าเรียนต่ำ)
+  SUCCESS // ดำเนินการสำเร็จ (เช่น ตรวจงานเสร็จสิ้น)
+  ALERT   // แจ้งเตือนฉุกเฉินสำคัญ
+}
+
+// ==========================================
+// 2. MODELS (การแมปโครงสร้างตารางข้อมูลใน PostgreSQL)
+// ==========================================
+
+// ตารางสำหรับเก็บข้อมูลผู้ใช้งานระบบ (ครู, นักเรียน, แอดมิน)
+model User {
+  id         String        @id @default(uuid()) @db.Uuid // รหัสไอดีประจำตัวผู้ใช้ (คีย์หลัก, UUID)
+  role       Role          @default(STUDENT) // สิทธิ์การใช้งาน (ค่าเริ่มต้นเป็นนักเรียน)
+  name       String        @db.VarChar(255) // ชื่อจริง-นามสกุลของผู้ใช้ (ขนาดไม่เกิน 255 ตัวอักษร)
+  password   String        @db.VarChar(255) // รหัสผ่านที่ผ่านการเข้ารหัสแล้ว (Hashed Password)
+  status     StudentStatus @default(ACTIVE) // สถานะนักเรียนปัจจุบัน (ค่าเริ่มต้นกำลังเรียนปกติ)
+  avatarUrl    String?       @map("avatar_url") @db.VarChar(255) // ลิงก์รูปโปรไฟล์ (กรอกหรือไม่กรอกก็ได้)
+  passwordHint String?       @map("password_hint") @db.VarChar(255) // รหัสผ่านดิบสำหรับแสดงผลให้ครู/แอดมินดู (สำหรับบัญชีจำลอง/เพิ่มใหม่)
+  studentId    String?       @map("student_id") @db.VarChar(50) // รหัสประจำตัวนักเรียน (เช่น 680101)
+  nickname     String?       @db.VarChar(50) // ชื่อเล่น
+  gender       String?       @db.VarChar(10) // เพศ (ชาย / หญิง)
+  rollNumber   String?       @map("roll_number") @db.VarChar(50) // เลขที่
+  parentPhone  String?       @map("parent_phone") @db.VarChar(50) // เบอร์โทรผู้ปกครอง
+  createdAt    DateTime      @default(now()) @map("created_at") // วันเวลาที่บัญชีผู้ใช้ถูกสร้างขึ้น
+  updatedAt    DateTime      @updatedAt @map("updated_at") // วันเวลาที่แก้ไขข้อมูลผู้ใช้ล่าสุด
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  classroomsTaught Classroom[]       @relation("TeacherClassrooms") // เชื่อมโยงกับห้องเรียนที่ครูคนนี้สอนอยู่
+  studentClasses   StudentClass[]    // เชื่อมข้อมูลการลงทะเบียนเรียนในห้องเรียนต่างๆ ของนักเรียน
+  submissions      Submission[]      // เชื่อมโยงประวัติการส่งงานการบ้านทั้งหมดของนักเรียนคนนี้
+  attendance       Attendance[]      // เชื่อมโยงข้อมูลประวัติการเช็คชื่อเข้าเรียนของนักเรียนคนนี้
+  gameScores       GameScore[]       // เชื่อมโยงคะแนนประวัติการเล่นมินิเกมทั้งหมดของนักเรียน
+  leaderboard      Leaderboard[]     // เชื่อมโยงอันดับในลีดเดอร์บอร์ดแต่ละวิชาของนักเรียน
+  notifications    Notification[]    @relation("UserNotifications") // เชื่อมโยงรายการแจ้งเตือนที่ผู้ใช้ได้รับ
+  executedLogs     AcademicYearLog[] @relation("ExecutedBy") // เชื่อมโยงประวัติการกดจัดการปีการศึกษาของคุณครู
+
+  @@map("users") // แมปชื่อโมเดลเป็นชื่อตาราง "users" ในฐานข้อมูล PostgreSQL
+}
+
+// ตารางสำหรับเก็บข้อมูลรายละเอียดห้องเรียน
+model Classroom {
+  id           String   @id @default(uuid()) @db.Uuid // รหัสไอดีประจำห้องเรียน (คีย์หลัก, UUID)
+  name         String   @db.VarChar(255) // ชื่อกลุ่มหรือวิชาในห้องเรียน (เช่น วิทยาการคำนวณ)
+  yearLevel    String   @map("year_level") @db.VarChar(50) // ระดับชั้นเรียน (เช่น ม.3)
+  room         String   @db.VarChar(50) // หมายเลขห้องเรียนย่อย (เช่น ห้อง 1)
+  academicYear String   @map("academic_year") @db.VarChar(4) // ปีการศึกษาปัจจัย (เช่น 2568)
+  teacherId    String   @map("teacher_id") @db.Uuid // ไอดีรหัสคุณครูเจ้าของห้องเรียน (คีย์นอก)
+  createdAt    DateTime @default(now()) @map("created_at") // วันเวลาที่ห้องเรียนนี้ถูกสร้างขึ้น
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  teacher         User             @relation("TeacherClassrooms", fields: [teacherId], references: [id], onDelete: Restrict) // โยงหาข้อมูลครู (ห้ามลบครูถ้าห้องเรียนยังอยู่)
+  studentClasses  StudentClass[]  // โยงข้อมูลนักเรียนที่อยู่ในห้องเรียนนี้ทั้งหมด
+  assignments     Assignment[]     // โยงรายการงานการบ้านที่สั่งในห้องเรียนนี้
+  attendance      Attendance[]     // โยงรายการประวัติการเข้าเรียนของห้องเรียนนี้
+  courseMaterials CourseMaterial[] // โยงรายการสื่อประกอบการเรียนของห้องเรียนนี้
+  leaderboards    Leaderboard[]    // โยงลีดเดอร์บอร์ดจัดอันดับของห้องเรียนนี้
+
+  @@map("classrooms") // แมปชื่อโมเดลเป็นชื่อตาราง "classrooms" ใน PostgreSQL
+}
+
+// ตารางเชื่อมข้อมูลแบบกลุ่ม (Junction Table) สำหรับจับคู่นักเรียนเข้าชั้นเรียน (N:M)
+model StudentClass {
+  id        String   @id @default(uuid()) @db.Uuid // รหัสไอดีตั๋วลงทะเบียนเรียน (คีย์หลัก, UUID)
+  studentId String   @map("student_id") @db.Uuid // ไอดีรหัสนักเรียน (คีย์นอก โยงไป User)
+  classId   String   @map("class_id") @db.Uuid // ไอดีรหัสห้องเรียน (คีย์นอก โยงไป Classroom)
+  joinedAt  DateTime @default(now()) @map("joined_at") // วันเวลาที่นักเรียนเข้าร่วมห้องเรียนนี้
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  student   User      @relation(fields: [studentId], references: [id], onDelete: Cascade) // โยงข้อมูลนักเรียน (ถ้าลบนักเรียน ข้อมูลห้องเรียนที่ลงเรียนไว้จะถูกลบด้วย)
+  classroom Classroom @relation(fields: [classId], references: [id], onDelete: Cascade) // โยงข้อมูลห้องเรียน (ถ้าลบห้องเรียน ข้อมูลการลงเรียนจะถูกลบตาม)
+
+  @@unique([studentId, classId]) // ป้องกันนักเรียนสมัครเรียนซ้ำในห้องเรียนเดิมซ้ำซ้อน
+  @@map("student_classes") // แมปชื่อโมเดลเป็นชื่อตาราง "student_classes" ใน PostgreSQL
+}
+
+// ตารางสำหรับเก็บรายการงาน การบ้าน หรือกิจกรรมแบบทดสอบที่สั่ง
+model Assignment {
+  id            String           @id @default(uuid()) @db.Uuid // รหัสไอดีงานที่สั่ง (คีย์หลัก, UUID)
+  classId       String           @map("class_id") @db.Uuid // รหัสห้องเรียนที่ได้รับมอบหมายงานนี้ (คีย์นอก)
+  title         String           @db.VarChar(255) // หัวข้อเรื่องของการบ้าน (เช่น แบบฝึกหัดหน่วยที่ 1)
+  description   String?          @db.Text // รายละเอียดสั่งงานเพิ่มเติม (พิมพ์ข้อมูลได้ไม่จำกัด, เลือกไม่ใส่ได้)
+  maxPoints     Int              @default(10) @map("max_points") // คะแนนเต็มของงานนี้ (ค่าเริ่มต้นคือ 10 คะแนน)
+  isGoogleForm  Boolean          @default(false) @map("is_google_form") // ระบุว่าเป็นแบบทดสอบฝัง Google Forms หรือไม่
+  googleFormUrl String?          @map("google_form_url") @db.VarChar(500) // ลิงก์สำหรับ Embed Google Forms ในหน้าเว็บ (ใส่ได้สูงสุด 500 อักษร)
+  dueDate       DateTime?        @map("due_date") // วันหมดเขตกำหนดการส่งงาน (เลือกไม่ใส่กรณีไม่มีกำหนดส่ง)
+  status        AssignmentStatus @default(DRAFT) // สถานะงานการบ้าน (ค่าเริ่มต้นเป็นฉบับร่าง)
+  createdAt     DateTime         @default(now()) @map("created_at") // วันเวลาที่เขียนใบงานนี้ขึ้นมา
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  classroom   Classroom    @relation(fields: [classId], references: [id], onDelete: Cascade) // โยงข้อมูลห้องเรียน (ถ้าลบห้องเรียน งานการบ้านทั้งหมดในห้องจะลบไปด้วย)
+  submissions Submission[] // รายการส่งงานของนักเรียนทุกคนภายใต้งานชิ้นนี้
+
+  @@map("assignments") // แมปชื่อโมเดลเป็นชื่อตาราง "assignments" ใน PostgreSQL
+}
+
+// ตารางจัดเก็บไฟล์และการส่งงานของนักเรียน พร้อมฟีดแบคจากคุณครู
+model Submission {
+  id           String           @id @default(uuid()) @db.Uuid // รหัสไอดีรายการส่งงาน (คีย์หลัก, UUID)
+  studentId    String           @map("student_id") @db.Uuid // รหัสนักเรียนผู้ส่งงานชิ้นนี้ (คีย์นอก)
+  assignmentId String           @map("assignment_id") @db.Uuid // รหัสของงานที่ส่ง (คีย์นอก โยงไป Assignment)
+  fileUrl      String?          @map("file_url") @db.VarChar(500) // ลิงก์ที่อยู่ไฟล์งานที่ส่ง (เลือกเป็นค่าว่างได้ หากเป็นงานทำผ่าน Google Form)
+  score        Int?                                              // คะแนนจริงที่นักเรียนได้รับจากครู (เป็นค่าว่างจนกว่าครูจะให้คะแนน)
+  feedback     String?          @db.Text                         // คำแนะนำ หรือข้อคิดเห็นเพิ่มเติมที่ครูเขียนส่งกลับไป
+  status       SubmissionStatus @default(SUBMITTED) // สถานะการส่ง (ค่าเริ่มต้นส่งงานแล้ว)
+  submittedAt  DateTime         @default(now()) @map("submitted_at") // วันเวลาจริงที่กดอัปโหลดส่งงานสำเร็จ
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  student    User       @relation(fields: [studentId], references: [id], onDelete: Cascade) // โยงหาตัวนักเรียน (ลบนักเรียน ข้อมูลส่งงานจะลบตาม)
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade) // โยงหางาน (ลบงานที่สั่ง ข้อมูลส่งงานจะลบตาม)
+
+  @@unique([studentId, assignmentId]) // จำกัดสิทธิ์นักเรียนหนึ่งคนส่งงานชิ้นเดียวกันได้เพียงครั้งเดียวเท่านั้น
+  @@map("submissions") // แมปชื่อโมเดลเป็นชื่อตาราง "submissions" ใน PostgreSQL
+}
+
+// ตารางบันทึกประวัติการเช็คชื่อเข้าชั้นเรียนเป็นรายวัน
+model Attendance {
+  id        String           @id @default(uuid()) @db.Uuid // รหัสไอดีรายการเช็คชื่อ (คีย์หลัก, UUID)
+  studentId String           @map("student_id") @db.Uuid // รหัสนักเรียนที่ถูกเช็คชื่อ (คีย์นอก)
+  classId   String           @map("class_id") @db.Uuid // รหัสห้องเรียนวิชาเรียนนั้นๆ (คีย์นอก)
+  date      DateTime         @db.Date // วันที่ทำการเช็คชื่อ (เก็บบันทึกเฉพาะวันที่ เช่น 2026-07-01)
+  status    AttendanceStatus @default(PRESENT) // สถานะมาเรียน (ค่าเริ่มต้นคือมาเรียนปกติ)
+  note      String?          @db.Text // บันทึกเหตุผลเพิ่มเติมกรณีขาด สาย หรือลา (เลือกไม่กรอกได้)
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  student   User      @relation(fields: [studentId], references: [id], onDelete: Cascade) // โยงหาตัวนักเรียน (ลบนักเรียน ประวัติเช็คชื่อลบตาม)
+  classroom Classroom @relation(fields: [classId], references: [id], onDelete: Cascade) // โยงหาตัวห้องเรียน (ลบห้องเรียน ประวัติเช็คชื่อลบตาม)
+
+  @@unique([studentId, classId, date]) // ป้องกันไม่ให้มีการเช็คชื่อซ้ำของนักเรียนคนเดิมในห้องเดิมในวันเดียวกัน
+  @@map("attendance") // แมปชื่อโมเดลเป็นชื่อตาราง "attendance" ใน PostgreSQL
+}
+
+// ตารางเก็บข้อมูลไฟล์บทเรียนและวิดีโอการสอนที่คุณครูอัปโหลดแชร์ให้ห้องเรียน
+model CourseMaterial {
+  id        String       @id @default(uuid()) @db.Uuid // รหัสไอดีสื่อการเรียน (คีย์หลัก, UUID)
+  classId   String       @map("class_id") @db.Uuid // รหัสห้องเรียนวิชาที่แชร์สื่อนี้ (คีย์นอก)
+  title     String       @db.VarChar(255) // ชื่อเอกสารหรือหัวข้อสื่อการสอน
+  type      MaterialType @default(FILE) // ประเภทของสื่อ (สไลด์, ลิงก์, วิดีโอ, ไฟล์ปกติ)
+  fileUrl   String       @map("file_url") @db.VarChar(500) // ลิงก์เส้นทางดาวน์โหลดไฟล์/ลิงก์วิดีโอหลัก
+  isLocked  Boolean      @default(false) @map("is_locked") // ตัวล็อกเนื้อหาไม่ให้นักเรียนเข้าถึงก่อนกำหนด
+  unlocksAt DateTime?    @map("unlocks_at") // วันและเวลาที่จะทำการปลดล็อกให้เข้าดูสื่อชุดนี้อัตโนมัติ
+  createdAt DateTime     @default(now()) @map("created_at") // วันเวลาที่เพิ่มบทเรียนนี้เข้าระบบ
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  classroom Classroom @relation(fields: [classId], references: [id], onDelete: Cascade) // โยงหาห้องเรียน (ลบห้องเรียน สื่อการสอนในห้องถูกลบตาม)
+
+  @@map("course_materials") // แมปชื่อโมเดลเป็นชื่อตาราง "course_materials" ใน PostgreSQL
+}
+
+// ตารางบันทึกประวัติการเล่นมินิเกมเก็บคะแนนสะสมรายครั้ง (สำหรับเก็บบันทึกประวัติดิบ)
+model GameScore {
+  id        String   @id @default(uuid()) @db.Uuid // รหัสไอดีบันทึกการส่งคะแนนเกม (คีย์หลัก, UUID)
+  studentId String   @map("student_id") @db.Uuid // ไอดีนักเรียนผู้ทำการเล่นเกมนี้ (คีย์นอก)
+  gameType  String   @map("game_type") @db.VarChar(100) // ชื่อเกมที่เล่น (เช่น space-waves, typing-diner)
+  sessionId String?  @map("session_id") @db.VarChar(100) // รหัสระบุกลุ่มรอบเล่น (Session ID) สำหรับจัดประเภท
+  points    Int      // จำนวนแต้มคะแนนที่ทำได้ในรอบการเล่นนั้น
+  metadata  Json?    // เก็บข้อมูลรายละเอียดเชิงสถิติ (เช่น ความเร็วกดแป้นพิมพ์ ความแม่นยำ หรือด่านที่ผ่าน)
+  earnedAt  DateTime @default(now()) @map("earned_at") // วันเวลาที่ได้รับคะแนนสะสม (วันที่เล่นเกมเสร็จ)
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  student User @relation(fields: [studentId], references: [id], onDelete: Cascade) // โยงหานักเรียนผู้เล่น (ลบนักเรียน ประวัติคะแนนเกมลบตาม)
+
+  @@map("game_scores") // แมปชื่อโมเดลเป็นชื่อตาราง "game_scores" ใน PostgreSQL
+}
+
+// ตารางลีดเดอร์บอร์ด (CACHE DATA): เก็บสะสมคะแนนรวมของนักเรียนแต่ละคนในแต่ละห้องเพื่อประมวลผลดึงอันดับไวขึ้น
+model Leaderboard {
+  id          String   @id @default(uuid()) @db.Uuid // รหัสไอดีสรุปผลอันดับ (คีย์หลัก, UUID)
+  studentId   String   @map("student_id") @db.Uuid // รหัสนักเรียน (คีย์นอก โยงไป User)
+  classId     String   @map("class_id") @db.Uuid // รหัสห้องเรียนที่นำมาจัดลำดับ (คีย์นอก โยงไป Classroom)
+  totalPoints Int      @map("total_points") // คะแนนสะสมสุทธิจากประวัติการส่งคะแนนเกม (Cached Data)
+  rank        Int?     // ลำดับที่ของนักเรียน (เช่น 1, 2, 3) ภายในห้องเรียน (คำนวณใหม่เมื่อต้องการ)
+  lastSynced  DateTime @default(now()) @map("last_synced") // วันเวลาที่ทำการอัปเดตซิงค์คะแนนล่าสุดจากตารางดิบ GameScore
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  student   User      @relation(fields: [studentId], references: [id], onDelete: Cascade) // โยงหาตัวนักเรียน
+  classroom Classroom @relation(fields: [classId], references: [id], onDelete: Cascade) // โยงหาตัวห้องเรียน
+
+  @@unique([studentId, classId]) // ในแต่ละวิชาและห้องเรียน นักเรียนหนึ่งคนจะมีแถวผลสรุปลีดเดอร์บอร์ดได้เพียง 1 แถวเท่านั้น
+  @@index([classId, totalPoints(sort: Desc)]) // ดัชนีเพิ่มความเร็วในการสืบค้นเพื่อเรียงอันดับนักเรียนจากคะแนนมากไปน้อยในห้องเรียนนั้นๆ
+  @@map("leaderboards") // แมปชื่อโมเดลเป็นชื่อตาราง "leaderboards" ใน PostgreSQL
+}
+
+// ตารางสำหรับจัดเก็บรายการแจ้งเตือน (Notifications) ต่างๆ ภายในระบบ
+model Notification {
+  id          String           @id @default(uuid()) @db.Uuid // รหัสไอดีการแจ้งเตือน (คีย์หลัก, UUID)
+  recipientId String           @map("recipient_id") @db.Uuid // รหัสไอดีของผู้ใช้ที่จะได้รับแจ้งเตือนชิ้นนี้ (คีย์นอก)
+  type        NotificationType @default(INFO) // ระดับความสำคัญของการเตือน (INFO, WARNING, SUCCESS, ALERT)
+  title       String           @db.VarChar(255) // หัวข้อแสดงความสั้นกระชับของการแจ้งเตือน
+  message     String           @db.Text // คำอธิบายรายละเอียดเหตุการณ์หรือเนื้อหาที่เกิดขึ้น
+  relatedType String?          @map("related_type") @db.VarChar(100) // ชื่อตารางต้นทางของเหตุการณ์แจ้งเตือน (เช่น "ASSIGNMENT" / "ATTENDANCE")
+  relatedId   String?          @map("related_id") @db.Uuid         // ไอดี ID ตารางต้นทาง เพื่อใช้สำหรับนำทางหรือกดลิงก์ดูรายละเอียด
+  isRead      Boolean          @default(false) @map("is_read") // สถานะการอ่านของแจ้งเตือน (true = อ่านแล้ว, false = ยังไม่อ่าน)
+  createdAt   DateTime         @default(now()) @map("created_at") // วันและเวลาที่มีการส่งแจ้งเตือน
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  recipient User @relation("UserNotifications", fields: [recipientId], references: [id], onDelete: Cascade) // โยงหาผู้รับการแจ้งเตือน (ลบผู้ใช้ การแจ้งเตือนจะลบตาม)
+
+  @@map("notifications") // แมปชื่อโมเดลเป็นชื่อตาราง "notifications" ใน PostgreSQL
+}
+
+// ตารางเก็บบันทึกประวัติการเปลี่ยนผ่านปีการศึกษาและปรับกลุ่มนักเรียนในชั้นเรียน (Rollover History Log)
+model AcademicYearLog {
+  id             String   @id @default(uuid()) @db.Uuid // รหัสไอดีบันทึกการทำ Rollover (คีย์หลัก, UUID)
+  executedBy     String   @map("executed_by") @db.Uuid // รหัสไอดีคุณครูผู้คลิกดำเนินการ Rollover ปรับชั้นเรียน (คีย์นอก)
+  fromYear       String   @map("from_year") @db.VarChar(4) // ปีการศึกษาเดิมที่เริ่มต้นทำรายการ (เช่น 2568)
+  toYear         String   @map("to_year") @db.VarChar(4) // ปีการศึกษาเป้าหมายใหม่ (เช่น 2569)
+  retainedCount  Int      @map("retained_count") // บันทึกสถิตินักเรียนที่ต้องเรียนซ้ำชั้นเดิม (คน)
+  graduatedCount Int      @map("graduated_count") // บันทึกสถิตินักเรียน ม.3 ที่สำเร็จการศึกษาออกจากระบบ (คน)
+  promotedCount  Int      @map("promoted_count") // บันทึกสถิตินักเรียนที่ได้รับการเลื่อนระดับชั้นขึ้นไป (คน)
+  executedAt     DateTime @default(now()) @map("executed_at") // วันเวลาที่ได้กดยืนยันการจัดการสำเร็จ
+  backupJson     Json?    @map("backup_json") // เก็บบันทึกข้อมูลเก่าในรูป JSON เพื่อเป็นประวัติสำรอง (Snapshot) เผื่อเรียกข้อมูลคืนกลับมาดู
+
+  // ความสัมพันธ์ภายนอก (Relationships)
+  executor User @relation("ExecutedBy", fields: [executedBy], references: [id], onDelete: Restrict) // โยงหาครูผู้จัดทำข้อมูล (ห้ามลบครูถ้าข้อมูลประวัติการทำ Rollover นี้ยังคงอยู่)
+
+  @@map("academic_year_logs") // แมปชื่อโมเดลเป็นชื่อตาราง "academic_year_logs" ใน PostgreSQL
+}

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Typing Restaurant (Phaser Prototype)</title>
+    <!-- โหลด Phaser 3 ผ่าน CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Prompt:wght@400;600;700&display=swap');
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            color: white;
+            font-family: 'Prompt', 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .header h1 {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(236, 72, 153, 0.4);
+            letter-spacing: 1px;
+        }
+        .header p { margin: 4px 0 0 0; color: #94a3b8; font-size: 0.9rem; }
+
+        #game-container {
+            box-shadow: 0 0 50px rgba(236, 72, 153, 0.25), inset 0 0 20px rgba(0,0,0,0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(236, 72, 153, 0.4);
+            position: relative;
+            background: #090d16;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>ร้านอาหารพิมพ์เร็วไซเบอร์ (Typing Diner)</h1>
+        <p>คลิกที่หน้าจอเกมเพื่อเริ่ม! <b style="color:#ec4899">กดแป้นพิมพ์ภาษาอังกฤษ</b> (รองรับแม้เปิดแป้นไทยอยู่) เพื่อเสิร์ฟอาหาร!</p>
+    </div>
+
+    <div id="game-container"></div>
+
+    <script>
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: 'game-container',
+            backgroundColor: '#090d16',
+            scene: { preload, create, update }
+        };
+
+        const game = new Phaser.Game(config);
+
+        const WORD_LIST = [
+            'RAM', 'CPU', 'CODE', 'DATA', 'WIFI', 'BYTE', 'JAVA', 'ROBOT', 
+            'CYBER', 'PIZZA', 'BURGER', 'RAMEN', 'SUSHI', 'PYTHON', 'INPUT', 
+            'OUTPUT', 'SERVER', 'SYSTEM', 'SEARCH', 'MEMORY', 'NETWORK', 'PIXEL'
+        ];
+
+        const CUSTOMER_EMOJIS = ['🤖', '🐱', '🦊', '👽', '👨‍🍳', '🐻'];
+
+        let score = 0;
+        let scoreText, timeText;
+        let timer = 60;
+        let isGameOver = false;
+
+        let currentCustomer;
+        let currentWord = '';
+        let typedIndex = 0;
+        
+        let typedTextGraphic, untypedTextGraphic;
+        let patienceBar;
+        let patienceVal = 100;
+
+        function preload() {
+            let pGfx = this.add.graphics();
+            pGfx.fillStyle(0xf472b6, 1);
+            pGfx.fillCircle(4, 4, 4);
+            pGfx.generateTexture('pink_spark', 8, 8);
+
+            pGfx.clear();
+            pGfx.fillStyle(0x38bdf8, 1);
+            pGfx.fillCircle(4, 4, 4);
+            pGfx.generateTexture('blue_spark', 8, 8);
+            pGfx.destroy();
+        }
+
+        function create() {
+            // โฟกัสหน้าต่างทันทีเมื่อโหลดเกม
+            window.focus();
+            this.input.on('pointerdown', () => window.focus());
+
+            // --- พื้นหลังร้านอาหารไซเบอร์ ---
+            let bgGfx = this.add.graphics();
+            bgGfx.fillStyle(0x1e1b4b, 1);
+            bgGfx.fillRect(0, 0, 800, 600);
+            
+            bgGfx.fillStyle(0x312e81, 0.6);
+            bgGfx.fillRect(0, 0, 800, 120);
+            bgGfx.lineStyle(3, 0xec4899, 0.8);
+            bgGfx.lineBetween(0, 120, 800, 120);
+
+            // เคาเตอร์สั่งอาหาร
+            let counter = this.add.graphics();
+            counter.fillStyle(0x0f172a, 1);
+            counter.fillRect(0, 420, 800, 180);
+            counter.lineStyle(4, 0x8b5cf6, 1);
+            counter.strokeRect(0, 420, 800, 180);
+
+            this.add.text(400, 450, '⌨️ คลิกที่นี่แล้วกดพิมพ์คีย์บอร์ดภาษาอังกฤษ 🍽️', { 
+                fontSize: '20px', fill: '#c084fc', fontFamily: 'Prompt', fontStyle: 'bold' 
+            }).setOrigin(0.5);
+
+            // UI คะแนนและเวลา
+            scoreText = this.add.text(25, 25, 'SCORE: 0', { fontSize: '28px', fill: '#fff', fontFamily: 'Orbitron', fontStyle: 'bold' });
+            timeText = this.add.text(775, 25, 'TIME: 60', { fontSize: '28px', fill: '#f43f5e', fontFamily: 'Orbitron', fontStyle: 'bold' }).setOrigin(1, 0);
+
+            // กล่องป้ายออเดอร์
+            let bubbleBg = this.add.rectangle(400, 180, 340, 100, 0xffffff, 0.95);
+            bubbleBg.setStrokeStyle(4, 0xec4899);
+
+            // ข้อความตัวอักษร 2 ส่วน (ส่วนที่พิมพ์แล้วสีเขียว / ยังไม่พิมพ์สีดำ)
+            typedTextGraphic = this.add.text(400, 180, '', { 
+                fontSize: '46px', fill: '#10b981', fontFamily: 'Orbitron', fontStyle: 'bold' 
+            }).setOrigin(1, 0.5);
+
+            untypedTextGraphic = this.add.text(400, 180, '', { 
+                fontSize: '46px', fill: '#0f172a', fontFamily: 'Orbitron', fontStyle: 'bold' 
+            }).setOrigin(0, 0.5);
+
+            // หลอดความอดทน
+            this.add.rectangle(400, 245, 300, 14, 0x334155);
+            patienceBar = this.add.rectangle(400, 245, 300, 14, 0x10b981);
+
+            // เรียกลูกค้าคนแรก
+            nextCustomer.call(this);
+
+            // จับเวลา 60 วินาที
+            this.time.addEvent({
+                delay: 1000,
+                callback: () => {
+                    if (timer > 0 && !isGameOver) {
+                        timer--;
+                        timeText.setText('TIME: ' + timer);
+                    } else if (timer <= 0 && !isGameOver) {
+                        endGame.call(this);
+                    }
+                },
+                loop: true
+            });
+
+            // --- ระบบตรวจจับแป้นพิมพ์ที่แข็งแกร่ง (รองรับคีย์บอร์ดไทย) ---
+            window.addEventListener('keydown', handleKeyPress.bind(this));
+        }
+
+        function handleKeyPress(event) {
+            if (isGameOver || !currentWord) return;
+
+            let key = '';
+            // แปลงรหัสปุ่ม KeyA -> A เพื่อให้รองรับแม้เปิดแป้นพิมพ์ภาษาไทยอยู่!
+            if (event.code && event.code.startsWith('Key')) {
+                key = event.code.replace('Key', '').toUpperCase();
+            } else if (event.key) {
+                key = event.key.toUpperCase();
+            }
+
+            if (!key) return;
+
+            let targetKey = currentWord[typedIndex];
+
+            if (key === targetKey) {
+                typedIndex++;
+                updateWordDisplay.call(this);
+
+                // พาร์ทิเคิลระเบิดแสง
+                let em = this.add.particles(typedTextGraphic.x, 220, 'pink_spark', {
+                    speed: { min: -60, max: 60 },
+                    scale: { start: 1.2, end: 0 },
+                    lifespan: 300,
+                    emitting: false
+                });
+                em.explode(6);
+                this.time.delayedCall(350, () => em.destroy());
+
+                if (typedIndex >= currentWord.length) {
+                    serveSuccess.call(this);
+                }
+            }
+        }
+
+        function nextCustomer() {
+            if (isGameOver) return;
+
+            if (currentCustomer) currentCustomer.destroy();
+
+            let emoji = Phaser.Utils.Array.GetRandom(CUSTOMER_EMOJIS);
+            currentCustomer = this.add.text(400, 360, emoji, { fontSize: '90px' }).setOrigin(0.5);
+            currentCustomer.setScale(0);
+
+            this.tweens.add({
+                targets: currentCustomer,
+                scale: 1,
+                duration: 350,
+                ease: 'Back.out'
+            });
+
+            currentWord = Phaser.Utils.Array.GetRandom(WORD_LIST);
+            typedIndex = 0;
+            updateWordDisplay.call(this);
+
+            patienceVal = 100;
+            patienceBar.width = 300;
+            patienceBar.fillColor = 0x10b981;
+        }
+
+        function updateWordDisplay() {
+            let typedPart = currentWord.substring(0, typedIndex);
+            let untypedPart = currentWord.substring(typedIndex);
+
+            typedTextGraphic.setText(typedPart);
+            untypedTextGraphic.setText(untypedPart);
+
+            // คำนวณความกว้างเพื่อจัดข้อความให้อยู่ตรงกลางป้ายเสมอ
+            let totalWidth = typedTextGraphic.width + untypedTextGraphic.width;
+            let startX = 400 - (totalWidth / 2);
+
+            typedTextGraphic.setX(startX);
+            untypedTextGraphic.setX(startX + typedTextGraphic.width);
+        }
+
+        function serveSuccess() {
+            score += 20;
+            scoreText.setText('SCORE: ' + score);
+
+            let sEm = this.add.particles(400, 320, 'blue_spark', {
+                speed: { min: -150, max: 150 },
+                scale: { start: 1.4, end: 0 },
+                lifespan: 500,
+                emitting: false
+            });
+            sEm.explode(20);
+            this.time.delayedCall(600, () => sEm.destroy());
+
+            let ft = this.add.text(400, 280, '✨ SERVED! +20', { 
+                fontSize: '28px', fill: '#10b981', fontFamily: 'Orbitron', fontStyle: 'bold' 
+            }).setOrigin(0.5);
+            this.tweens.add({
+                targets: ft,
+                y: 220,
+                alpha: 0,
+                duration: 700,
+                onComplete: () => ft.destroy()
+            });
+
+            this.tweens.add({
+                targets: currentCustomer,
+                y: 320,
+                scale: 1.2,
+                duration: 200,
+                yoyo: true,
+                onComplete: () => {
+                    nextCustomer.call(this);
+                }
+            });
+        }
+
+        function update() {
+            if (isGameOver) return;
+
+            if (patienceVal > 0) {
+                patienceVal -= 0.08;
+                patienceBar.width = (patienceVal / 100) * 300;
+
+                if (patienceVal < 30) patienceBar.fillColor = 0xef4444;
+                else if (patienceVal < 60) patienceBar.fillColor = 0xf59e0b;
+            } else {
+                patienceVal = 100;
+                score -= 10;
+                scoreText.setText('SCORE: ' + score);
+
+                let ft = this.add.text(400, 280, '😡 LEFT! -10', { 
+                    fontSize: '28px', fill: '#ef4444', fontFamily: 'Orbitron', fontStyle: 'bold' 
+                }).setOrigin(0.5);
+                this.tweens.add({
+                    targets: ft,
+                    y: 220,
+                    alpha: 0,
+                    duration: 700,
+                    onComplete: () => ft.destroy()
+                });
+
+                nextCustomer.call(this);
+            }
+        }
+
+        function endGame() {
+            isGameOver = true;
+            this.add.rectangle(400, 300, 800, 600, 0x000000, 0.75);
+            this.add.text(400, 210, 'TIME EXPIRED', { fontSize: '48px', fill: '#ec4899', fontFamily: 'Orbitron', fontStyle: 'bold' }).setOrigin(0.5);
+            this.add.text(400, 290, 'TOTAL TIPS: ' + score + ' PTS', { fontSize: '36px', fill: '#fff', fontFamily: 'Orbitron' }).setOrigin(0.5);
+            
+            if (window.parent) {
+                window.parent.postMessage({
+                    type: 'GAME_OVER',
+                    score: score,
+                    gameId: 'typing-diner'
+                }, '*');
+            }
+
+            let restartBtn = this.add.text(400, 420, '[ OPEN DINER AGAIN ]', { fontSize: '28px', fill: '#38bdf8', fontFamily: 'Orbitron', fontStyle: 'bold' })
+                .setOrigin(0.5)
+                .setInteractive({ useHandCursor: true })
+                .on('pointerdown', () => {
+                    timer = 60; score = 0; isGameOver = false;
+                    this.scene.restart();
+                });
+        }
+    </script>
+</body>
+</html>

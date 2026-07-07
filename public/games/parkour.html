@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Parkour Run (Phaser Prototype)</title>
+    <!-- โหลด Phaser ผ่าน CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <style>
+        body {
+            margin: 0; padding: 0;
+            background-color: #0f172a;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
+        }
+        #game-container {
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 4px solid #3b82f6;
+            position: relative;
+        }
+        .header {
+            color: white;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .header h1 { margin: 0 0 5px 0; color: #38bdf8; }
+        .header p { margin: 0; color: #94a3b8; font-size: 0.95rem; }
+
+        /* Mobile Controls */
+        .mobile-controls {
+            display: flex;
+            justify-content: space-between;
+            width: 800px;
+            margin-top: 15px;
+            touch-action: manipulation;
+        }
+        .touch-btn {
+            background-color: #1e293b;
+            color: white;
+            border: 2px solid #3b82f6;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .touch-btn:active { background-color: #3b82f6; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏃‍♂️ ไซเบอร์พาร์กัวร์ (Cyber Parkour Run)</h1>
+        <p>บังคับด้วยลูกศร <b style="color:#38bdf8">⬅️ ➡️ (วิ่ง)</b> และ <b style="color:#38bdf8">⬆️ / Spacebar (กระโดด)</b> กระโดดข้ามสิ่งกีดขวางไปเข้าเส้นชัย!</p>
+    </div>
+
+    <div id="game-container"></div>
+
+    <div class="mobile-controls">
+        <div>
+            <button class="touch-btn" id="btn-left">⬅️</button>
+            <button class="touch-btn" id="btn-right">➡️</button>
+        </div>
+        <div>
+            <button class="touch-btn" id="btn-jump" style="background:#059669; border-color:#10b981;">⬆️ กระโดด</button>
+        </div>
+    </div>
+
+    <script>
+        const LEVEL_WIDTH = 2600;
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: 'game-container',
+            backgroundColor: '#0f172a',
+            physics: {
+                default: 'arcade',
+                arcade: {
+                    gravity: { y: 800 },
+                    debug: false
+                }
+            },
+            scene: {
+                preload: preload,
+                create: create,
+                update: update
+            }
+        };
+
+        const game = new Phaser.Game(config);
+
+        let player;
+        let platforms;
+        let coins;
+        let hazards;
+        let goal;
+        let cursors;
+
+        let score = 0;
+        let scoreText;
+        let isGameOver = false;
+        let isWin = false;
+
+        // Touch States
+        let moveLeft = false;
+        let moveRight = false;
+        let doJump = false;
+
+        function preload() {
+            // สร้าง Texture ตัวละคร (กล่องอัศวินสีฟ้า)
+            let pGfx = this.add.graphics();
+            pGfx.fillStyle(0x38bdf8, 1);
+            pGfx.fillRoundedRect(0, 0, 36, 48, 8);
+            pGfx.fillStyle(0x0f172a, 1);
+            pGfx.fillRect(20, 10, 12, 10); // ตา
+            pGfx.generateTexture('player', 36, 48);
+            pGfx.destroy();
+
+            // สร้าง Texture แท่นยืน (Platform)
+            let platGfx = this.add.graphics();
+            platGfx.fillStyle(0x334155, 1);
+            platGfx.fillRect(0, 0, 200, 32);
+            platGfx.lineStyle(3, 0x3b82f6, 1);
+            platGfx.strokeRect(0, 0, 200, 32);
+            platGfx.generateTexture('plat_mid', 200, 32);
+            platGfx.destroy();
+
+            // พื้นดินยาว
+            let groundGfx = this.add.graphics();
+            groundGfx.fillStyle(0x1e293b, 1);
+            groundGfx.fillRect(0, 0, 600, 40);
+            groundGfx.lineStyle(4, 0x0284c7, 1);
+            groundGfx.strokeRect(0, 0, 600, 40);
+            groundGfx.generateTexture('ground', 600, 40);
+            groundGfx.destroy();
+
+            // พาร์ทิเคิลเก็บเหรียญ
+            let coinGfx = this.add.graphics();
+            coinGfx.fillStyle(0xfbbf24, 1);
+            coinGfx.fillCircle(12, 12, 12);
+            coinGfx.generateTexture('coin', 24, 24);
+            coinGfx.destroy();
+
+            // สิ่งกีดขวาง (Spike/Trap)
+            let trapGfx = this.add.graphics();
+            trapGfx.fillStyle(0xef4444, 1);
+            trapGfx.fillTriangle(0, 30, 15, 0, 30, 30);
+            trapGfx.generateTexture('spike', 30, 30);
+            trapGfx.destroy();
+        }
+
+        function create() {
+            // ตั้งค่าขนาดขอบเขตขอบโลก (World Bounds)
+            this.physics.world.setBounds(0, 0, LEVEL_WIDTH, 600);
+
+            // วาดพื้นหลังดาว/เส้นกริด
+            for (let i = 0; i < LEVEL_WIDTH; i += 100) {
+                this.add.line(0, 0, i, 0, i, 600, 0x1e293b, 0.5).setOrigin(0);
+            }
+
+            // สร้างกลุ่มแท่นยืน Static (ไม่มีแรงโน้มถ่วง)
+            platforms = this.physics.add.staticGroup();
+
+            // พื้นดินหลักตามจุดต่างๆ (มีเหวให้กระโดดข้าม!)
+            platforms.create(300, 580, 'ground');
+            platforms.create(1100, 580, 'ground');
+            platforms.create(1900, 580, 'ground');
+
+            // แท่นลอยพาร์กัวร์ต่างๆ (Parkour Platforms)
+            platforms.create(200, 440, 'plat_mid');
+            platforms.create(480, 360, 'plat_mid');
+            platforms.create(750, 480, 'plat_mid');
+            platforms.create(950, 320, 'plat_mid');
+            platforms.create(1250, 420, 'plat_mid');
+            platforms.create(1500, 300, 'plat_mid');
+            platforms.create(1750, 440, 'plat_mid');
+            platforms.create(2100, 350, 'plat_mid');
+
+            // สร้างตัวละคร (Player)
+            player = this.physics.add.sprite(50, 450, 'player');
+            player.setBounce(0.1);
+            player.setCollideWorldBounds(true);
+
+            // การชนกันระหว่างคนกับพื้น
+            this.physics.add.collider(player, platforms);
+
+            // กล้องติดตามตัวละคร (Camera Follow)
+            this.cameras.main.setBounds(0, 0, LEVEL_WIDTH, 600);
+            this.cameras.main.startFollow(player, true, 0.08, 0.08);
+
+            // เหรียญสะสม (Coins)
+            coins = this.physics.add.group();
+            const coinPositions = [
+                {x: 200, y: 390}, {x: 480, y: 310}, {x: 750, y: 430}, 
+                {x: 950, y: 270}, {x: 1250, y: 370}, {x: 1500, y: 250}, 
+                {x: 1750, y: 390}, {x: 2100, y: 300}
+            ];
+            coinPositions.forEach(pos => {
+                let c = coins.create(pos.x, pos.y, 'coin');
+                c.body.setAllowGravity(false);
+            });
+
+            this.physics.add.overlap(player, coins, collectCoin, null, this);
+
+            // สิ่งกีดขวาง (Hazards / Spikes)
+            hazards = this.physics.add.staticGroup();
+            hazards.create(650, 560, 'spike');
+            hazards.create(1300, 400, 'spike');
+            hazards.create(1600, 560, 'spike');
+            hazards.create(1800, 420, 'spike');
+
+            this.physics.add.overlap(player, hazards, hitHazard, null, this);
+
+            // เส้นชัย (Goal Flag)
+            let goalX = 2450;
+            let goalY = 500;
+            this.add.text(goalX, goalY - 40, '🚩', { fontSize: '50px' }).setOrigin(0.5);
+            goal = this.add.rectangle(goalX, goalY, 40, 100, 0x10b981, 0);
+            this.physics.add.existing(goal, true);
+
+            this.physics.add.overlap(player, goal, reachGoal, null, this);
+
+            // UI คะแนน (ติดตรึงกับกล้อง ScrollFactor 0)
+            scoreText = this.add.text(20, 20, 'คะแนน: 0', { 
+                fontSize: '28px', fill: '#fff', fontFamily: 'Tahoma', fontStyle: 'bold' 
+            }).setScrollFactor(0);
+
+            // ปุ่มคีย์บอร์ด
+            cursors = this.input.keyboard.createCursorKeys();
+
+            // ปุ่มสัมผัสหน้าจอ (Touch listeners)
+            setupTouchControls();
+        }
+
+        function update() {
+            if (isGameOver || isWin) return;
+
+            // ตกเหวตาย (ถ้าตกต่ำกว่า Y=590 ในจุดที่ไม่มีพื้น)
+            if (player.y > 570 && !player.body.touching.down) {
+                hitHazard.call(this);
+            }
+
+            // เคลื่อนที่ ซ้าย - ขวา
+            if (cursors.left.isDown || moveLeft) {
+                player.setVelocityX(-260);
+            } else if (cursors.right.isDown || moveRight) {
+                player.setVelocityX(260);
+            } else {
+                player.setVelocityX(0);
+            }
+
+            // กระโดด (ต้องแตะพื้นอยู่เท่านั้น)
+            if ((cursors.up.isDown || cursors.space.isDown || doJump) && player.body.touching.down) {
+                player.setVelocityY(-520);
+                doJump = false; // รีเซ็ตสัมผัส
+            }
+        }
+
+        function collectCoin(player, coin) {
+            coin.disableBody(true, true);
+            score += 10;
+            scoreText.setText('คะแนน: ' + score);
+        }
+
+        function hitHazard() {
+            if (isGameOver || isWin) return;
+            isGameOver = true;
+            player.setTint(0xef4444);
+            player.setVelocity(0, -300);
+
+            if (window.parent) {
+                window.parent.postMessage({
+                    type: 'GAME_OVER',
+                    score: Math.min(180, score),
+                    gameId: 'cyber-parkour'
+                }, '*');
+            }
+
+            let gameOverText = this.add.text(400, 250, '💥 ตกหลุม / ชนสิ่งกีดขวาง!', { 
+                fontSize: '48px', fill: '#ef4444', fontFamily: 'Tahoma', fontStyle: 'bold' 
+            }).setOrigin(0.5).setScrollFactor(0);
+
+            let retryText = this.add.text(400, 340, '[ คลิกเพื่อเริ่มด่านใหม่ ]', { 
+                fontSize: '28px', fill: '#38bdf8', fontFamily: 'Tahoma', fontStyle: 'bold' 
+            }).setOrigin(0.5).setScrollFactor(0).setInteractive({ useHandCursor: true });
+
+            retryText.on('pointerdown', () => {
+                isGameOver = false;
+                score = 0;
+                this.scene.restart();
+            });
+        }
+
+        function reachGoal() {
+            if (isWin) return;
+            isWin = true;
+            player.setVelocity(0, 0);
+
+            if (window.parent) {
+                window.parent.postMessage({
+                    type: 'GAME_OVER',
+                    score: Math.min(200, score),
+                    gameId: 'cyber-parkour'
+                }, '*');
+            }
+
+            this.add.text(400, 230, '🎉 ผ่านด่านพาร์กัวร์แล้ว!', { 
+                fontSize: '52px', fill: '#10b981', fontFamily: 'Tahoma', fontStyle: 'bold' 
+            }).setOrigin(0.5).setScrollFactor(0);
+
+            this.add.text(400, 310, 'คะแนนรวม: ' + score, { 
+                fontSize: '36px', fill: '#fff', fontFamily: 'Tahoma' 
+            }).setOrigin(0.5).setScrollFactor(0);
+
+            let replayText = this.add.text(400, 400, '[ เล่นอีกครั้ง ]', { 
+                fontSize: '28px', fill: '#38bdf8', fontFamily: 'Tahoma', fontStyle: 'bold' 
+            }).setOrigin(0.5).setScrollFactor(0).setInteractive({ useHandCursor: true });
+
+            replayText.on('pointerdown', () => {
+                isWin = false;
+                score = 0;
+                this.scene.restart();
+            });
+        }
+
+        function setupTouchControls() {
+            const btnLeft = document.getElementById('btn-left');
+            const btnRight = document.getElementById('btn-right');
+            const btnJump = document.getElementById('btn-jump');
+
+            btnLeft.addEventListener('pointerdown', () => moveLeft = true);
+            btnLeft.addEventListener('pointerup', () => moveLeft = false);
+            btnLeft.addEventListener('pointerleave', () => moveLeft = false);
+
+            btnRight.addEventListener('pointerdown', () => moveRight = true);
+            btnRight.addEventListener('pointerup', () => moveRight = false);
+            btnRight.addEventListener('pointerleave', () => moveRight = false);
+
+            btnJump.addEventListener('pointerdown', () => doJump = true);
+        }
+    </script>
+</body>
+</html>

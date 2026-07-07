@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robot Coding Adventure (Cyber Neon Edition)</title>
+    <!-- โหลด Phaser 3 ผ่าน CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Prompt:wght@400;600;700&display=swap');
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 15px;
+            background: radial-gradient(circle at center, #0f172a 0%, #020617 100%);
+            color: white;
+            font-family: 'Prompt', 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .header h1 {
+            margin: 0;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
+            letter-spacing: 1px;
+        }
+        .header p { margin: 4px 0 0 0; color: #94a3b8; font-size: 0.9rem; }
+
+        .main-layout {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            max-width: 1050px;
+            width: 100%;
+        }
+
+        #game-container {
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.25), inset 0 0 20px rgba(0,0,0,0.8);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(56, 189, 248, 0.4);
+            position: relative;
+            background: #090d16;
+        }
+
+        /* Glassmorphism Control Panel */
+        .control-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            padding: 24px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            width: 400px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .panel-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .cmd-btn {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(99, 102, 241, 0.15));
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            color: #e0f2fe;
+            padding: 12px 8px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'Prompt', sans-serif;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+        .cmd-btn:hover {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.35), rgba(99, 102, 241, 0.35));
+            border-color: #38bdf8;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3);
+        }
+        .cmd-btn span { font-size: 1.4rem; }
+
+        .sequence-box {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            padding: 12px;
+            min-height: 140px;
+            max-height: 180px;
+            overflow-y: auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-content: flex-start;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+        }
+        .sequence-box::-webkit-scrollbar { width: 6px; }
+        .sequence-box::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+
+        .seq-item {
+            background: linear-gradient(135deg, #0284c7, #4f46e5);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3);
+            animation: popIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.6); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .run-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Prompt', sans-serif;
+            flex: 2;
+            transition: all 0.25s;
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .run-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.5);
+            background: linear-gradient(135deg, #34d399, #10b981);
+        }
+        .run-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .clear-btn {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            font-family: 'Prompt', sans-serif;
+            flex: 1;
+            transition: all 0.25s;
+        }
+        .clear-btn:hover:not(:disabled) {
+            background: rgba(239, 68, 68, 0.3);
+            color: white;
+        }
+
+        .status-msg {
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.95rem;
+            min-height: 28px;
+            color: #38bdf8;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ ROBOT CODING ADVENTURE</h1>
+        <p>สร้างอัลกอริทึมพาหุ่นยนต์ไซเบอร์เข้าสู่ประตูวาร์ปให้สำเร็จ!</p>
+    </div>
+
+    <div class="main-layout">
+        <!-- Phaser Canvas Container -->
+        <div id="game-container"></div>
+
+        <!-- Cyber Control Panel -->
+        <div class="control-panel">
+            <h3 class="panel-title">📡 1. เลือกคำสั่งทิศทาง (Commands)</h3>
+            <div class="btn-group">
+                <button class="cmd-btn" onclick="addCommand('FORWARD')"><span>⬆️</span>เดินหน้า</button>
+                <button class="cmd-btn" onclick="addCommand('LEFT')"><span>↩️</span>หมุนซ้าย</button>
+                <button class="cmd-btn" onclick="addCommand('RIGHT')"><span>↪️</span>หมุนขวา</button>
+            </div>
+
+            <h3 class="panel-title">💻 2. ชุดโค้ดอัลกอริทึม (Program)</h3>
+            <div class="sequence-box" id="sequence-box">
+                <span style="color:#64748b; font-size:0.85rem;" id="empty-hint">กดเลือกบล็อกคำสั่งเพื่อเริ่มเขียนโค้ด...</span>
+            </div>
+
+            <div class="status-msg" id="status-msg">SYSTEM READY // พร้อมรันโค้ด</div>
+
+            <div class="action-btns">
+                <button class="run-btn" id="run-btn" onclick="runProgram()">🚀 เริ่มรันโค้ด</button>
+                <button class="clear-btn" id="clear-btn" onclick="clearProgram()">🔄 เริ่มใหม่</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GRID_SIZE = 5;
+        const TILE_SIZE = 96;
+        const OFFSET = 24;
+
+        let game, robotContainer, goalContainer, currentScene;
+        let trailEmitter, winEmitter;
+
+        const DIRS = [
+            { dx: 1, dy: 0, angle: 0 },    // ขวา
+            { dx: 0, dy: 1, angle: 90 },   // ล่าง
+            { dx: -1, dy: 0, angle: 180 }, // ซ้าย
+            { dx: 0, dy: -1, angle: 270 }  // บน
+        ];
+
+        const startPos = { x: 0, y: 4, dir: 3 }; // เริ่มซ้ายล่าง หันขึ้น
+        const goalPos = { x: 4, y: 0 };           // จุดหมายขวาบน
+
+        let robotState = { ...startPos };
+        let commandQueue = [];
+        let isRunning = false;
+
+        const config = {
+            type: Phaser.AUTO,
+            width: GRID_SIZE * TILE_SIZE + OFFSET * 2,
+            height: GRID_SIZE * TILE_SIZE + OFFSET * 2,
+            parent: 'game-container',
+            backgroundColor: '#090d16',
+            scene: { preload, create }
+        };
+
+        game = new Phaser.Game(config);
+
+        function preload() {
+            // --- 1. สร้าง Texture หุ่นยนต์ไซเบอร์ (Cyber Robot) ---
+            let rGfx = this.add.graphics();
+            // เงาด้านล่าง
+            rGfx.fillStyle(0x000000, 0.4);
+            rGfx.fillEllipse(40, 70, 50, 16);
+            
+            // ลำตัวโลหะสไตล์ไฮเทค
+            rGfx.fillStyle(0x1e293b, 1);
+            rGfx.fillRoundedRect(12, 12, 56, 56, 16);
+            rGfx.lineStyle(3, 0x38bdf8, 1);
+            rGfx.strokeRoundedRect(12, 12, 56, 56, 16);
+
+            // กระจกหน้าหมวก (Visor) เรืองแสง
+            rGfx.fillStyle(0x0f172a, 1);
+            rGfx.fillRoundedRect(20, 22, 40, 26, 8);
+            rGfx.fillStyle(0x38bdf8, 1);
+            rGfx.fillRoundedRect(24, 26, 32, 18, 6);
+
+            // ตาไฟนีออนคู่
+            rGfx.fillStyle(0xffffff, 1);
+            rGfx.fillCircle(34, 35, 4);
+            rGfx.fillCircle(46, 35, 4);
+
+            // เสาอากาศยอดหัว
+            rGfx.fillStyle(0x38bdf8, 1);
+            rGfx.fillRect(38, 2, 4, 10);
+            rGfx.fillStyle(0xf43f5e, 1);
+            rGfx.fillCircle(40, 2, 5);
+
+            rGfx.generateTexture('cyber_robot', 80, 80);
+            rGfx.destroy();
+
+            // --- 2. สร้าง Texture ประตูวาร์ปจุดหมาย (Portal Goal) ---
+            let gGfx = this.add.graphics();
+            gGfx.fillStyle(0xa855f7, 0.2);
+            gGfx.fillCircle(40, 40, 36);
+            gGfx.lineStyle(3, 0xc084fc, 1);
+            gGfx.strokeCircle(40, 40, 36);
+            gGfx.lineStyle(2, 0x38bdf8, 0.8);
+            gGfx.strokeCircle(40, 40, 26);
+            gGfx.generateTexture('portal_base', 80, 80);
+            gGfx.destroy();
+
+            // --- 3. สร้าง Particle แสงเรือง ---
+            let pGfx = this.add.graphics();
+            pGfx.fillStyle(0x38bdf8, 1);
+            pGfx.fillCircle(4, 4, 4);
+            pGfx.generateTexture('blue_spark', 8, 8);
+            
+            pGfx.clear();
+            pGfx.fillStyle(0xc084fc, 1);
+            pGfx.fillCircle(5, 5, 5);
+            pGfx.generateTexture('purple_spark', 10, 10);
+            pGfx.destroy();
+        }
+
+        function create() {
+            currentScene = this;
+
+            // --- วาดพื้นหลังตาราง Grid สไตล์ Sci-Fi ---
+            for (let r = 0; r < GRID_SIZE; r++) {
+                for (let c = 0; c < GRID_SIZE; c++) {
+                    let x = OFFSET + c * TILE_SIZE;
+                    let y = OFFSET + r * TILE_SIZE;
+
+                    // แผ่นกระเบื้องไฮเทค
+                    let tile = this.add.rectangle(x + TILE_SIZE/2, y + TILE_SIZE/2, TILE_SIZE - 8, TILE_SIZE - 8, 0x131c2e);
+                    tile.setStrokeStyle(1.5, 0x1e293b);
+
+                    // จุดไฟมุมกระเบื้อง
+                    this.add.circle(x + 10, y + 10, 2, 0x334155);
+                }
+            }
+
+            // --- สร้างจุดหมายประตูวาร์ป (Goal Portal) ---
+            let goalX = OFFSET + goalPos.x * TILE_SIZE + TILE_SIZE/2;
+            let goalY = OFFSET + goalPos.y * TILE_SIZE + TILE_SIZE/2;
+            
+            goalContainer = this.add.container(goalX, goalY);
+            let portalImg = this.add.sprite(0, 0, 'portal_base');
+            let flagEmoji = this.add.text(0, -2, '🚩', { fontSize: '38px' }).setOrigin(0.5);
+            goalContainer.add([portalImg, flagEmoji]);
+
+            // แอนิเมชันหมุนวงแหวนประตูวาร์ปตลอดเวลา
+            this.tweens.add({
+                targets: portalImg,
+                angle: 360,
+                duration: 6000,
+                repeat: -1
+            });
+            this.tweens.add({
+                targets: goalContainer,
+                scale: { from: 0.95, to: 1.05 },
+                duration: 1200,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            });
+
+            // --- สร้างหุ่นยนต์ (Robot Container) ---
+            let robX = OFFSET + robotState.x * TILE_SIZE + TILE_SIZE/2;
+            let robY = OFFSET + robotState.y * TILE_SIZE + TILE_SIZE/2;
+
+            robotContainer = this.add.container(robX, robY);
+            let robSprite = this.add.sprite(0, 0, 'cyber_robot');
+            robotContainer.add(robSprite);
+
+            // แอนิเมชันหุ่นยนต์ลอยขยับขึ้นลง (Idle Hover Effect)
+            this.tweens.add({
+                targets: robSprite,
+                y: -6,
+                duration: 1000,
+                yoyo: true,
+                repeat: -1,
+                ease: 'Sine.easeInOut'
+            });
+
+            resetRobotVisual();
+        }
+
+        function resetRobotVisual() {
+            robotState = { ...startPos };
+            let robX = OFFSET + robotState.x * TILE_SIZE + TILE_SIZE/2;
+            let robY = OFFSET + robotState.y * TILE_SIZE + TILE_SIZE/2;
+            
+            robotContainer.setPosition(robX, robY);
+            robotContainer.setAngle(DIRS[robotState.dir].angle);
+        }
+
+        // --- ระบบรับคำสั่ง HTML UI ---
+        function addCommand(type) {
+            if (isRunning) return;
+            commandQueue.push(type);
+            renderSequenceUI();
+        }
+
+        function clearProgram() {
+            if (isRunning) return;
+            commandQueue = [];
+            renderSequenceUI();
+            resetRobotVisual();
+            updateStatus('SYSTEM READY // พร้อมรันโค้ด', '#38bdf8');
+        }
+
+        function renderSequenceUI() {
+            const box = document.getElementById('sequence-box');
+            box.innerHTML = '';
+            
+            if (commandQueue.length === 0) {
+                box.innerHTML = '<span style="color:#64748b; font-size:0.85rem;" id="empty-hint">กดเลือกบล็อกคำสั่งเพื่อเริ่มเขียนโค้ด...</span>';
+                return;
+            }
+
+            commandQueue.forEach((cmd, idx) => {
+                let label = '⬆️ เดินหน้า';
+                if (cmd === 'LEFT') label = '↩️ หมุนซ้าย';
+                if (cmd === 'RIGHT') label = '↪️ หมุนขวา';
+
+                let item = document.createElement('div');
+                item.className = 'seq-item';
+                item.innerHTML = `<span style="opacity:0.7">${idx+1}.</span> ${label}`;
+                box.appendChild(item);
+            });
+        }
+
+        function updateStatus(text, color) {
+            const el = document.getElementById('status-msg');
+            el.innerText = text;
+            el.style.color = color;
+            el.style.borderColor = color;
+        }
+
+        // --- ระบบรันโค้ดอัลกอริทึม ---
+        async function runProgram() {
+            if (isRunning || commandQueue.length === 0) return;
+            
+            isRunning = true;
+            document.getElementById('run-btn').disabled = true;
+            document.getElementById('clear-btn').disabled = true;
+            updateStatus('EXECUTING CODE // กำลังทำงาน...', '#fbbf24');
+
+            resetRobotVisual();
+            await sleep(300);
+
+            for (let i = 0; i < commandQueue.length; i++) {
+                let cmd = commandQueue[i];
+                
+                let items = document.querySelectorAll('.seq-item');
+                if (items[i]) items[i].style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
+
+                if (cmd === 'FORWARD') {
+                    let dir = DIRS[robotState.dir];
+                    let nextX = robotState.x + dir.dx;
+                    let nextY = robotState.y + dir.dy;
+
+                    if (nextX >= 0 && nextX < GRID_SIZE && nextY >= 0 && nextY < GRID_SIZE) {
+                        robotState.x = nextX;
+                        robotState.y = nextY;
+                        
+                        let targetPX = OFFSET + robotState.x * TILE_SIZE + TILE_SIZE/2;
+                        let targetPY = OFFSET + robotState.y * TILE_SIZE + TILE_SIZE/2;
+
+                        // พาร์ทิเคิลไอพ่นตอนเดิน
+                        let pEm = currentScene.add.particles(robotContainer.x, robotContainer.y, 'blue_spark', {
+                            speed: { min: 20, max: 80 },
+                            scale: { start: 1, end: 0 },
+                            lifespan: 300,
+                            emitting: false
+                        });
+                        pEm.explode(8);
+                        currentScene.time.delayedCall(400, () => pEm.destroy());
+
+                        await animateTween({
+                            targets: robotContainer,
+                            x: targetPX,
+                            y: targetPY,
+                            duration: 350,
+                            ease: 'Cubic.easeOut'
+                        });
+                    } else {
+                        // ชนขอบ (สั่น)
+                        await animateTween({
+                            targets: robotContainer,
+                            x: robotContainer.x + dir.dx * 18,
+                            y: robotContainer.y + dir.dy * 18,
+                            duration: 90,
+                            yoyo: true
+                        });
+                    }
+                } else if (cmd === 'LEFT') {
+                    robotState.dir = (robotState.dir + 3) % 4;
+                    await animateTween({
+                        targets: robotContainer,
+                        angle: DIRS[robotState.dir].angle,
+                        duration: 250,
+                        ease: 'Back.easeOut'
+                    });
+                } else if (cmd === 'RIGHT') {
+                    robotState.dir = (robotState.dir + 1) % 4;
+                    await animateTween({
+                        targets: robotContainer,
+                        angle: DIRS[robotState.dir].angle,
+                        duration: 250,
+                        ease: 'Back.easeOut'
+                    });
+                }
+
+                if (items[i]) items[i].style.background = 'linear-gradient(135deg, #10b981, #047857)';
+                await sleep(150);
+            }
+
+            // เช็คผลลัพธ์
+            if (robotState.x === goalPos.x && robotState.y === goalPos.y) {
+                updateStatus('SUCCESS // ถึงเส้นชัยสำเร็จ! 🎉', '#10b981');
+                
+                // เอฟเฟกต์ฉลองชัยชนะตระการตา
+                let wEm = currentScene.add.particles(robotContainer.x, robotContainer.y, 'purple_spark', {
+                    speed: { min: -250, max: 250 },
+                    angle: { min: 0, max: 360 },
+                    scale: { start: 1.8, end: 0 },
+                    lifespan: 900,
+                    emitting: false
+                });
+                wEm.explode(45);
+                currentScene.time.delayedCall(1000, () => wEm.destroy());
+            } else {
+                updateStatus('FAILED // ยังไม่ถึงเป้าหมาย ลองปรับโค้ดใหม่!', '#ef4444');
+            }
+
+            isRunning = false;
+            document.getElementById('run-btn').disabled = false;
+            document.getElementById('clear-btn').disabled = false;
+        }
+
+        function animateTween(cfg) {
+            return new Promise((res) => {
+                cfg.onComplete = res;
+                currentScene.tweens.add(cfg);
+            });
+        }
+
+        function sleep(ms) {
+            return new Promise(r => setTimeout(r, ms));
+        }
+    </script>
+</body>
+</html>

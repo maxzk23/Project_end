@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whack-a-Bug! (Phaser Prototype)</title>
+    <!-- โหลด Phaser ผ่านอินเทอร์เน็ตโดยไม่ต้องติดตั้งโปรแกรม -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+    <style>
+        body { 
+            margin: 0; padding: 0; 
+            background-color: #0f172a; 
+            display: flex; flex-direction: column; 
+            justify-content: center; align-items: center; 
+            height: 100vh; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        #game-container { 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); 
+            border-radius: 12px; 
+            overflow: hidden; 
+            border: 4px solid #1e293b;
+        }
+        .header { 
+            color: white; 
+            text-align: center; 
+            margin-bottom: 20px;
+        }
+        .header h1 { margin: 0 0 5px 0; color: #38bdf8; }
+        .header p { margin: 0; color: #94a3b8; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🪲 เกมทุบบั๊กป่วนโค้ด (Whack-a-Bug)</h1>
+        <p>คลิกที่ตัวบั๊กสีเขียวให้ทันเพื่อทำคะแนน! (Prototype สร้างด้วย Phaser)</p>
+    </div>
+    
+    <!-- พื้นที่สำหรับแสดงเกม Phaser -->
+    <div id="game-container"></div>
+
+    <script>
+        // ตั้งค่าเกม Phaser เบื้องต้น
+        const config = {
+            type: Phaser.AUTO,
+            width: 800,
+            height: 600,
+            parent: 'game-container',
+            backgroundColor: '#1e293b', // สีพื้นหลัง Dark Mode
+            scene: {
+                preload: preload,
+                create: create
+            }
+        };
+
+        // เริ่มเกม
+        const game = new Phaser.Game(config);
+        
+        let score = 0;
+        let scoreText;
+        let timeText;
+        let timer = 30; // เวลา 30 วินาที
+        let isGameOver = false;
+
+        // ฟังก์ชันเตรียมทรัพยากร
+        function preload() {
+            // สร้างรูปบั๊ก (วาดเป็นวงกลมสีเขียวมีตา) แทนการโหลดไฟล์รูปจริงๆ เพื่อให้ไฟล์รันได้เลย
+            let bugGraphics = this.add.graphics();
+            bugGraphics.fillStyle(0x10b981, 1); // สีเขียว
+            bugGraphics.fillCircle(30, 30, 30);
+            bugGraphics.fillStyle(0xffffff, 1); // ตาขาว
+            bugGraphics.fillCircle(20, 20, 8); 
+            bugGraphics.fillCircle(40, 20, 8); 
+            bugGraphics.fillStyle(0x0f172a, 1); // ตาดำ
+            bugGraphics.fillCircle(20, 20, 4); 
+            bugGraphics.fillCircle(40, 20, 4); 
+            bugGraphics.generateTexture('bug', 60, 60);
+            bugGraphics.destroy();
+            
+            // สร้างอนุภาค (Particle) สำหรับตอนทุบบั๊ก
+            let partGraphics = this.add.graphics();
+            partGraphics.fillStyle(0x34d399, 1);
+            partGraphics.fillRect(0, 0, 8, 8);
+            partGraphics.generateTexture('particle', 8, 8);
+            partGraphics.destroy();
+        }
+
+        // ฟังก์ชันสร้างฉาก
+        function create() {
+            // วาดตารางกริดเป็นพื้นหลังสไตล์โค้ดดิง
+            for(let i=0; i<800; i+=40) {
+                this.add.line(0, 0, i, 0, i, 600, 0x334155).setOrigin(0,0);
+                this.add.line(0, 0, 0, i, 800, i, 0x334155).setOrigin(0,0);
+            }
+
+            // ข้อความคะแนนและเวลา
+            scoreText = this.add.text(20, 20, 'คะแนน: 0', { fontSize: '32px', fill: '#fff', fontFamily: 'Tahoma', fontStyle: 'bold' });
+            timeText = this.add.text(600, 20, 'เวลา: 30', { fontSize: '32px', fill: '#f43f5e', fontFamily: 'Tahoma', fontStyle: 'bold' });
+            
+            // ระบบจับเวลาถอยหลัง
+            this.time.addEvent({
+                delay: 1000,
+                callback: () => {
+                    if (timer > 0 && !isGameOver) {
+                        timer--;
+                        timeText.setText('เวลา: ' + timer);
+                    } else if (timer <= 0 && !isGameOver) {
+                        endGame.call(this);
+                    }
+                },
+                loop: true
+            });
+
+            // ระบบสุ่มบั๊กออกมาทุกๆ 0.8 วินาที
+            this.time.addEvent({
+                delay: 800,
+                callback: spawnBug,
+                callbackScope: this,
+                loop: true
+            });
+        }
+
+        // ฟังก์ชันสุ่มตัวบั๊ก
+        function spawnBug() {
+            if(isGameOver) return;
+            
+            // สุ่มตำแหน่ง X Y
+            let x = Phaser.Math.Between(60, 740);
+            let y = Phaser.Math.Between(120, 540);
+            
+            let bug = this.add.sprite(x, y, 'bug').setInteractive({ useHandCursor: true });
+            bug.setScale(0); // ซ่อนไว้ก่อน
+            
+            // แอนิเมชันเด้งปรากฏตัว
+            this.tweens.add({
+                targets: bug,
+                scale: 1,
+                duration: 300,
+                ease: 'Back.out'
+            });
+
+            // เมื่อคลิกโดนบั๊ก
+            bug.on('pointerdown', function () {
+                if(isGameOver) return;
+                
+                score += 10;
+                scoreText.setText('คะแนน: ' + score);
+                
+                // ระเบิด Particle เอฟเฟกต์
+                let emitter = this.scene.add.particles(bug.x, bug.y, 'particle', {
+                    speed: { min: -200, max: 200 },
+                    angle: { min: 0, max: 360 },
+                    scale: { start: 1, end: 0 },
+                    blendMode: 'ADD',
+                    lifespan: 400,
+                    emitting: false
+                });
+                emitter.explode(12);
+                this.scene.time.delayedCall(450, () => emitter.destroy());
+                
+                // แอนิเมชันหายไป
+                this.scene.tweens.add({
+                    targets: bug,
+                    scale: 0,
+                    angle: 180,
+                    duration: 150,
+                    onComplete: () => { bug.destroy(); }
+                });
+            });
+
+            // ถ้าไม่โดนคลิกภายใน 1.5 วินาที บั๊กจะหายไปเอง
+            this.time.delayedCall(1500, () => {
+                if(bug.active) {
+                    this.tweens.add({
+                        targets: bug,
+                        scale: 0,
+                        duration: 200,
+                        onComplete: () => { bug.destroy(); }
+                    });
+                }
+            });
+        }
+
+        // ฟังก์ชันจบเกม
+        function endGame() {
+            isGameOver = true;
+            
+            if (window.parent) {
+                window.parent.postMessage({
+                    type: 'GAME_OVER',
+                    score: Math.min(100, score),
+                    gameId: 'whack-a-bug'
+                }, '*');
+            }
+
+            // พื้นหลังดำโปร่งใสตอนจบเกม
+            this.add.rectangle(400, 300, 800, 600, 0x000000, 0.7);
+            
+            this.add.text(400, 230, 'หมดเวลา!', { fontSize: '64px', fill: '#f43f5e', fontFamily: 'Tahoma', fontStyle: 'bold' }).setOrigin(0.5);
+            this.add.text(400, 320, 'คุณทำได้: ' + score + ' คะแนน', { fontSize: '40px', fill: '#10b981', fontFamily: 'Tahoma' }).setOrigin(0.5);
+            
+            // ปุ่มเริ่มใหม่
+            let restartBtn = this.add.text(400, 420, '[ เล่นอีกครั้ง ]', { fontSize: '32px', fill: '#38bdf8', fontFamily: 'Tahoma', fontStyle: 'bold' })
+                .setOrigin(0.5)
+                .setInteractive({ useHandCursor: true })
+                .on('pointerover', () => restartBtn.setFill('#bae6fd'))
+                .on('pointerout', () => restartBtn.setFill('#38bdf8'))
+                .on('pointerdown', () => {
+                    timer = 30;
+                    score = 0;
+                    isGameOver = false;
+                    this.scene.restart();
+                });
+        }
+    </script>
+</body>
+</html>

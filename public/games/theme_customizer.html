@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Free-Form UI Component Builder</title>
+    <!-- FontAwesome & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap');
+
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0;
+            background-color: #1e1e1e;
+            color: #ffffff;
+            font-family: 'Inter', 'Prompt', sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Topbar Header */
+        .studio-topbar {
+            height: 50px;
+            background: #2c2c2c;
+            border-bottom: 1px solid #383838;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+        .studio-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #0acf83;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .shortcut-hints {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .undo-btn-ui {
+            background: #38bdf8;
+            color: #0f172a;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-family: 'Prompt', sans-serif;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .undo-btn-ui:hover { background: #7dd3fc; }
+
+        .kbd-tag {
+            background: #383838;
+            color: #38bdf8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-weight: bold;
+        }
+
+        /* Workspace Layout */
+        .workspace {
+            display: flex;
+            flex: 1;
+            height: calc(100vh - 50px);
+        }
+
+        /* Left Component Library */
+        .sidebar-left {
+            width: 250px;
+            background: #2c2c2c;
+            border-right: 1px solid #383838;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            overflow-y: auto;
+        }
+        .sec-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #8c8c8c;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .elem-category {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .elem-chip {
+            background: #1e1e1e;
+            border: 1px solid #383838;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .elem-chip:hover {
+            border-color: #18a0fb;
+            background: #262626;
+            transform: translateX(3px);
+        }
+
+        /* Center Canvas */
+        .canvas-container {
+            flex: 1;
+            background: #141414;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #free-canvas {
+            width: 820px;
+            height: 560px;
+            background: #0f172a;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #383838;
+        }
+
+        /* Draggable Components */
+        .drag-element {
+            position: absolute;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: box-shadow 0.15s;
+            border: 2px solid transparent;
+            padding: 6px;
+        }
+        .drag-element.selected {
+            border-color: #18a0fb !important;
+            box-shadow: 0 0 15px rgba(24, 160, 251, 0.6);
+        }
+
+        /* Right Inspector Controls */
+        .sidebar-right {
+            width: 270px;
+            background: #2c2c2c;
+            border-left: 1px solid #383838;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .ctrl-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .ctrl-row label { font-size: 0.8rem; color: #aaaaaa; }
+        .ctrl-input {
+            background: #1e1e1e;
+            border: 1px solid #383838;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            font-family: 'Prompt', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+        }
+        .color-chips {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .chip {
+            width: 24px; height: 24px; border-radius: 4px; cursor: pointer; border: 1px solid rgba(255,255,255,0.2);
+        }
+        .del-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'Prompt', sans-serif;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Topbar Controls -->
+    <div class="studio-topbar">
+        <div class="studio-title">
+            <i class="fa-solid fa-cubes"></i> คลังเพิ่มเอลิเมนต์อิสระ 100%
+        </div>
+        
+        <div class="shortcut-hints">
+            <button class="undo-btn-ui" onclick="undo()"><i class="fa-solid fa-rotate-left"></i> ย้อนกลับ (Ctrl+Z)</button>
+            <span style="font-size:0.8rem; color:#94a3b8;">| ลบ: <span class="kbd-tag">Delete</span></span>
+        </div>
+
+        <button style="background:#10b981; color:white; border:none; padding:6px 16px; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="submitDesign()">ส่งออกผลงาน</button>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="workspace">
+        <!-- Left Component Library -->
+        <div class="sidebar-left">
+            <div class="sec-title">📝 ข้อความ & หัวข้อ (Text)</div>
+            <div class="elem-category">
+                <div class="elem-chip" onclick="spawnElement('h1')"><i class="fa-solid fa-heading" style="color:#38bdf8"></i> หัวข้อใหญ่ (H1 Title)</div>
+                <div class="elem-chip" onclick="spawnElement('p')"><div style="color:#94a3b8">¶</div> ข้อความทั่วไป (Paragraph)</div>
+            </div>
+
+            <div class="sec-title">🔘 ปุ่มกด & ป้าย (Buttons)</div>
+            <div class="elem-category">
+                <div class="elem-chip" onclick="spawnElement('btn-primary')"><i class="fa-solid fa-square-check" style="color:#38bdf8"></i> ปุ่มหลัก (Primary Button)</div>
+                <div class="elem-chip" onclick="spawnElement('btn-danger')"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444"></i> ปุ่มเตือน (Danger Button)</div>
+                <div class="elem-chip" onclick="spawnElement('badge')"><i class="fa-solid fa-tag" style="color:#fbbf24"></i> ป้ายแท็ก (Badge Tag)</div>
+            </div>
+
+            <div class="sec-title">📦 กล่อง & การ์ด (Containers)</div>
+            <div class="elem-category">
+                <div class="elem-chip" onclick="spawnElement('card')"><i class="fa-solid fa-box" style="color:#a78bfa"></i> การ์ดเนื้อหา (Card Container)</div>
+                <div class="elem-chip" onclick="spawnElement('header-bar')"><i class="fa-solid fa-window-maximize" style="color:#34d399"></i> แถบบน (Header Bar)</div>
+            </div>
+
+            <div class="sec-title">🎨 สัญลักษณ์ & สื่อ (Media)</div>
+            <div class="elem-category">
+                <div class="elem-chip" onclick="spawnElement('icon-robot')">🤖 ไอคอนหุ่นยนต์</div>
+                <div class="elem-chip" onclick="spawnElement('icon-star')">⭐ สัญลักษณ์ดาว</div>
+                <div class="elem-chip" onclick="spawnElement('search-box')"><i class="fa-solid fa-magnifying-glass" style="color:#38bdf8"></i> ช่องค้นหา (Search)</div>
+            </div>
+        </div>
+
+        <!-- Center Interactive Drag Canvas -->
+        <div class="canvas-container">
+            <div id="free-canvas">
+                <!-- ชิ้นส่วนลากวางจะถูกสร้างที่นี่ -->
+            </div>
+        </div>
+
+        <!-- Right Properties Inspector -->
+        <div class="sidebar-right">
+            <div class="sec-title">⚙️ ปรับแต่งเอลิเมนต์ที่เลือก</div>
+            <div id="inspector-content">
+                <p style="font-size:0.85rem; color:#8c8c8c;">คลิกเลือกเอลิเมนต์บนหน้าจอเพื่อปรับแต่ง ปรับขนาด เปลี่ยนสี หรือลบได้อิสระ!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('free-canvas');
+        let selectedEl = null;
+        let elementIdCounter = 0;
+        let historyStack = [];
+
+        const COLORS = ['#38bdf8', '#ec4899', '#10b981', '#fbbf24', '#a78bfa', '#f43f5e', '#ffffff', '#1e293b', '#0f172a', '#334155', '#000000'];
+
+        // --- ระบบโฟกัสหน้าต่างทันที ---
+        window.addEventListener('load', () => window.focus());
+        document.addEventListener('click', () => window.focus());
+
+        // --- ระบบ Undo สมบูรณ์แบบ ---
+        function saveState() {
+            let currentState = canvas.innerHTML;
+            if (historyStack.length === 0 || historyStack[historyStack.length - 1] !== currentState) {
+                if (historyStack.length > 30) historyStack.shift();
+                historyStack.push(currentState);
+            }
+        }
+
+        function undo() {
+            if (historyStack.length > 1) {
+                historyStack.pop(); // เอาสเตตปัจจุบันออก
+                let prevState = historyStack[historyStack.length - 1]; // ดึงสเตตก่อนหน้า
+                canvas.innerHTML = prevState;
+                selectedEl = null;
+                updateInspector();
+                rebindAllElements();
+            } else if (historyStack.length === 1) {
+                canvas.innerHTML = historyStack[0];
+                selectedEl = null;
+                updateInspector();
+                rebindAllElements();
+            }
+        }
+
+        function rebindAllElements() {
+            document.querySelectorAll('.drag-element').forEach(el => {
+                makeDraggable(el);
+                el.onclick = (e) => { e.stopPropagation(); selectElement(el); };
+            });
+        }
+
+        // --- ระบบดักฟังแป้นพิมพ์ (Keyboard Shortcuts) ---
+        window.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+
+            // Ctrl + Z หรือ Cmd + Z
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+                e.preventDefault();
+                undo();
+            }
+
+            // Delete หรือ Backspace
+            if ((e.key === 'Delete' || e.key === 'Backspace') && selectedEl) {
+                e.preventDefault();
+                deleteSelectedElement();
+            }
+        });
+
+        function deleteSelectedElement() {
+            if (selectedEl) {
+                saveState();
+                selectedEl.remove();
+                selectedEl = null;
+                updateInspector();
+                saveState();
+            }
+        }
+
+        function spawnElement(presetType) {
+            saveState();
+            elementIdCounter++;
+            let el = document.createElement('div');
+            el.className = 'drag-element';
+            el.id = 'el-' + elementIdCounter;
+            el.style.left = (200 + (elementIdCounter * 15) % 300) + 'px';
+            el.style.top = (100 + (elementIdCounter * 15) % 200) + 'px';
+
+            if (presetType === 'h1') {
+                el.style.width = '350px'; el.style.height = '55px'; el.style.color = '#38bdf8'; el.style.backgroundColor = 'transparent'; el.style.fontSize = '24px'; el.innerText = '💻 หัวข้อเว็บไซต์ไซเบอร์';
+            } else if (presetType === 'p') {
+                el.style.width = '280px'; el.style.height = '50px'; el.style.color = '#94a3b8'; el.style.backgroundColor = 'transparent'; el.style.fontSize = '14px'; el.innerText = 'ข้อความอธิบายรายละเอียดส่วนประกอบในระบบ...';
+            } else if (presetType === 'btn-primary') {
+                el.style.width = '160px'; el.style.height = '44px'; el.style.color = '#ffffff'; el.style.backgroundColor = '#38bdf8'; el.style.fontSize = '15px'; el.style.borderRadius = '10px'; el.innerText = '🚀 คลิกใช้งาน';
+            } else if (presetType === 'btn-danger') {
+                el.style.width = '160px'; el.style.height = '44px'; el.style.color = '#ffffff'; el.style.backgroundColor = '#ef4444'; el.style.fontSize = '15px'; el.style.borderRadius = '10px'; el.innerText = '⚠️ ยกเลิกการทำงาน';
+            } else if (presetType === 'badge') {
+                el.style.width = '110px'; el.style.height = '32px'; el.style.color = '#fbbf24'; el.style.backgroundColor = 'rgba(251,191,36,0.2)'; el.style.fontSize = '12px'; el.style.borderRadius = '20px'; el.style.border = '1px solid #fbbf24'; el.innerText = '⭐ NEW BADGE';
+            } else if (presetType === 'card') {
+                el.style.width = '220px'; el.style.height = '180px'; el.style.color = '#ffffff'; el.style.backgroundColor = '#1e293b'; el.style.fontSize = '14px'; el.style.borderRadius = '14px'; el.innerText = '📦 การ์ดตู้คอนเทนเนอร์';
+            } else if (presetType === 'header-bar') {
+                el.style.width = '820px'; el.style.height = '60px'; el.style.left = '0px'; el.style.top = '0px'; el.style.color = '#ffffff'; el.style.backgroundColor = '#0284c7'; el.style.fontSize = '18px'; el.innerText = '🌐 แถบเมนูด้านบน (Header Bar)';
+            } else if (presetType === 'icon-robot') {
+                el.style.width = '80px'; el.style.height = '80px'; el.style.color = '#ffffff'; el.style.backgroundColor = 'transparent'; el.style.fontSize = '50px'; el.innerText = '🤖';
+            } else if (presetType === 'icon-star') {
+                el.style.width = '60px'; el.style.height = '60px'; el.style.color = '#ffffff'; el.style.backgroundColor = 'transparent'; el.style.fontSize = '40px'; el.innerText = '⭐';
+            } else if (presetType === 'search-box') {
+                el.style.width = '240px'; el.style.height = '42px'; el.style.color = '#38bdf8'; el.style.backgroundColor = '#1e293b'; el.style.fontSize = '14px'; el.style.borderRadius = '20px'; el.style.border = '1px solid #38bdf8'; el.innerText = '🔍 พิมพ์ค้นหาที่นี่...';
+            }
+
+            makeDraggable(el);
+            el.onclick = (e) => { e.stopPropagation(); selectElement(el); };
+            canvas.appendChild(el);
+            selectElement(el);
+            saveState();
+        }
+
+        function selectElement(el) {
+            document.querySelectorAll('.drag-element').forEach(e => e.classList.remove('selected'));
+            selectedEl = el;
+            if (el) {
+                el.classList.add('selected');
+                updateInspector();
+            }
+        }
+
+        canvas.onclick = () => {
+            selectedEl = null;
+            document.querySelectorAll('.drag-element').forEach(e => e.classList.remove('selected'));
+            updateInspector();
+        };
+
+        function makeDraggable(el) {
+            let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            el.onmousedown = dragMouseDown;
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                saveState();
+                pos3 = e.clientX; pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+                selectElement(el);
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                pos1 = pos3 - e.clientX; pos2 = pos4 - e.clientY;
+                pos3 = e.clientX; pos4 = e.clientY;
+                el.style.top = (el.offsetTop - pos2) + "px";
+                el.style.left = (el.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                document.onmouseup = null; document.onmousemove = null;
+                saveState();
+            }
+        }
+
+        function updateInspector() {
+            const container = document.getElementById('inspector-content');
+            if (!selectedEl) {
+                container.innerHTML = '<p style="font-size:0.85rem; color:#8c8c8c;">คลิกเลือกเอลิเมนต์บนหน้าจอเพื่อปรับแต่ง ปรับขนาด เปลี่ยนสี หรือลบได้อิสระ!</p>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="ctrl-row">
+                    <label>ข้อความ (Text Content):</label>
+                    <input type="text" class="ctrl-input" value="${selectedEl.innerText}" oninput="selectedEl.innerText = this.value; saveState();">
+                </div>
+                <div class="ctrl-row">
+                    <label>สีพื้นหลัง (Background Color):</label>
+                    <div class="color-chips">
+                        ${COLORS.map(c => `<div class="chip" style="background:${c}" onclick="selectedEl.style.backgroundColor='${c}'; saveState();"></div>`).join('')}
+                    </div>
+                </div>
+                <div class="ctrl-row">
+                    <label>สีข้อความ (Text Color):</label>
+                    <div class="color-chips">
+                        ${COLORS.map(c => `<div class="chip" style="background:${c}" onclick="selectedEl.style.color='${c}'; saveState();"></div>`).join('')}
+                    </div>
+                </div>
+                <div class="ctrl-row">
+                    <label>ขนาดตัวอักษร (Font Size):</label>
+                    <input type="range" min="10" max="60" value="${parseInt(selectedEl.style.fontSize) || 16}" oninput="selectedEl.style.fontSize = this.value + 'px'; saveState();">
+                </div>
+                <div class="ctrl-row">
+                    <label>ความกว้าง (Width):</label>
+                    <input type="range" min="40" max="820" value="${parseInt(selectedEl.style.width)}" oninput="selectedEl.style.width = this.value + 'px'; saveState();">
+                </div>
+                <button class="del-btn" onclick="deleteSelectedElement()">🗑️ ลบเอลิเมนต์นี้ออก (Delete)</button>
+            `;
+        }
+
+        // เริ่มต้น
+        spawnElement('header-bar');
+        spawnElement('h1');
+        spawnElement('card');
+        spawnElement('btn-primary');
+        saveState();
+
+        function submitDesign() {
+            alert('🎉 บันทึกการออกแบบสำเร็จ! ได้รับ 200 คะแนน');
+            if (window.parent) {
+                window.parent.postMessage({
+                    type: 'GAME_OVER',
+                    score: 200,
+                    gameId: 'theme-customizer'
+                }, '*');
+            }
+        }
+    </script>
+</body>
+</html>
