@@ -4,7 +4,8 @@ import { useEffect, useState, useTransition, useRef } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { getClassroomDetails, importStudentsToClassroom } from "@/app/actions/classroom";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 import { 
   FaArrowLeft, 
   FaFileExcel,
@@ -93,29 +94,23 @@ export default function ClassroomDetailPage() {
   };
 
   // ดาวน์โหลดไฟล์เทมเพลต Excel ตรงตามเดโม่
-  const downloadStudentImportTemplate = () => {
-    const headers = [["ชื่อ-นามสกุล", "รหัสนักเรียน", "ระดับชั้น (m1/m2/m3)", "ห้องเรียน (1/2/3)", "เบอร์โทรผู้ปกครอง", "รหัสผ่าน (เว้นว่างระบบจะสุ่ม 4 หลัก)"]];
-    const sampleData = [
-      ["นายสมชาย รักเรียน", "660104", "m3", "1", "0812345678", "1234"],
-      ["นางสาวสมหญิง รักดี", "660105", "m3", "1", "0898765432", ""],
-      ["เด็กชายเดชา เก่งกล้า", "670104", "m3", "1", "0855551234", "9999"]
+  const downloadStudentImportTemplate = async () => {
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet("รายชื่อนักเรียน");
+
+    ws.columns = [
+      { header: "ชื่อ-นามสกุล", key: "name", width: 30 },
+      { header: "ระดับชั้น (m1/m2/m3)", key: "class", width: 22 },
+      { header: "ห้องเรียน (1/2/3)", key: "room", width: 18 },
+      { header: "เบอร์โทรศัพท์ (ถ้ามี)", key: "phone", width: 20 },
     ];
 
-    const wsData = headers.concat(sampleData);
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws.addRow(["นายสมชาย ขยันเรียน", "m3", "1", "0812345678"]);
+    ws.addRow(["นางสาวสมหญิง รักดี", "m3", "1", "0898765432"]);
+    ws.addRow(["เด็กชายเดชา เก่งกล้า", "m3", "1", "0855551234"]);
 
-    ws['!cols'] = [
-      { wch: 25 },
-      { wch: 15 },
-      { wch: 22 },
-      { wch: 18 },
-      { wch: 20 },
-      { wch: 28 }
-    ];
-
-    XLSX.utils.book_append_sheet(wb, ws, "รายชื่อนักเรียน");
-    XLSX.writeFile(wb, "Template_Import_Students.xlsx");
+    const buffer = await wb.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), "Template_Import_Students.xlsx");
     showToast("success", "ดาวน์โหลดไฟล์เทมเพลต Excel เรียบร้อยแล้ว");
   };
 
@@ -124,13 +119,17 @@ export default function ClassroomDetailPage() {
     setFileName(`${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
     const reader = new FileReader();
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
-        const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: "array" });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const rows = XLSX.utils.sheet_to_json<any[]>(worksheet, { header: 1 });
+        const data = e.target?.result as ArrayBuffer;
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(data);
+        const worksheet = workbook.worksheets[0];
+        
+        const rows: any[][] = [];
+        worksheet.eachRow((row) => {
+          rows.push((row.values as any[]).slice(1));
+        });
 
         if (rows.length < 2) {
           showToast("error", "ไฟล์ไม่มีข้อมูลรายชื่อนักเรียน หรือมีเพียงหัวข้อคอลัมน์");
@@ -148,13 +147,11 @@ export default function ClassroomDetailPage() {
           if (!row || row.length === 0 || (row.length === 1 && !row[0])) continue;
 
           const rawName = String(row[0] || "").trim();
-          const rawCode = String(row[1] || "").trim();
-          const rawClass = String(row[2] || "").trim().toLowerCase();
-          const rawRoom = String(row[3] || "").trim();
-          const rawPhone = String(row[4] || "").trim();
-          const rawPassword = String(row[5] || "").trim();
+          const rawClass = String(row[1] || "").trim().toLowerCase();
+          const rawRoom = String(row[2] || "").trim();
+          const rawPhone = String(row[3] || "").trim();
 
-          if (!rawName && !rawCode && !rawClass && !rawRoom && !rawPhone) continue;
+          if (!rawName && !rawClass && !rawRoom && !rawPhone) continue;
 
           const errors: string[] = [];
           let studentClass = "";
@@ -162,9 +159,6 @@ export default function ClassroomDetailPage() {
 
           if (!rawName) {
             errors.push("กรุณาระบุชื่อ-นามสกุล");
-          }
-          if (!rawCode) {
-            errors.push("กรุณาระบุรหัสประจำตัว");
           }
 
           // Validation ระดับชั้น
@@ -203,14 +197,13 @@ export default function ClassroomDetailPage() {
           }
 
           const isValid = errors.length === 0;
-          // สุ่มรหัสผ่าน 4 หลักหากเว้นว่างไว้ ตามระบบเดโม่
-          const password = isValid 
-            ? (rawPassword && /^\d{4}$/.test(rawPassword) ? rawPassword : String(Math.floor(1000 + Math.random() * 9000))) 
-            : "";
+          // สุ่มรหัสผ่านและรหัสนักเรียนอัตโนมัติ
+          const password = isValid ? String(Math.floor(1000 + Math.random() * 9000)) : "";
+          const code = isValid ? `68${String(Math.floor(1000 + Math.random() * 9000))}` : "";
 
           parsedList.push({
             name: rawName,
-            code: rawCode,
+            code: code,
             class: studentClass,
             room: studentRoom,
             phone: rawPhone,
@@ -450,7 +443,6 @@ export default function ClassroomDetailPage() {
                     <thead>
                       <tr className="border-b border-slate-200 bg-slate-50 font-bold text-slate-700">
                         <th className="p-1.5">ชื่อ-นามสกุล</th>
-                        <th className="p-1.5">รหัสนักเรียน</th>
                         <th className="p-1.5">ระดับชั้น (m1/m2/m3)</th>
                         <th className="p-1.5">ห้องเรียน (1/2/3)</th>
                         <th className="p-1.5">เบอร์โทรผู้ปกครอง</th>
@@ -459,7 +451,6 @@ export default function ClassroomDetailPage() {
                     <tbody>
                       <tr className="text-slate-500 font-medium">
                         <td className="p-1.5">นายสมชาย รักเรียน</td>
-                        <td className="p-1.5 font-mono">660104</td>
                         <td className="p-1.5 font-mono">m3</td>
                         <td className="p-1.5 font-mono">1</td>
                         <td className="p-1.5">0812345678</td>

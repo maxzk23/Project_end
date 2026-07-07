@@ -251,14 +251,8 @@ export async function saveGameScoreAndSync(gameType: string, points: number, cla
       }
     });
 
-    // 6.2 คำนวณคะแนนรวมใหม่ทั้งหมดของวิชานี้
-    const totalScores = await db.gameScore.findMany({
-      where: { studentId }
-    });
-    const totalPointsSum = totalScores.reduce((acc, curr) => acc + curr.points, 0);
-
-    // 6.3 อัปเดตตาราง Leaderboard (Cache Data)
-    await db.leaderboard.upsert({
+    // 6.2 อัปเดตตาราง Leaderboard (บวกคะแนนเพิ่มจากของเดิม)
+    const updatedLeaderboard = await db.leaderboard.upsert({
       where: {
         studentId_classId: {
           studentId,
@@ -266,17 +260,17 @@ export async function saveGameScoreAndSync(gameType: string, points: number, cla
         }
       },
       update: {
-        totalPoints: totalPointsSum,
+        totalPoints: { increment: points },
         lastSynced: new Date()
       },
       create: {
         studentId,
         classId,
-        totalPoints: totalPointsSum
+        totalPoints: points
       }
     });
 
-    return { success: true, totalPoints: totalPointsSum };
+    return { success: true, totalPoints: updatedLeaderboard.totalPoints };
   } catch (err) {
     console.error("Failed to save game score:", err);
     return { success: false, error: "เกิดข้อผิดพลาดในการบันทึกสถิติคะแนน" };

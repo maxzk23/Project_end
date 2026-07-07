@@ -8,7 +8,8 @@ import {
   deleteStudent,
   importGlobalStudents
 } from "@/app/actions/classroom";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 import { 
   FaPlus, 
   FaFileExcel, 
@@ -241,28 +242,22 @@ export default function StudentRegistryPage() {
   };
 
   // Excel parsing
-  const downloadImportTemplate = () => {
-    const headers = [["ชื่อ-นามสกุล", "รหัสนักเรียน", "ระดับชั้น (m1/m2/m3)", "ห้องเรียน (1/2/3)", "รหัสผ่าน (เว้นว่างระบบจะสุ่ม 4 หลัก)"]];
-    const sampleData = [
-      ["สมชาย ขยันเรียน", "660104", "m3", "1", "1234"],
-      ["สมหญิง รักดี", "660102", "m3", "1", "1234"],
-      ["กิตติศักดิ์ พรสุวรรณ", "680101", "m1", "1", "1234"]
+  const downloadImportTemplate = async () => {
+    const wb = new ExcelJS.Workbook();
+    const ws = wb.addWorksheet("รายชื่อนักเรียน");
+
+    ws.columns = [
+      { header: "ชื่อ-นามสกุล", key: "name", width: 30 },
+      { header: "ระดับชั้น (m1/m2/m3)", key: "class", width: 22 },
+      { header: "ห้องเรียน (1/2/3)", key: "room", width: 18 },
     ];
 
-    const wsData = headers.concat(sampleData);
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    ws.addRow(["สมชาย ขยันเรียน", "m3", "1"]);
+    ws.addRow(["สมหญิง รักดี", "m3", "1"]);
+    ws.addRow(["กิตติศักดิ์ พรสุวรรณ", "m1", "1"]);
 
-    ws['!cols'] = [
-      { wch: 25 },
-      { wch: 15 },
-      { wch: 22 },
-      { wch: 18 },
-      { wch: 28 }
-    ];
-
-    XLSX.utils.book_append_sheet(wb, ws, "รายชื่อนักเรียน");
-    XLSX.writeFile(wb, "Template_Student_Import.xlsx");
+    const buffer = await wb.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), "Template_Student_Import.xlsx");
     showToast("success", "ดาวน์โหลดไฟล์เทมเพลต Excel เรียบร้อยแล้ว");
   };
 
@@ -270,12 +265,17 @@ export default function StudentRegistryPage() {
     setFileName(`${file.name} (${(file.size / 1024).toFixed(1)} KB)`);
     const reader = new FileReader();
 
-    reader.onload = (e) => {
+    reader.onload = async (e) => {
       try {
-        const data = new Uint8Array(e.target?.result as ArrayBuffer);
-        const workbook = XLSX.read(data, { type: "array" });
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json<any[]>(worksheet, { header: 1 });
+        const data = e.target?.result as ArrayBuffer;
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(data);
+        const worksheet = workbook.worksheets[0];
+        
+        const rows: any[][] = [];
+        worksheet.eachRow((row) => {
+          rows.push((row.values as any[]).slice(1));
+        });
 
         if (rows.length < 2) {
           showToast("error", "ไฟล์ไม่มีข้อมูลรายชื่อนักเรียน หรือมีเพียงหัวข้อคอลัมน์");
@@ -289,19 +289,16 @@ export default function StudentRegistryPage() {
           if (!row || row.length === 0 || (row.length === 1 && !row[0])) continue;
 
           const rawName = String(row[0] || "").trim();
-          const rawCode = String(row[1] || "").trim();
-          const rawClass = String(row[2] || "").trim().toLowerCase();
-          const rawRoom = String(row[3] || "").trim();
-          const rawPassword = String(row[4] || "").trim();
+          const rawClass = String(row[1] || "").trim().toLowerCase();
+          const rawRoom = String(row[2] || "").trim();
 
-          if (!rawName && !rawCode && !rawClass && !rawRoom) continue;
+          if (!rawName && !rawClass && !rawRoom) continue;
 
           const errors: string[] = [];
           let studentClass = "";
           let studentRoom = "";
 
           if (!rawName) errors.push("กรุณาระบุชื่อ-นามสกุล");
-          if (!rawCode) errors.push("กรุณาระบุรหัสประจำตัว");
 
           if (!rawClass) {
             errors.push("กรุณาระบุระดับชั้น");
@@ -329,13 +326,12 @@ export default function StudentRegistryPage() {
           }
 
           const isValid = errors.length === 0;
-          const password = isValid 
-            ? (rawPassword ? rawPassword : String(Math.floor(1000 + Math.random() * 9000))) 
-            : "";
+          const password = isValid ? String(Math.floor(1000 + Math.random() * 9000)) : "";
+          const code = isValid ? `68${String(Math.floor(1000 + Math.random() * 9000))}` : "";
 
           parsedList.push({
             name: rawName,
-            code: rawCode,
+            code: code,
             class: studentClass,
             room: studentRoom,
             password: password,
@@ -1105,7 +1101,7 @@ export default function StudentRegistryPage() {
                   ข้อแนะนำการเตรียมไฟล์:
                 </span>
                 <p className="text-xs text-slate-500">
-                  กรุณาเตรียมไฟล์ Excel (.xlsx, .xls) หรือ CSV (.csv) โดยมี 5 คอลัมน์ดังนี้:
+                  กรุณาเตรียมไฟล์ Excel (.xlsx, .xls) หรือ CSV (.csv) โดยมี 3 คอลัมน์ดังนี้:
                 </p>
 
                 <div className="overflow-x-auto bg-white border border-slate-200 rounded-lg p-2">
@@ -1113,19 +1109,15 @@ export default function StudentRegistryPage() {
                     <thead>
                       <tr className="border-b border-slate-200 bg-slate-50 font-bold text-slate-700">
                         <th className="p-1.5">ชื่อ-นามสกุล</th>
-                        <th className="p-1.5">รหัสนักเรียน</th>
                         <th className="p-1.5">ระดับชั้น (m1/m2/m3)</th>
                         <th className="p-1.5">ห้องเรียน (1/2/3)</th>
-                        <th className="p-1.5">รหัสผ่าน</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr className="text-slate-500 font-medium">
                         <td className="p-1.5">กิตติศักดิ์ พรสุวรรณ</td>
-                        <td className="p-1.5 font-mono">680101</td>
                         <td className="p-1.5 font-mono">m1</td>
                         <td className="p-1.5 font-mono">1</td>
-                        <td className="p-1.5 font-mono">1234</td>
                       </tr>
                     </tbody>
                   </table>

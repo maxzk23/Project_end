@@ -97,6 +97,17 @@ export default function TeacherSettingsPage() {
     const initData = async () => {
       const classes = await getTeacherClassrooms();
       setClassrooms(classes);
+
+      if (classes && classes.length > 0) {
+        const years = classes.map(c => c.academicYear).filter(Boolean);
+        const uniqueYears = Array.from(new Set(years)).sort((a, b) => b.localeCompare(a));
+        if (uniqueYears.length > 0) {
+          const currentMaxYear = uniqueYears[0];
+          setFromYear(currentMaxYear);
+          const nextYear = (parseInt(currentMaxYear, 10) + 1).toString();
+          setToYear(nextYear);
+        }
+      }
       
       const rolloverLogs = await getRolloverLogs();
       setLogs(rolloverLogs as unknown as RolloverLog[]);
@@ -408,8 +419,9 @@ export default function TeacherSettingsPage() {
                       <input 
                         type="text" 
                         value={fromYear}
-                        onChange={(e) => setFromYear(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none"
+                        readOnly
+                        disabled
+                        className="w-full px-3.5 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-400 cursor-not-allowed focus:outline-none"
                       />
                     </div>
                     <div className="space-y-1">
@@ -417,8 +429,9 @@ export default function TeacherSettingsPage() {
                       <input 
                         type="text" 
                         value={toYear}
-                        onChange={(e) => setToYear(e.target.value)}
-                        className="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 focus:outline-none"
+                        readOnly
+                        disabled
+                        className="w-full px-3.5 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs font-bold text-slate-400 cursor-not-allowed focus:outline-none"
                       />
                     </div>
                   </div>
