@@ -465,16 +465,7 @@ export default function StudentRegistryPage() {
         {/* กลุ่มตัวกรอง */}
         <div className="flex flex-wrap items-center gap-3">
           
-          {/* ปีการศึกษา */}
-          <select 
-            value={selectedYear}
-            onChange={(e) => setSelectedYear(e.target.value)}
-            className="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 cursor-pointer focus:outline-none focus:border-sky-500 transition"
-          >
-            {Array.from(new Set(students.map(s => s.academicYear).filter(Boolean))).sort((a, b) => b.localeCompare(a)).map(yr => (
-              <option key={yr} value={yr}>ปีการศึกษา {yr}</option>
-            ))}
-          </select>
+
 
           {/* ระดับชั้น */}
           <select 
