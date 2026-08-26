@@ -32,8 +32,19 @@ export async function getTeacherClassrooms() {
 
   try {
     const isAdmin = user.role === "ADMIN";
-    const classrooms = await db.classroom.findMany({
+
+    const latestClass = await db.classroom.findFirst({
       where: isAdmin ? {} : { teacherId: user.id },
+      orderBy: { academicYear: "desc" }
+    });
+    
+    if (!latestClass) return [];
+
+    const classrooms = await db.classroom.findMany({
+      where: {
+        ...(isAdmin ? {} : { teacherId: user.id }),
+        academicYear: latestClass.academicYear
+      },
       orderBy: [
         { yearLevel: "asc" },
         { room: "asc" }

@@ -207,6 +207,10 @@ export default function TeacherMaterialsPage() {
 
   // จัดการอัปโหลดไฟล์จำลอง
   const handleFileChange = (file: File) => {
+    if (file.name.toLowerCase().match(/\.(exe|bat|cmd|sh|msi)$/)) {
+      showToast("error", "ไม่อนุญาตให้อัปโหลดไฟล์รันระบบ (เช่น .exe)");
+      return;
+    }
     setUploadedFile({ name: file.name, size: file.size });
     setRawFile(file);
     setIsUploading(true);
@@ -344,6 +348,10 @@ export default function TeacherMaterialsPage() {
   };
 
   const handleEditFileChange = (file: File) => {
+    if (file.name.toLowerCase().match(/\.(exe|bat|cmd|sh|msi)$/)) {
+      showToast("error", "ไม่อนุญาตให้อัปโหลดไฟล์รันระบบ (เช่น .exe)");
+      return;
+    }
     setEditUploadedFile({ name: file.name, size: file.size });
     setEditRawFile(file);
     setEditIsUploading(true);
@@ -725,6 +733,7 @@ export default function TeacherMaterialsPage() {
                         type="file"
                         id="local-file-picker"
                         className="hidden"
+                        accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.zip,.rar,.7z,.mp4,.webm,.mov,.avi,.mkv,.png,.jpg,.jpeg,.gif,.svg,.txt,.csv,.mp3,.wav"
                         onChange={(e) => e.target.files && handleFileChange(e.target.files[0])}
                       />
                       <FaUpload className="text-3xl text-slate-400 mx-auto mb-3" />
@@ -957,6 +966,7 @@ export default function TeacherMaterialsPage() {
                         type="file"
                         id="edit-file-picker"
                         className="hidden"
+                        accept=".pdf,.ppt,.pptx,.doc,.docx,.xls,.xlsx,.zip,.rar,.7z,.mp4,.webm,.mov,.avi,.mkv,.png,.jpg,.jpeg,.gif,.svg,.txt,.csv,.mp3,.wav"
                         onChange={(e) => e.target.files && handleEditFileChange(e.target.files[0])}
                       />
                       <FaUpload className="text-3xl text-slate-400 mx-auto mb-3" />

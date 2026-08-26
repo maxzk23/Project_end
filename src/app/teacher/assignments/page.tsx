@@ -23,6 +23,7 @@ interface Classroom {
   name: string;
   yearLevel: string;
   room: string;
+  academicYear: string;
 }
 
 interface Assignment {
@@ -46,6 +47,8 @@ export default function TeacherAssignmentsPage() {
   // States สำหรับ Create Modal
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createIsGoogleForm, setCreateIsGoogleForm] = useState(false);
+  const [createYearLevel, setCreateYearLevel] = useState<string>("");
+  const [createRoomId, setCreateRoomId] = useState<string>("");
 
   // States สำหรับ Edit Modal
   const [editTarget, setEditTarget] = useState<Assignment | null>(null);
@@ -126,11 +129,19 @@ export default function TeacherAssignmentsPage() {
   // ── CREATE ──────────────────────────────────────────
   const handleCreate = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     const formData = new FormData(e.currentTarget);
+    const targetClassId = formData.get("targetClassId") as string || selectedClassId;
+
+    if (!targetClassId || targetClassId === "ALL") {
+      showToast("error", "กรุณาเลือกห้องเรียนเป้าหมายก่อนสั่งการบ้าน");
+      return;
+    }
+
     formData.set("isGoogleForm", createIsGoogleForm ? "true" : "false");
 
     startTransition(async () => {
-      const res = await createAssignment(selectedClassId, formData);
+      const res = await createAssignment(targetClassId, formData);
       if (res.success) {
         showToast("success", res.message || "มอบหมายงานสำเร็จ");
         setIsCreateOpen(false);
@@ -235,7 +246,18 @@ export default function TeacherAssignmentsPage() {
           />
 
           <button
-            onClick={() => { setIsCreateOpen(true); setCreateIsGoogleForm(false); }}
+            onClick={() => {
+              const defaultCls = classrooms.find(c => c.id === selectedClassId);
+              if (defaultCls) {
+                setCreateYearLevel(defaultCls.yearLevel);
+                setCreateRoomId(defaultCls.id);
+              } else {
+                setCreateYearLevel("");
+                setCreateRoomId("");
+              }
+              setIsCreateOpen(true); 
+              setCreateIsGoogleForm(false); 
+            }}
             className="w-full sm:w-auto flex items-center justify-center gap-2 px-4 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl transition text-sm shadow-md"
           >
             <FaPlus />
@@ -344,6 +366,45 @@ export default function TeacherAssignmentsPage() {
             </div>
 
             <form onSubmit={handleCreate} className="space-y-4">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="space-y-1.5 flex-1">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wide">ชั้นปี *</label>
+                  <select
+                    value={createYearLevel}
+                    onChange={(e) => {
+                      setCreateYearLevel(e.target.value);
+                      setCreateRoomId("");
+                    }}
+                    required
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none cursor-pointer focus:border-sky-400 focus:bg-white transition text-slate-700 font-semibold"
+                  >
+                    <option value="" disabled>-- เลือกชั้นปี --</option>
+                    {Array.from(new Set(classrooms.map(c => c.yearLevel))).sort().map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
+                  </select>
+                </div>
+                
+                <div className="space-y-1.5 flex-1">
+                  <label className="text-xs font-bold text-slate-600 uppercase tracking-wide">ห้องเรียนเป้าหมาย *</label>
+                  <select
+                    name="targetClassId"
+                    value={createRoomId}
+                    onChange={(e) => setCreateRoomId(e.target.value)}
+                    required
+                    disabled={!createYearLevel}
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm outline-none cursor-pointer focus:border-sky-400 focus:bg-white transition text-slate-700 font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <option value="" disabled>-- เลือกห้องเรียน --</option>
+                    {classrooms.filter(c => c.yearLevel === createYearLevel).map((cls) => (
+                      <option key={cls.id} value={cls.id}>
+                        {cls.name} ({cls.room})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-600 uppercase tracking-wide">หัวข้อเรื่อง *</label>
                 <input

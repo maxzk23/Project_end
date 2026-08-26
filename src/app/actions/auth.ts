@@ -36,6 +36,9 @@ export async function login(prevState: any, formData: FormData): Promise<ActionR
     }
 
     // 4. ตรวจสอบสิทธิ์การใช้งานของบัญชี
+    if (user.status === "GRADUATED") {
+      return { success: false, error: "ไม่พบผู้ใช้งาน" };
+    }
     if (user.status !== "ACTIVE") {
       return { success: false, error: "บัญชีผู้ใช้นี้ถูกระงับการใช้งานชั่วคราว" };
     }
