@@ -12,6 +12,49 @@ export interface ActionResponse {
   error?: string;
 }
 
+function cleanNameVariants(input: string): string[] {
+  const trimmed = input.trim();
+  if (!trimmed) return [];
+
+  const variants = new Set<string>();
+  variants.add(trimmed);
+
+  // ปรับช่องว่างซ้ำซ้อนให้เป็นช่องเดียว
+  const singleSpaced = trimmed.replace(/\s+/g, " ");
+  variants.add(singleSpaced);
+
+  // ตัดคำนำหน้าชื่อภาษาไทยยอดนิยม
+  const prefixes = [
+    /^เด็กชาย\s*/i,
+    /^ด\.ช\.\s*/i,
+    /^ด\.ช\s+/i,
+    /^เด็กหญิง\s*/i,
+    /^ด\.ญ\.\s*/i,
+    /^ด\.ญ\s+/i,
+    /^นาย\s*/i,
+    /^นางสาว\s*/i,
+    /^น\.ส\.\s*/i,
+    /^น\.ส\s+/i,
+    /^นาง\s*/i,
+    /^คุณครู\s*/i,
+    /^ครู\s*/i,
+    /^อาจารย์\s*/i,
+    /^อ\.\s*/i,
+  ];
+
+  for (const prefix of prefixes) {
+    if (prefix.test(trimmed)) {
+      const stripped = trimmed.replace(prefix, "").trim();
+      if (stripped) {
+        variants.add(stripped);
+        variants.add(stripped.replace(/\s+/g, " "));
+      }
+    }
+  }
+
+  return Array.from(variants);
+}
+
 /**
  * Server Action สำหรับประมวลผลการเข้าสู่ระบบ (Login)
  */
@@ -25,17 +68,68 @@ export async function login(prevState: any, formData: FormData): Promise<ActionR
   }
 
   try {
-    // 2. ค้นหาผู้ใช้จากตาราง User โดยอิงจากชื่อจริง
-    const user = await db.user.findFirst({
-      where: { name: name.trim() },
-    });
+    const rawInput = name.trim();
+    const searchVariants = cleanNameVariants(rawInput);
+    
+    // แยกส่วนของคำค้นหา (ชื่อ / นามสกุล)
+    const nameParts = rawInput.split(/\s+/).filter(Boolean);
+    const firstName = nameParts[0] || "";
+    const lastName = nameParts.slice(1).join(" ");
+
+    // สร้างเงื่อนไขค้นหาแบบยืดหยุ่น (ชื่อเต็ม, รหัสประจำตัว, คำนำหน้า, ชื่อจริง, นามสกุล)
+    const orConditions: any[] = [
+      ...searchVariants.map(v => ({ name: { equals: v, mode: "insensitive" } })),
+      ...searchVariants.map(v => ({ studentId: { equals: v, mode: "insensitive" } })),
+      { name: { equals: rawInput, mode: "insensitive" } },
+    ];
+
+    if (firstName) {
+      orConditions.push({ name: { startsWith: firstName, mode: "insensitive" } });
+      orConditions.push({ name: { contains: firstName, mode: "insensitive" } });
+    }
+    if (lastName) {
+      orConditions.push({ name: { contains: lastName, mode: "insensitive" } });
+    }
+
+    // 2. ค้นหาผู้ใช้จากฐานข้อมูล
+    let candidateUsers: any[] = [];
+    if (typeof db.user?.findMany === "function") {
+      candidateUsers = await db.user.findMany({
+        where: { OR: orConditions },
+      });
+    }
+
+    // หาก findMany ไม่พบ หรืออยู่ในสภาพแวดล้อม mock ให้ fallback หาด้วย findFirst
+    if (candidateUsers.length === 0 && typeof db.user?.findFirst === "function") {
+      const singleUser = await db.user.findFirst({
+        where: { OR: orConditions },
+      });
+      if (singleUser) {
+        candidateUsers = [singleUser];
+      }
+    }
 
     // 3. ตรวจเช็คหากไม่พบผู้ใช้
-    if (!user) {
+    if (candidateUsers.length === 0) {
       return { success: false, error: "ไม่พบชื่อผู้ใช้งานนี้ในระบบ" };
     }
 
-    // 4. ตรวจสอบสิทธิ์การใช้งานของบัญชี
+    // 4. กรณีพบผู้ใช้ที่ตรงกับคำค้นหาหลายคน (เช่น พิมพ์แค่ชื่อแล้วมีหลายคน)
+    // ให้ค้นหาผู้ใช้ที่รหัสผ่านตรงกับที่กรอกเข้ามา
+    let matchingUser = candidateUsers.find(u => bcrypt.compareSync(password, u.password));
+
+    // หากยังไม่ตรงและมีผู้ใช้คนเดียว ให้ถือเป็นคนนั้นเพื่อตรวจสอบความถูกต้องของรหัสผ่าน
+    if (!matchingUser && candidateUsers.length === 1) {
+      matchingUser = candidateUsers[0];
+    }
+
+    if (!matchingUser) {
+      return { success: false, error: "รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง" };
+    }
+
+    const user = matchingUser;
+
+    // 5. ตรวจสอบสิทธิ์การใช้งานของบัญชี
     if (user.status === "GRADUATED") {
       return { success: false, error: "ไม่พบผู้ใช้งาน" };
     }
@@ -43,13 +137,13 @@ export async function login(prevState: any, formData: FormData): Promise<ActionR
       return { success: false, error: "บัญชีผู้ใช้นี้ถูกระงับการใช้งานชั่วคราว" };
     }
 
-    // 5. ตรวจสอบเปรียบเทียบรหัสผ่าน (Hashed Password Comparison)
+    // 6. ตรวจสอบเปรียบเทียบรหัสผ่าน (Hashed Password Comparison)
     const isPasswordValid = bcrypt.compareSync(password, user.password);
     if (!isPasswordValid) {
       return { success: false, error: "รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง" };
     }
 
-    // 6. เข้ารหัสข้อมูลสร้างเป็น Session Token (เก็บ ID, ชื่อ, และบทบาท)
+    // 7. เข้ารหัสข้อมูลสร้างเป็น Session Token (เก็บ ID, ชื่อ, และบทบาท)
     const sessionData = {
       userId: user.id,
       name: user.name,
@@ -57,7 +151,7 @@ export async function login(prevState: any, formData: FormData): Promise<ActionR
     };
     const sessionToken = await encrypt(sessionData);
 
-    // 7. บันทึก Token ลงใน Cookie ชนิด HTTP-Only ปลอดภัยสูง
+    // 8. บันทึก Token ลงใน Cookie ชนิด HTTP-Only ปลอดภัยสูง
     const cookieStore = await cookies();
     cookieStore.set("session", sessionToken, {
       httpOnly: true, // ป้องกันฝั่งไคลเอนต์ใช้ javascript เข้าถึงคุกกี้ (ลดเสี่ยง XSS)
@@ -72,7 +166,7 @@ export async function login(prevState: any, formData: FormData): Promise<ActionR
     return { success: false, error: "เกิดข้อผิดพลาดภายในระบบฐานข้อมูล" };
   }
 
-  // 8. นำทางผู้ใช้แยกตามสิทธิ์บทบาทที่ถูกล็อกอิน (ต้องกระทำนอกบล็อก try-catch ใน Server Action)
+  // 9. ล็อกอินสำเร็จ
   return { success: true };
 }
 

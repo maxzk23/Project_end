@@ -200,51 +200,63 @@ export default function StudentDashboard() {
         </div>
       ) : (
         <>
-          {/* ส่วนที่ 1: แถบสถิติหลัก (Stats Grid) */}
+          {/* ส่วนที่ 1: แถบสถิติหลัก (Stats Grid) สีสันสดใส ชัดเจน โดดเด่น */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* สถิติ 1: คะแนนสะสม (โชว์เฉยๆ ตามคำขอ) */}
-            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-5 hover:shadow-md transition cursor-default">
-              <div className="w-14 h-14 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center text-2xl shrink-0">
+            {/* สถิติ 1: คะแนนสะสม -> สีฟ้าครามประกาย (Sky / Blue / Indigo) */}
+            <div className="relative overflow-hidden p-6 rounded-2xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20 border border-sky-400/30 flex items-center justify-between group hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-default">
+              <div className="absolute -top-10 -left-10 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+              <div className="absolute -right-3 -bottom-3 text-white/10 text-6xl pointer-events-none transform -rotate-12 group-hover:scale-110 group-hover:text-white/15 transition-all duration-300">
                 <FaStar />
               </div>
-              <div>
-                <h3 className="text-2xl font-black text-slate-800 tracking-tight">
+              <div className="space-y-1 text-left relative z-10">
+                <h3 className="text-3xl font-black text-white tracking-tight drop-shadow-sm leading-tight">
                   {(summary?.stats.totalPoints ?? 0).toLocaleString()}
                 </h3>
-                <p className="text-xs text-slate-500 font-bold mt-0.5">คะแนนสะสมทั้งหมด</p>
+                <p className="text-xs font-semibold text-sky-100/90">คะแนนสะสมทั้งหมด</p>
+              </div>
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md text-white border border-white/30 flex items-center justify-center text-2xl shrink-0 group-hover:bg-white group-hover:text-blue-600 shadow-md transition-all duration-200 relative z-10">
+                <FaStar />
               </div>
             </div>
 
-            {/* สถิติ 2: อันดับในห้องเรียน -> ไปที่ /student/leaderboard */}
+            {/* สถิติ 2: อันดับในห้องเรียน -> สีส้มแอมเบอร์ประกาย (Amber / Orange / Rose) */}
             <Link 
               href="/student/leaderboard"
-              className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-5 hover:shadow-md hover:-translate-y-1 active:scale-[0.98] transition cursor-pointer"
+              className="relative overflow-hidden p-6 rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-600 text-white shadow-lg shadow-orange-500/20 border border-orange-400/30 flex items-center justify-between group hover:shadow-xl hover:shadow-orange-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-pointer"
             >
-              <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center text-2xl shrink-0">
+              <div className="absolute -top-10 -left-10 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+              <div className="absolute -right-3 -bottom-3 text-white/10 text-6xl pointer-events-none transform -rotate-12 group-hover:scale-110 group-hover:text-white/15 transition-all duration-300">
                 <FaMedal />
               </div>
-              <div className="text-left">
-                <h3 className="text-2xl font-black text-slate-800 tracking-tight">
+              <div className="space-y-1 text-left relative z-10">
+                <h3 className="text-3xl font-black text-white tracking-tight drop-shadow-sm leading-tight">
                   อันดับ {summary?.stats.rank ?? "-"}
                 </h3>
-                <p className="text-xs text-slate-500 font-bold mt-0.5">Leaderboard ของห้อง</p>
+                <p className="text-xs font-semibold text-orange-100/90">Leaderboard ของห้อง</p>
+              </div>
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md text-white border border-white/30 flex items-center justify-center text-2xl shrink-0 group-hover:bg-white group-hover:text-orange-600 shadow-md transition-all duration-200 relative z-10">
+                <FaMedal />
               </div>
             </Link>
 
-            {/* สถิติ 3: การบ้านค้างส่ง -> ไปที่ /student/assignments */}
+            {/* สถิติ 3: การบ้านค้างส่ง -> สีเขียวมรกต (Emerald / Teal) */}
             <Link 
               href="/student/assignments"
-              className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex items-center gap-5 hover:shadow-md hover:-translate-y-1 active:scale-[0.98] transition cursor-pointer"
+              className="relative overflow-hidden p-6 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 text-white shadow-lg shadow-emerald-500/20 border border-emerald-400/30 flex items-center justify-between group hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-pointer"
             >
-              <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl shrink-0">
+              <div className="absolute -top-10 -left-10 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+              <div className="absolute -right-3 -bottom-3 text-white/10 text-6xl pointer-events-none transform -rotate-12 group-hover:scale-110 group-hover:text-white/15 transition-all duration-300">
                 <FaCheckCircle />
               </div>
-              <div className="text-left">
-                <h3 className="text-2xl font-black text-slate-800 tracking-tight">
+              <div className="space-y-1 text-left relative z-10">
+                <h3 className="text-3xl font-black text-white tracking-tight drop-shadow-sm leading-tight">
                   {summary?.stats.pendingAssignmentsCount ?? 0} งาน
                 </h3>
-                <p className="text-xs text-slate-500 font-bold mt-0.5">การบ้านที่ต้องส่งสัปดาห์นี้</p>
+                <p className="text-xs font-semibold text-emerald-100/90">การบ้านที่ต้องส่งสัปดาห์นี้</p>
+              </div>
+              <div className="w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md text-white border border-white/30 flex items-center justify-center text-2xl shrink-0 group-hover:bg-white group-hover:text-emerald-600 shadow-md transition-all duration-200 relative z-10">
+                <FaCheckCircle />
               </div>
             </Link>
           </div>

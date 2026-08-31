@@ -207,72 +207,88 @@ export default function TeacherDashboard() {
       )}
       
       {/* 
-        ส่วนที่ 1: แถบสถิติภาพรวม (Stats Grid) ดีไซน์ขอบโค้ง border-l และเงาแบบรูปภาพตัวอย่าง 100%
+        ส่วนที่ 1: แถบสถิติภาพรวม (Stats Grid) สีสันสดใส ชัดเจน โดดเด่น
       */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         
-        {/* สถิติ 1: จำนวนนักเรียน -> ไปที่ /teacher/classrooms */}
+        {/* สถิติ 1: จำนวนนักเรียน -> สีเขียวมรกต (Emerald / Teal) */}
         <Link 
           href="/teacher/classrooms"
-          className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-l-[5px] border-l-emerald-500 flex items-center justify-between group hover:shadow-md hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+          className="relative overflow-hidden p-5 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 text-white shadow-lg shadow-emerald-500/20 border border-emerald-400/30 flex items-center justify-between group hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-pointer"
         >
-          <div className="space-y-1 text-left">
-            <h3 className="text-[25px] font-black text-slate-800 tracking-tight">
+          <div className="absolute -top-10 -left-10 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+          <div className="absolute -right-3 -bottom-3 text-white/10 text-6xl pointer-events-none transform -rotate-12 group-hover:scale-110 group-hover:text-white/15 transition-all duration-300">
+            <FaUsers />
+          </div>
+          <div className="space-y-1 text-left relative z-10">
+            <h3 className="text-[26px] font-black text-white tracking-tight drop-shadow-sm leading-tight">
               {summaryData?.stats.totalStudents ?? 0} คน
             </h3>
-            <p className="text-[11px] font-bold text-slate-500">
+            <p className="text-[11px] font-semibold text-emerald-100/90">
               {selectedClassId === "ALL" ? "จำนวนนักเรียนในระบบทั้งหมด" : "จำนวนนักเรียนในห้องเรียนนี้"}
             </p>
           </div>
-          <div className="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center text-lg shrink-0 group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-200">
+          <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md text-white border border-white/30 flex items-center justify-center text-xl shrink-0 group-hover:bg-white group-hover:text-emerald-600 shadow-md transition-all duration-200 relative z-10">
             <FaUsers />
           </div>
         </Link>
 
-        {/* สถิติ 2: การบ้านรอตรวจ -> ไปที่ /teacher/grading */}
+        {/* สถิติ 2: การบ้านรอตรวจ -> สีฟ้าครามสดใส (Sky / Blue) */}
         <Link 
           href="/teacher/grading"
-          className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-l-[5px] border-l-sky-500 flex items-center justify-between group hover:shadow-md hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+          className="relative overflow-hidden p-5 rounded-2xl bg-gradient-to-br from-sky-500 via-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20 border border-sky-400/30 flex items-center justify-between group hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-pointer"
         >
-          <div className="space-y-1 text-left">
-            <h3 className="text-[25px] font-black text-slate-800 tracking-tight">
+          <div className="absolute -top-10 -left-10 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+          <div className="absolute -right-3 -bottom-3 text-white/10 text-6xl pointer-events-none transform -rotate-12 group-hover:scale-110 group-hover:text-white/15 transition-all duration-300">
+            <FaFileSignature />
+          </div>
+          <div className="space-y-1 text-left relative z-10">
+            <h3 className="text-[26px] font-black text-white tracking-tight drop-shadow-sm leading-tight">
               {summaryData?.stats.pendingGrading ?? 0} งาน
             </h3>
-            <p className="text-[11px] font-bold text-slate-500">การบ้านที่รอตรวจ</p>
+            <p className="text-[11px] font-semibold text-sky-100/90">การบ้านที่รอตรวจ</p>
           </div>
-          <div className="w-11 h-11 rounded-2xl bg-sky-50 text-sky-500 flex items-center justify-center text-lg shrink-0 group-hover:bg-sky-500 group-hover:text-white transition-colors duration-200">
+          <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md text-white border border-white/30 flex items-center justify-center text-xl shrink-0 group-hover:bg-white group-hover:text-blue-600 shadow-md transition-all duration-200 relative z-10">
             <FaFileSignature />
           </div>
         </Link>
 
-        {/* สถิติ 3: บทเรียนที่เปิดให้ดู -> ไปที่ /teacher/materials */}
+        {/* สถิติ 3: บทเรียนที่เปิดให้ดู -> สีม่วงสดเข้ม (Purple / Violet) */}
         <Link 
           href="/teacher/materials"
-          className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-l-[5px] border-l-purple-500 flex items-center justify-between group hover:shadow-md hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+          className="relative overflow-hidden p-5 rounded-2xl bg-gradient-to-br from-purple-500 via-violet-600 to-indigo-700 text-white shadow-lg shadow-purple-500/20 border border-purple-400/30 flex items-center justify-between group hover:shadow-xl hover:shadow-purple-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-pointer"
         >
-          <div className="space-y-1 text-left">
-            <h3 className="text-[25px] font-black text-slate-800 tracking-tight">
+          <div className="absolute -top-10 -left-10 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+          <div className="absolute -right-3 -bottom-3 text-white/10 text-6xl pointer-events-none transform -rotate-12 group-hover:scale-110 group-hover:text-white/15 transition-all duration-300">
+            <FaFolderOpen />
+          </div>
+          <div className="space-y-1 text-left relative z-10">
+            <h3 className="text-[26px] font-black text-white tracking-tight drop-shadow-sm leading-tight">
               {summaryData?.stats.unlockedMaterials ?? 0} บท
             </h3>
-            <p className="text-[11px] font-bold text-slate-500">บทเรียนที่เปิดให้นักเรียนดู</p>
+            <p className="text-[11px] font-semibold text-purple-100/90">บทเรียนที่เปิดให้นักเรียนดู</p>
           </div>
-          <div className="w-11 h-11 rounded-2xl bg-purple-50 text-purple-500 flex items-center justify-center text-lg shrink-0 group-hover:bg-purple-500 group-hover:text-white transition-colors duration-200">
+          <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md text-white border border-white/30 flex items-center justify-center text-xl shrink-0 group-hover:bg-white group-hover:text-purple-600 shadow-md transition-all duration-200 relative z-10">
             <FaFolderOpen />
           </div>
         </Link>
 
-        {/* สถิติ 4: จำนวนมินิเกม -> ไปที่ /teacher/leaderboard */}
+        {/* สถิติ 4: จำนวนมินิเกม -> สีส้มแอมเบอร์ประกาย (Orange / Amber / Rose) */}
         <Link 
           href="/teacher/leaderboard"
-          className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 border-l-[5px] border-l-orange-500 flex items-center justify-between group hover:shadow-md hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-pointer"
+          className="relative overflow-hidden p-5 rounded-2xl bg-gradient-to-br from-amber-500 via-orange-500 to-rose-600 text-white shadow-lg shadow-orange-500/20 border border-orange-400/30 flex items-center justify-between group hover:shadow-xl hover:shadow-orange-500/30 hover:-translate-y-1 active:scale-[0.98] transition-all duration-200 cursor-pointer"
         >
-          <div className="space-y-1 text-left">
-            <h3 className="text-[25px] font-black text-slate-800 tracking-tight">
+          <div className="absolute -top-10 -left-10 w-24 h-24 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
+          <div className="absolute -right-3 -bottom-3 text-white/10 text-6xl pointer-events-none transform -rotate-12 group-hover:scale-110 group-hover:text-white/15 transition-all duration-300">
+            <FaGamepad />
+          </div>
+          <div className="space-y-1 text-left relative z-10">
+            <h3 className="text-[26px] font-black text-white tracking-tight drop-shadow-sm leading-tight">
               {summaryData?.stats.totalGames ?? 1} เกม
             </h3>
-            <p className="text-[11px] font-bold text-slate-500">มินิเกมในระบบทั้งหมด</p>
+            <p className="text-[11px] font-semibold text-orange-100/90">มินิเกมในระบบทั้งหมด</p>
           </div>
-          <div className="w-11 h-11 rounded-2xl bg-orange-50 text-orange-500 flex items-center justify-center text-lg shrink-0 group-hover:bg-orange-500 group-hover:text-white transition-colors duration-200">
+          <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md text-white border border-white/30 flex items-center justify-center text-xl shrink-0 group-hover:bg-white group-hover:text-orange-600 shadow-md transition-all duration-200 relative z-10">
             <FaGamepad />
           </div>
         </Link>

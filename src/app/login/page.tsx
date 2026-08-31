@@ -61,11 +61,13 @@ export default function LoginPage() {
           {/* ฟอร์มสำหรับการเข้าสู่ระบบ */}
           <form onSubmit={handleSubmit} className="space-y-4">
             
-            {/* กล่องกรอกข้อมูลชื่อ - นามสกุลจริง */}
+            {/* กล่องกรอกข้อมูลชื่อ - นามสกุล หรือรหัสประจำตัว */}
             <div className="space-y-1.5">
-              <label htmlFor="name" className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
-                ชื่อ - นามสกุลจริงของคุณ
-              </label>
+              <div className="flex items-center justify-between">
+                <label htmlFor="name" className="text-xs font-semibold text-slate-600 uppercase tracking-wide">
+                  ชื่อ - นามสกุล หรือ รหัสประจำตัว
+                </label>
+              </div>
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
                   <FaUser className="text-sm" />
@@ -77,10 +79,13 @@ export default function LoginPage() {
                   required
                   autoComplete="name"
                   disabled={isPending}
-                  placeholder="เช่น เด็กชายแดง รักเรียน"
+                  placeholder="เช่น สมชาย ขยันเรียน, สมชาย หรือ 660104"
                   className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 transition-all disabled:opacity-50"
                 />
               </div>
+              <p className="text-[11px] text-slate-400 font-medium px-1">
+                * กรอกได้ทั้งชื่อ-นามสกุล, ชื่อจริง หรือรหัสประจำตัว
+              </p>
             </div>
 
             {/* กล่องกรอกรหัสผ่าน */}

@@ -1,6 +1,8 @@
 import { db } from "@/lib/db";
 import { FaUserGraduate, FaChalkboardTeacher, FaSchool, FaBookOpen } from "react-icons/fa";
 
+export const dynamic = "force-dynamic";
+
 // Next.js App Router จะให้ฟังก์ชันนี้ทำงานในฝั่ง Server อัตโนมัติ (Server Component)
 export default async function Home() {
   // ดึงข้อมูลจำนวนสถิติและรายชื่อแบบเรียลไทม์จาก PostgreSQL

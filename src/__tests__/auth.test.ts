@@ -7,7 +7,10 @@ import { cookies } from "next/headers";
 // --- จำลอง (Mock) การทำงานของ Database และ Library ต่างๆ ---
 vi.mock("@/lib/db", () => ({
   db: {
-    user: { findFirst: vi.fn() },
+    user: { 
+      findFirst: vi.fn(),
+      findMany: vi.fn(),
+    },
   },
 }));
 
@@ -40,9 +43,9 @@ describe("Auth Server Actions (Unit Tests)", () => {
     mockFormData.append("password", "123456");
 
     // จำลองว่าหา User เจอในฐานข้อมูล และบัญชี ACTIVE
-    (db.user.findFirst as any).mockResolvedValue({
+    (db.user.findMany as any).mockResolvedValue([{
       id: "u1", name: "ภัทรพล", role: "STUDENT", status: "ACTIVE", password: "hashed_password"
-    });
+    }]);
     // จำลองว่ารหัสผ่านตรงกัน
     (bcrypt.compareSync as any).mockReturnValue(true);
 
@@ -58,9 +61,9 @@ describe("Auth Server Actions (Unit Tests)", () => {
     mockFormData.append("name", "ภัทรพล");
     mockFormData.append("password", "wrongpass"); // รหัสผิด
 
-    (db.user.findFirst as any).mockResolvedValue({
+    (db.user.findMany as any).mockResolvedValue([{
       id: "u1", name: "ภัทรพล", role: "STUDENT", status: "ACTIVE", password: "hashed_password"
-    });
+    }]);
     (bcrypt.compareSync as any).mockReturnValue(false); // รหัสไม่ตรง
 
     const result = await login(null, mockFormData);
@@ -73,13 +76,44 @@ describe("Auth Server Actions (Unit Tests)", () => {
     mockFormData.append("name", "สมศักดิ์");
     mockFormData.append("password", "123456");
 
-    (db.user.findFirst as any).mockResolvedValue({
-      id: "u2", name: "สมศักดิ์", role: "STUDENT", status: "SUSPENDED" // บัญชีโดนระงับ
-    });
+    (db.user.findMany as any).mockResolvedValue([{
+      id: "u2", name: "สมศักดิ์", role: "STUDENT", status: "SUSPENDED", password: "hashed_password" // บัญชีโดนระงับ
+    }]);
+    (bcrypt.compareSync as any).mockReturnValue(true);
 
     const result = await login(null, mockFormData);
 
     expect(result.success).toBe(false);
     expect(result.error).toBe("บัญชีผู้ใช้นี้ถูกระงับการใช้งานชั่วคราว");
+  });
+
+  it("[TC04] ควรเข้าสู่ระบบได้ด้วยชื่อจริงและนามสกุลเต็ม (Full Name)", async () => {
+    mockFormData.append("name", "สมชาย ขยันเรียน");
+    mockFormData.append("password", "1234");
+
+    (db.user.findMany as any).mockResolvedValue([{
+      id: "u3", name: "สมชาย ขยันเรียน", role: "STUDENT", status: "ACTIVE", password: "hashed_password"
+    }]);
+    (bcrypt.compareSync as any).mockReturnValue(true);
+
+    const result = await login(null, mockFormData);
+
+    expect(result.success).toBe(true);
+    expect(result.error).toBeUndefined();
+  });
+
+  it("[TC05] ควรเข้าสู่ระบบได้แม้พิมพ์คำนำหน้าชื่อ เช่น เด็กชาย (Prefix stripping)", async () => {
+    mockFormData.append("name", "เด็กชายสมชาย ขยันเรียน");
+    mockFormData.append("password", "1234");
+
+    (db.user.findMany as any).mockResolvedValue([{
+      id: "u3", name: "สมชาย ขยันเรียน", role: "STUDENT", status: "ACTIVE", password: "hashed_password"
+    }]);
+    (bcrypt.compareSync as any).mockReturnValue(true);
+
+    const result = await login(null, mockFormData);
+
+    expect(result.success).toBe(true);
+    expect(result.error).toBeUndefined();
   });
 });
