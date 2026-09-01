@@ -417,7 +417,7 @@ export default function StudentRegistryPage() {
             {countM1}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-800">{countM1}</h3>
+            <h3 className="text-2xl font-bold text-slate-800">{countM1} คน</h3>
             <p className="text-sm text-slate-500 font-semibold">ม.1</p>
           </div>
         </div>
@@ -428,7 +428,7 @@ export default function StudentRegistryPage() {
             {countM2}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-800">{countM2}</h3>
+            <h3 className="text-2xl font-bold text-slate-800">{countM2} คน</h3>
             <p className="text-sm text-slate-500 font-semibold">ม.2</p>
           </div>
         </div>
@@ -439,7 +439,7 @@ export default function StudentRegistryPage() {
             {countM3}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-800">{countM3}</h3>
+            <h3 className="text-2xl font-bold text-slate-800">{countM3} คน</h3>
             <p className="text-sm text-slate-500 font-semibold">ม.3</p>
           </div>
         </div>
@@ -450,7 +450,7 @@ export default function StudentRegistryPage() {
             {countTotal}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-800">{countTotal}</h3>
+            <h3 className="text-2xl font-bold text-slate-800">{countTotal} คน</h3>
             <p className="text-sm text-slate-500 font-semibold">รวมทั้งหมด</p>
           </div>
         </div>

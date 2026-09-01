@@ -22,7 +22,11 @@ export default function LoginPage() {
       if (result && !result.success) {
         setErrorMessage(result.error || "ล็อกอินไม่สำเร็จ");
       } else {
-        // เมื่อล็อกอินสำเร็จ ตัว middleware จะจัดคุกกี้เรียบร้อย ให้รีเฟรชหน้าบ้านเพื่อเด้งเข้าสู่ Dashboard ของบทบาทตัวเองทันที
+        // เมื่อล็อกอินสำเร็จ ให้ตั้งค่าแจ้งเตือนต้อนรับให้เด้งเฉพาะครั้งแรก
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("login-welcome-toast", "true");
+        }
+        // ตัว middleware จะจัดคุกกี้เรียบร้อย ให้รีเฟรชหน้าบ้านเพื่อเด้งเข้าสู่ Dashboard ของบทบาทตัวเองทันที
         router.refresh();
         router.push("/");
       }
@@ -79,7 +83,7 @@ export default function LoginPage() {
                   required
                   autoComplete="name"
                   disabled={isPending}
-                  placeholder="เช่น สมชาย ขยันเรียน, สมชาย หรือ 660104"
+                  placeholder="เช่น สมชาย ขยันเรียน หรือ 660104"
                   className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-slate-800 placeholder-slate-400 text-sm focus:outline-none focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 transition-all disabled:opacity-50"
                 />
               </div>

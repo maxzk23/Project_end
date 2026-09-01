@@ -11,6 +11,7 @@ import {
   FaCrown,
   FaStar
 } from "react-icons/fa";
+import { renderAvatarHelper } from "@/components/profile/ProfileSettings";
 
 interface Classroom {
   id: string;
@@ -183,9 +184,7 @@ export default function TeacherLeaderboardPage() {
                         </td>
                         <td className="py-4 font-bold text-slate-700">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-xs">
-                              {entry.student.name.charAt(0)}
-                            </div>
+                            {renderAvatarHelper(entry.student.avatarUrl, entry.student.name, "w-8 h-8 text-xs")}
                             <div>
                               <span className="block font-bold text-slate-800">{entry.student.name}</span>
                               {entry.classroom && (
@@ -217,8 +216,12 @@ export default function TeacherLeaderboardPage() {
                 
                 {leaderboard.length > 0 ? (
                   <div className="mt-4 space-y-2">
-                    <div className="w-20 h-20 rounded-full bg-white/20 border-4 border-white/40 flex items-center justify-center text-4xl mx-auto drop-shadow-sm font-bold">
-                      {leaderboard[0].student.name.charAt(0)}
+                    <div className="flex justify-center">
+                      {renderAvatarHelper(
+                        leaderboard[0].student.avatarUrl, 
+                        leaderboard[0].student.name, 
+                        "w-20 h-20 text-4xl ring-4 ring-white/40 shadow-md"
+                      )}
                     </div>
                     <h3 className="text-xl font-black mt-2 truncate">{leaderboard[0].student.name}</h3>
                     <div className="inline-flex items-center gap-1 bg-white text-orange-600 px-4.5 py-1 rounded-full text-sm font-black shadow-md mt-2">

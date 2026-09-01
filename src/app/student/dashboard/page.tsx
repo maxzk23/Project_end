@@ -63,7 +63,21 @@ export default function StudentDashboard() {
   const [selectedClassId, setSelectedClassId] = useState<string>("");
   const [summary, setSummary] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [showLoginToast, setShowLoginToast] = useState(false);
   const [currentTime, setCurrentTime] = useState("");
+
+  // ตรวจสอบว่าเพิ่งเข้าสู่ระบบมาหรือไม่ หากใช่ให้แสดง Toast เพียงครั้งเดียวแล้วเคลียร์ทิ้ง
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const shouldShow = sessionStorage.getItem("login-welcome-toast") === "true";
+      if (shouldShow) {
+        setShowLoginToast(true);
+        sessionStorage.removeItem("login-welcome-toast");
+        const timer = setTimeout(() => setShowLoginToast(false), 5000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
 
   // จัดการเวลาปัจจุบันแบบไดนามิก
   useEffect(() => {
@@ -190,7 +204,26 @@ export default function StudentDashboard() {
   };
 
   return (
-    <div className="space-y-6 text-left animate-in fade-in duration-300">
+    <div className="space-y-6 text-left animate-in fade-in duration-300 relative">
+
+      {/* Toast แจ้งเตือนสิทธิ์ล็อกอินสำเร็จเมื่อเพิ่งเข้าสู่ระบบ */}
+      {showLoginToast && (
+        <div className="fixed top-5 right-5 z-[60] bg-white border border-slate-200 p-4 rounded-2xl shadow-xl flex items-center gap-3.5 max-w-sm animate-in slide-in-from-top-6 duration-300 border-l-[5px] border-l-sky-500">
+          <div className="w-8 h-8 rounded-full bg-sky-50 flex items-center justify-center text-sky-700 shrink-0 text-base">
+            <FaCheckCircle className="text-emerald-500" />
+          </div>
+          <div className="text-left">
+            <h4 className="text-xs font-black text-slate-800 tracking-tight">เข้าสู่ระบบสำเร็จ</h4>
+            <p className="text-[10px] text-slate-400 font-semibold mt-0.5">ยินดีต้อนรับ {summary?.studentName || "นักเรียน"} เข้าสู่ระบบ</p>
+          </div>
+          <button 
+            onClick={() => setShowLoginToast(false)} 
+            className="text-slate-300 hover:text-slate-500 font-bold ml-2 text-base outline-none cursor-pointer"
+          >
+            &times;
+          </button>
+        </div>
+      )}
 
       {classrooms.length === 0 ? (
         <div className="bg-white p-12 rounded-2xl border text-center text-slate-500">

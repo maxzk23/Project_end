@@ -30,6 +30,7 @@ export async function getCurrentProfile() {
         role: true,
         avatarUrl: true,
         status: true,
+        studentId: true,
         createdAt: true,
       },
     });

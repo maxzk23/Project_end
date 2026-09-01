@@ -68,15 +68,22 @@ export default function TeacherDashboard() {
   const [selectedClassId, setSelectedClassId] = useState<string>("");
   const [summaryData, setSummaryData] = useState<DashboardData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [showLoginToast, setShowLoginToast] = useState(true);
+  const [showLoginToast, setShowLoginToast] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  const [selectedYearLevel, setSelectedYearLevel] = useState<string>("");
+  const [selectedYearLevel, setSelectedYearLevel] = useState<string>("ALL");
 
-  // ปิด Toast หลังจากโหลดหน้า 6 วินาที
+  // ตรวจสอบว่าเพิ่งเข้าสู่ระบบมาหรือไม่ หากใช่ให้แสดง Toast เพียงครั้งเดียวแล้วเคลียร์ทิ้ง
   useEffect(() => {
-    const timer = setTimeout(() => setShowLoginToast(false), 6000);
-    return () => clearTimeout(timer);
+    if (typeof window !== "undefined") {
+      const shouldShow = sessionStorage.getItem("login-welcome-toast") === "true";
+      if (shouldShow) {
+        setShowLoginToast(true);
+        sessionStorage.removeItem("login-welcome-toast");
+        const timer = setTimeout(() => setShowLoginToast(false), 5000);
+        return () => clearTimeout(timer);
+      }
+    }
   }, []);
 
   // โหลดห้องเรียนทั้งหมดในการเปิดหน้าแรก
