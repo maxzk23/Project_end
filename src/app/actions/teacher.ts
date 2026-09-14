@@ -647,6 +647,401 @@ export async function gradeSubmission(
   }
 }
 
+// ------------------------------------------
+// ดึงข้อมูลวิเคราะห์และติดตามผลงานของนักเรียน (Student Work Tracking & Analytics)
+// ------------------------------------------
+export async function getStudentTrackingData(classId: string) {
+  const teacherId = await getSessionTeacher();
+  if (!teacherId) return null;
+
+  try {
+    const teacher = await db.user.findUnique({
+      where: { id: teacherId },
+      select: { role: true }
+    });
+
+    let classroomWhere: any = {};
+    if (classId !== "ALL" && classId) {
+      classroomWhere = { id: classId };
+    } else if (teacher?.role !== "ADMIN") {
+      classroomWhere = { teacherId };
+    }
+
+    const classrooms = await db.classroom.findMany({
+      where: classroomWhere,
+      select: { id: true, name: true, yearLevel: true, room: true, academicYear: true },
+      orderBy: [{ yearLevel: "asc" }, { room: "asc" }]
+    });
+
+    const targetClassIds = classrooms.map(c => c.id);
+    if (targetClassIds.length === 0) {
+      return {
+        classrooms: [],
+        students: [],
+        assignments: [],
+        studentProgress: [],
+        overallStats: {
+          totalStudents: 0,
+          totalAssignments: 0,
+          totalExpectedSubmissions: 0,
+          totalActualSubmissions: 0,
+          overallPercentage: 0,
+          completedStudentsCount: 0,
+          atRiskStudentsCount: 0,
+          onTimeSubmissions: 0,
+          lateSubmissions: 0,
+          gradedSubmissions: 0,
+          pendingSubmissions: 0
+        }
+      };
+    }
+
+    // 1. ดึงนักเรียนที่ลงทะเบียนในห้องเรียนเหล่านี้
+    const studentClasses = await db.studentClass.findMany({
+      where: { classId: { in: targetClassIds } },
+      include: {
+        student: {
+          select: {
+            id: true,
+            name: true,
+            studentId: true,
+            rollNumber: true,
+            gender: true,
+            avatarUrl: true,
+            parentPhone: true
+          }
+        },
+        classroom: {
+          select: { id: true, name: true, yearLevel: true, room: true }
+        }
+      },
+      orderBy: [
+        { classroom: { yearLevel: "asc" } },
+        { classroom: { room: "asc" } },
+        { student: { rollNumber: "asc" } },
+        { student: { name: "asc" } }
+      ]
+    });
+
+    // 2. ดึงใบงานทั้งหมดที่สั่งในห้องเรียนเหล่านี้
+    const assignments = await db.assignment.findMany({
+      where: { classId: { in: targetClassIds } },
+      include: {
+        classroom: {
+          select: { id: true, name: true, yearLevel: true, room: true }
+        },
+        submissions: {
+          include: {
+            student: {
+              select: { id: true, name: true, studentId: true, rollNumber: true, avatarUrl: true }
+            }
+          },
+          orderBy: { submittedAt: "desc" }
+        }
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    // แมปจำนวนนักเรียนต่อห้อง
+    const studentsPerClassMap = new Map<string, number>();
+    classrooms.forEach(c => {
+      const count = studentClasses.filter(sc => sc.classId === c.id).length;
+      studentsPerClassMap.set(c.id, count);
+    });
+
+    // คำนวณรายละเอียดและสถิติของแต่ละ Assignment
+    const assignmentsWithStats = assignments.map(asm => {
+      const classStudentClasses = studentClasses.filter(sc => sc.classId === asm.classId);
+      const totalEnrolled = classStudentClasses.length;
+      const submittedStudentIds = new Set(asm.submissions.map(s => s.studentId));
+
+      const missingStudents = classStudentClasses
+        .filter(sc => !submittedStudentIds.has(sc.studentId))
+        .map(sc => ({
+          id: sc.student.id,
+          name: sc.student.name,
+          studentId: sc.student.studentId,
+          rollNumber: sc.student.rollNumber,
+          avatarUrl: sc.student.avatarUrl,
+          parentPhone: sc.student.parentPhone,
+          classroomName: `${sc.classroom.name} (${sc.classroom.yearLevel}/${sc.classroom.room})`
+        }));
+
+      const submittedCount = asm.submissions.length;
+      const gradedCount = asm.submissions.filter(s => s.status === "GRADED").length;
+      const pendingCount = asm.submissions.filter(s => s.status !== "GRADED").length;
+      const percentage = totalEnrolled > 0 ? Math.round((submittedCount / totalEnrolled) * 1000) / 10 : 0;
+
+      let onTimeCount = 0;
+      let lateCount = 0;
+      asm.submissions.forEach(sub => {
+        if (!asm.dueDate) {
+          onTimeCount++;
+        } else {
+          const isLate = new Date(sub.submittedAt) > new Date(asm.dueDate);
+          if (isLate) lateCount++;
+          else onTimeCount++;
+        }
+      });
+
+      return {
+        id: asm.id,
+        classId: asm.classId,
+        classroomName: `${asm.classroom.name} (${asm.classroom.yearLevel}/${asm.classroom.room})`,
+        title: asm.title,
+        description: asm.description,
+        maxPoints: asm.maxPoints,
+        isGoogleForm: asm.isGoogleForm,
+        googleFormUrl: asm.googleFormUrl,
+        dueDate: asm.dueDate,
+        createdAt: asm.createdAt,
+        totalEnrolled,
+        submittedCount,
+        gradedCount,
+        pendingCount,
+        missingCount: missingStudents.length,
+        percentage,
+        onTimeCount,
+        lateCount,
+        missingStudents,
+        submissions: asm.submissions.map(s => ({
+          id: s.id,
+          studentId: s.studentId,
+          studentName: s.student.name,
+          studentRollNumber: s.student.rollNumber,
+          avatarUrl: s.student.avatarUrl,
+          status: s.status,
+          score: s.score,
+          feedback: s.feedback,
+          fileUrl: s.fileUrl,
+          submittedAt: s.submittedAt,
+          isLate: asm.dueDate ? new Date(s.submittedAt) > new Date(asm.dueDate) : false
+        }))
+      };
+    });
+
+    // 3. คำนวณความคืบหน้ารายบุคคล (Student Progress)
+    // จัดกลุ่มนักเรียนตาม ID (หากลงหลายวิชา ให้แสดงตามรายการ studentClasses)
+    const studentProgress = studentClasses.map(sc => {
+      const classAssignments = assignments.filter(a => a.classId === sc.classId);
+      const totalAsms = classAssignments.length;
+
+      const submittedAsms: any[] = [];
+      const missingAsms: any[] = [];
+      let totalScore = 0;
+      let maxScorePossible = 0;
+      let gradedCount = 0;
+      let pendingCount = 0;
+
+      classAssignments.forEach(asm => {
+        const sub = asm.submissions.find(s => s.studentId === sc.studentId);
+        if (sub) {
+          const isLate = asm.dueDate ? new Date(sub.submittedAt) > new Date(asm.dueDate) : false;
+          if (sub.status === "GRADED") {
+            gradedCount++;
+            totalScore += (sub.score || 0);
+            maxScorePossible += asm.maxPoints;
+          } else {
+            pendingCount++;
+          }
+          submittedAsms.push({
+            assignmentId: asm.id,
+            title: asm.title,
+            maxPoints: asm.maxPoints,
+            dueDate: asm.dueDate,
+            submittedAt: sub.submittedAt,
+            status: sub.status,
+            score: sub.score,
+            feedback: sub.feedback,
+            isLate,
+            fileUrl: sub.fileUrl
+          });
+        } else {
+          const isOverdue = asm.dueDate ? new Date() > new Date(asm.dueDate) : false;
+          missingAsms.push({
+            assignmentId: asm.id,
+            title: asm.title,
+            maxPoints: asm.maxPoints,
+            dueDate: asm.dueDate,
+            isOverdue
+          });
+        }
+      });
+
+      const submittedCount = submittedAsms.length;
+      const percentage = totalAsms > 0 ? Math.round((submittedCount / totalAsms) * 1000) / 10 : (totalAsms === 0 ? 100 : 0);
+      const isComplete = totalAsms > 0 && submittedCount === totalAsms;
+      const isAtRisk = missingAsms.some(m => m.isOverdue) || (totalAsms > 0 && percentage < 60);
+
+      return {
+        studentId: sc.student.id,
+        name: sc.student.name,
+        rollNumber: sc.student.rollNumber,
+        studentCode: sc.student.studentId,
+        gender: sc.student.gender,
+        avatarUrl: sc.student.avatarUrl,
+        parentPhone: sc.student.parentPhone,
+        classId: sc.classId,
+        classroomName: `${sc.classroom.name} (${sc.classroom.yearLevel}/${sc.classroom.room})`,
+        totalAssignments: totalAsms,
+        submittedCount,
+        missingCount: missingAsms.length,
+        gradedCount,
+        pendingCount,
+        percentage,
+        isComplete,
+        isAtRisk,
+        totalScore,
+        maxScorePossible,
+        averageScore: maxScorePossible > 0 ? Math.round((totalScore / maxScorePossible) * 1000) / 10 : null,
+        missingAssignments: missingAsms,
+        submittedAssignments: submittedAsms
+      };
+    });
+
+    // 4. สถิติภาพรวม (Overall Stats)
+    let totalExpectedSubmissions = 0;
+    assignmentsWithStats.forEach(a => {
+      totalExpectedSubmissions += a.totalEnrolled;
+    });
+
+    const totalActualSubmissions = assignmentsWithStats.reduce((sum, a) => sum + a.submittedCount, 0);
+    const overallPercentage = totalExpectedSubmissions > 0
+      ? Math.round((totalActualSubmissions / totalExpectedSubmissions) * 1000) / 10
+      : 0;
+
+    const completedStudentsCount = studentProgress.filter(sp => sp.isComplete).length;
+    const atRiskStudentsCount = studentProgress.filter(sp => sp.isAtRisk).length;
+    const onTimeSubmissions = assignmentsWithStats.reduce((sum, a) => sum + a.onTimeCount, 0);
+    const lateSubmissions = assignmentsWithStats.reduce((sum, a) => sum + a.lateCount, 0);
+    const gradedSubmissions = assignmentsWithStats.reduce((sum, a) => sum + a.gradedCount, 0);
+    const pendingSubmissions = assignmentsWithStats.reduce((sum, a) => sum + a.pendingCount, 0);
+
+    return {
+      classrooms,
+      students: studentClasses.map(sc => ({
+        ...sc.student,
+        classId: sc.classId,
+        classroomName: `${sc.classroom.name} (${sc.classroom.yearLevel}/${sc.classroom.room})`
+      })),
+      assignments: assignmentsWithStats,
+      studentProgress,
+      overallStats: {
+        totalStudents: studentClasses.length,
+        totalAssignments: assignments.length,
+        totalExpectedSubmissions,
+        totalActualSubmissions,
+        overallPercentage,
+        completedStudentsCount,
+        atRiskStudentsCount,
+        onTimeSubmissions,
+        lateSubmissions,
+        gradedSubmissions,
+        pendingSubmissions
+      }
+    };
+  } catch (err) {
+    console.error("Failed to get student tracking data:", err);
+    return null;
+  }
+}
+
+// ------------------------------------------
+// ส่งการแจ้งเตือนตามการบ้าน (1-Click Assignment Reminder)
+// ------------------------------------------
+export async function sendAssignmentReminder(assignmentId: string, studentIds?: string[]) {
+  const teacherId = await getSessionTeacher();
+  if (!teacherId) return { success: false, error: "ไม่มีสิทธิ์ดำเนินการ" };
+
+  try {
+    const assignment = await db.assignment.findUnique({
+      where: { id: assignmentId },
+      include: {
+        classroom: { select: { name: true, yearLevel: true, room: true } },
+        submissions: { select: { studentId: true } }
+      }
+    });
+
+    if (!assignment) return { success: false, error: "ไม่พบใบงานที่ระบุ" };
+
+    let targetStudentIds: string[] = [];
+
+    if (studentIds && studentIds.length > 0) {
+      // ตรวจสอบเฉพาะที่ยังไม่ได้ส่ง
+      const submittedSet = new Set(assignment.submissions.map(s => s.studentId));
+      targetStudentIds = studentIds.filter(id => !submittedSet.has(id));
+    } else {
+      // ดึงนักเรียนในห้องที่ยังไม่ส่ง
+      const enrolledStudents = await db.studentClass.findMany({
+        where: { classId: assignment.classId },
+        select: { studentId: true }
+      });
+      const submittedSet = new Set(assignment.submissions.map(s => s.studentId));
+      targetStudentIds = enrolledStudents
+        .map(e => e.studentId)
+        .filter(id => !submittedSet.has(id));
+    }
+
+    if (targetStudentIds.length === 0) {
+      return { success: true, count: 0, message: "นักเรียนทุกคนส่งงานนี้เรียบร้อยแล้ว ไม่มีค้างส่ง 🎉" };
+    }
+
+    const dueDateText = assignment.dueDate
+      ? ` (กำหนดส่ง: ${new Date(assignment.dueDate).toLocaleDateString("th-TH")})`
+      : "";
+
+    // สร้างการแจ้งเตือนส่งให้นักเรียนเป้าหมายทุกคน
+    for (const sId of targetStudentIds) {
+      await db.notification.create({
+        data: {
+          recipientId: sId,
+          type: "WARNING",
+          title: `แจ้งเตือนส่งงาน: ${assignment.title} ⏰`,
+          message: `คุณครูแจ้งเตือนให้ส่งงาน "${assignment.title}" ของวิชา ${assignment.classroom.name} (${assignment.classroom.yearLevel}/${assignment.classroom.room})${dueDateText} กรุณาเร่งดำเนินการส่งผลงาน`,
+          relatedType: "ASSIGNMENT",
+          relatedId: assignment.id
+        }
+      });
+    }
+
+    return {
+      success: true,
+      count: targetStudentIds.length,
+      message: `ส่งการแจ้งเตือนตามงานไปยังนักเรียน ${targetStudentIds.length} คนเรียบร้อยแล้ว 🔔`
+    };
+  } catch (err) {
+    console.error("Failed to send assignment reminder:", err);
+    return { success: false, error: "เกิดข้อผิดพลาดในการส่งแจ้งเตือน" };
+  }
+}
+
+// ------------------------------------------
+// ส่งการแจ้งเตือนตามงานค้างทั้งหมดของนักเรียนรายบุคคล
+// ------------------------------------------
+export async function sendStudentMissingReminder(studentId: string, missingTitles: string[]) {
+  const teacherId = await getSessionTeacher();
+  if (!teacherId) return { success: false, error: "ไม่มีสิทธิ์ดำเนินการ" };
+
+  try {
+    const titlesStr = missingTitles.slice(0, 3).join(", ") + (missingTitles.length > 3 ? ` และอีก ${missingTitles.length - 3} งาน` : "");
+
+    await db.notification.create({
+      data: {
+        recipientId: studentId,
+        type: "WARNING",
+        title: `คุณครูแจ้งเตือนงานที่ยังค้างส่ง (${missingTitles.length} งาน) 📋`,
+        message: `คุณครูตรวจสอบพบว่าคุณยังมีงานค้างส่ง ได้แก่: ${titlesStr} กรุณาตรวจสอบในเมนูการบ้านและเร่งส่งงานให้ครบถ้วน`,
+        relatedType: "ASSIGNMENT"
+      }
+    });
+
+    return { success: true, message: "ส่งข้อความแจ้งเตือนเตือนนักเรียนเรียบร้อยแล้ว 🔔" };
+  } catch (err) {
+    console.error("Failed to send student missing reminder:", err);
+    return { success: false, error: "เกิดข้อผิดพลาดในการส่งแจ้งเตือน" };
+  }
+}
+
 // ==========================================
 // 4. MODULE: ACADEMIC YEAR ROLLOVER (ตั้งค่าและปิดปีการศึกษา)
 // ==========================================

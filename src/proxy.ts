@@ -6,6 +6,11 @@ const publicRoutes = ["/login"];
 
 export async function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
+
+  // อนุญาตให้เข้าถึงไฟล์อัปโหลดได้โดยตรง
+  if (path.startsWith("/uploads/")) {
+    return NextResponse.next();
+  }
   
   // ตรวจหาคุกกี้เซสชันความปลอดภัยจากคำร้องขอที่ส่งเข้ามา
   const cookie = req.cookies.get("session")?.value;
@@ -49,6 +54,6 @@ export async function proxy(req: NextRequest) {
 // กำหนด Config ให้ Proxy ทำงานเฉพาะส่วนของเพจหลัก (หลีกเลี่ยงการเช็คไฟล์รูปภาพ, static assets, และไฟล์ api)
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png|.*\\.jpg|.*\\.html).*)",
+    "/((?!api|uploads|_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.pdf|.*\\.docx|.*\\.xlsx|.*\\.html).*)",
   ],
 };

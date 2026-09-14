@@ -144,20 +144,25 @@ export default function StudentAssignmentsPage() {
     }
     setPendingId(asmId);
     startTransition(async () => {
-      const res = await submitStudentAssignment(asmId, formData);
-      setPendingId(null);
-      if (res.success) {
-        showToast("success", res.message || "ส่งงานสำเร็จ 🎉");
-        setLinkValues(prev => ({ ...prev, [asmId]: "" }));
-        setFileValues(prev => ({ ...prev, [asmId]: null }));
-        loadAssignments();
+      try {
+        const res = await submitStudentAssignment(asmId, formData);
+        setPendingId(null);
+        if (res.success) {
+          showToast("success", res.message || "ส่งงานสำเร็จ 🎉");
+          setLinkValues(prev => ({ ...prev, [asmId]: "" }));
+          setFileValues(prev => ({ ...prev, [asmId]: null }));
+          loadAssignments();
 
-        // ส่งข้อความ Real-time แจ้งฝั่งคุณครูให้ดึงข้อมูลใหม่ทันที
-        const bc = new BroadcastChannel("lms-channel");
-        bc.postMessage({ type: "ASSIGNMENT_SUBMITTED", assignmentId: asmId });
-        bc.close();
-      } else {
-        showToast("error", res.error || "เกิดข้อผิดพลาด");
+          // ส่งข้อความ Real-time แจ้งฝั่งคุณครูให้ดึงข้อมูลใหม่ทันที
+          const bc = new BroadcastChannel("lms-channel");
+          bc.postMessage({ type: "ASSIGNMENT_SUBMITTED", assignmentId: asmId });
+          bc.close();
+        } else {
+          showToast("error", res.error || "เกิดข้อผิดพลาด");
+        }
+      } catch (err: any) {
+        setPendingId(null);
+        showToast("error", err?.message || "ไม่สามารถส่งงานได้ กรุณาลองใหม่อีกครั้ง");
       }
     });
   };
@@ -168,18 +173,23 @@ export default function StudentAssignmentsPage() {
     formData.set("linkUrl", googleFormUrl || "https://docs.google.com/forms");
     setPendingId(asmId);
     startTransition(async () => {
-      const res = await submitStudentAssignment(asmId, formData);
-      setPendingId(null);
-      if (res.success) {
-        showToast("success", "ยืนยันการทำแบบทดสอบเสร็จเรียบร้อยแล้ว! 🎉");
-        loadAssignments();
+      try {
+        const res = await submitStudentAssignment(asmId, formData);
+        setPendingId(null);
+        if (res.success) {
+          showToast("success", "ยืนยันการทำแบบทดสอบเสร็จเรียบร้อยแล้ว! 🎉");
+          loadAssignments();
 
-        // ส่งข้อความ Real-time แจ้งฝั่งคุณครูให้ดึงข้อมูลใหม่ทันที
-        const bc = new BroadcastChannel("lms-channel");
-        bc.postMessage({ type: "ASSIGNMENT_SUBMITTED", assignmentId: asmId });
-        bc.close();
-      } else {
-        showToast("error", res.error || "เกิดข้อผิดพลาด");
+          // ส่งข้อความ Real-time แจ้งฝั่งคุณครูให้ดึงข้อมูลใหม่ทันที
+          const bc = new BroadcastChannel("lms-channel");
+          bc.postMessage({ type: "ASSIGNMENT_SUBMITTED", assignmentId: asmId });
+          bc.close();
+        } else {
+          showToast("error", res.error || "เกิดข้อผิดพลาด");
+        }
+      } catch (err: any) {
+        setPendingId(null);
+        showToast("error", err?.message || "ไม่สามารถส่งงานได้ กรุณาลองใหม่อีกครั้ง");
       }
     });
   };

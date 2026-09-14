@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useTransition, useRef } from "react";
 import { getTeacherClassrooms } from "@/app/actions/classroom";
-import { getAssignmentsWithSubmissions, gradeSubmission } from "@/app/actions/teacher";
+import { getAssignmentsWithSubmissions, gradeSubmission, getStudentTrackingData } from "@/app/actions/teacher";
+import StudentTrackingView from "./components/StudentTrackingView";
 import CustomSelect from "@/components/ui/CustomSelect";
 import {
   FaFileSignature,
@@ -19,7 +20,8 @@ import {
   FaCommentAlt,
   FaUserCheck,
   FaUserClock,
-  FaFolderOpen
+  FaFolderOpen,
+  FaChartPie
 } from "react-icons/fa";
 
 interface Classroom { id: string; name: string; yearLevel: string; room: string; }
@@ -45,6 +47,11 @@ export default function TeacherGradingPage() {
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
   const [activeTab, setActiveTab] = useState<Record<string, "pending" | "graded" | "all">>({});
 
+  // แท็บหลัก: ตรวจการบ้าน vs ติดตามผลงานของนักเรียน
+  const [mainTab, setMainTab] = useState<"grading" | "tracking">("grading");
+  const [trackingData, setTrackingData] = useState<any | null>(null);
+  const [isTrackingLoading, setIsTrackingLoading] = useState(false);
+
   const [selectedSub, setSelectedSub] = useState<{ sub: Submission; asm: Assignment } | null>(null);
   const [gradingFeedback, setGradingFeedback] = useState<string>("");
 
@@ -61,6 +68,11 @@ export default function TeacherGradingPage() {
         setSelectedClassId("ALL");
       }
     });
+
+    const savedMainTab = localStorage.getItem("teacher-grading-mainTab");
+    if (savedMainTab === "grading" || savedMainTab === "tracking") {
+      setMainTab(savedMainTab as any);
+    }
 
     // Load expanded card IDs
     try {
@@ -84,18 +96,25 @@ export default function TeacherGradingPage() {
   }, []);
 
   const loadDataRef = useRef<typeof loadData>(null as any);
+  const loadTrackingDataRef = useRef<typeof loadTrackingData>(null as any);
+
   useEffect(() => {
     loadDataRef.current = loadData;
+    loadTrackingDataRef.current = loadTrackingData;
   });
 
   useEffect(() => {
     if (selectedClassId) {
       loadDataRef.current(false);
+      loadTrackingDataRef.current(false);
 
       // ตั้งเวลาดึงข้อมูลใหม่แบบเงียบๆ ทุก 3 วินาที (ซิงก์เรียลไทม์ข้ามโปรไฟล์/ข้ามบราวเซอร์)
       const interval = setInterval(() => {
         if (loadDataRef.current) {
           loadDataRef.current(true);
+        }
+        if (loadTrackingDataRef.current) {
+          loadTrackingDataRef.current(true);
         }
       }, 3000);
 
@@ -107,9 +126,12 @@ export default function TeacherGradingPage() {
   useEffect(() => {
     const bc = new BroadcastChannel("lms-channel");
     bc.onmessage = (event) => {
-      if (event.data?.type === "ASSIGNMENT_SUBMITTED") {
+      if (event.data?.type === "ASSIGNMENT_SUBMITTED" || event.data?.type === "ASSIGNMENT_GRADED") {
         if (loadDataRef.current) {
           loadDataRef.current(true);
+        }
+        if (loadTrackingDataRef.current) {
+          loadTrackingDataRef.current(true);
         }
       }
     };
@@ -126,6 +148,13 @@ export default function TeacherGradingPage() {
     if (!isSilent) setIsLoading(false);
   };
 
+  const loadTrackingData = async (isSilent = false) => {
+    if (!isSilent) setIsTrackingLoading(true);
+    const data = await getStudentTrackingData(selectedClassId);
+    setTrackingData(data);
+    if (!isSilent) setIsTrackingLoading(false);
+  };
+
   const showToast = (type: "success" | "error", text: string) => {
     setToastMsg({ type, text });
     setTimeout(() => setToastMsg(null), 4000);
@@ -134,6 +163,14 @@ export default function TeacherGradingPage() {
   const handleClassChange = (classId: string) => {
     setSelectedClassId(classId);
     localStorage.setItem("teacher-grading-classId", classId);
+  };
+
+  const handleMainTabChange = (tab: "grading" | "tracking") => {
+    setMainTab(tab);
+    localStorage.setItem("teacher-grading-mainTab", tab);
+    if (tab === "tracking" && !trackingData) {
+      loadTrackingData();
+    }
   };
 
   const toggleExpand = (id: string) => {
@@ -228,9 +265,21 @@ export default function TeacherGradingPage() {
       <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 border-b border-slate-200 pb-5">
         <div>
           <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <FaFileSignature className="text-orange-500" /> ตรวจการบ้านและประวัติการส่ง
+            {mainTab === "grading" ? (
+              <>
+                <FaFileSignature className="text-orange-500" /> ตรวจการบ้านและประวัติการส่ง
+              </>
+            ) : (
+              <>
+                <FaChartPie className="text-orange-500" /> ติดตามผลงานของนักเรียน
+              </>
+            )}
           </h1>
-          <p className="text-sm text-slate-500 mt-1">ตรวจงาน ดูประวัติย้อนหลังแต่ละใบงาน และเก็บบันทึกเป็นหลักฐาน</p>
+          <p className="text-sm text-slate-500 mt-1">
+            {mainTab === "grading"
+              ? "ตรวจงาน ดูประวัติย้อนหลังแต่ละใบงาน และเก็บบันทึกเป็นหลักฐาน"
+              : "วิเคราะห์เปอร์เซ็นต์การส่งงาน ตรวจสอบงานที่ค้างส่ง และส่งแจ้งเตือนเตือนนักเรียน"}
+          </p>
         </div>
         <CustomSelect
           options={[
@@ -251,16 +300,58 @@ export default function TeacherGradingPage() {
           <FaExclamationCircle className="text-5xl mx-auto text-amber-400 mb-4" />
           <p className="text-lg font-bold">ไม่พบห้องเรียนของคุณครู</p>
         </div>
-      ) : isLoading ? (
-        <div className="py-16 text-center text-slate-400 font-medium animate-pulse">กำลังโหลดข้อมูล...</div>
-      ) : assignments.length === 0 ? (
-        <div className="bg-white p-14 rounded-2xl border text-center text-slate-400 space-y-3">
-          <FaFolderOpen className="text-6xl mx-auto text-slate-200" />
-          <p className="text-lg font-bold text-slate-600">ยังไม่มีการมอบหมายงาน</p>
-          <p className="text-sm">ไปที่เมนู "มอบหมายงาน" เพื่อสร้างใบงานให้นักเรียน</p>
-        </div>
       ) : (
-        <div className="space-y-5">
+        <div className="space-y-6">
+          {/* Main Mode Switcher: ตรวจการบ้าน vs ติดตามผลงาน */}
+          <div className="flex items-center gap-1.5 p-1.5 bg-slate-100/90 rounded-2xl w-fit border border-slate-200/80 shadow-2xs">
+            <button
+              onClick={() => handleMainTabChange("grading")}
+              className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-200 ${
+                mainTab === "grading"
+                  ? "bg-white text-slate-800 shadow-sm shadow-slate-200"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
+              }`}
+            >
+              <FaClipboardCheck className={mainTab === "grading" ? "text-orange-500" : "text-slate-400"} />
+              <span>ตรวจการบ้าน</span>
+              {totalPending > 0 && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-orange-500 text-white shadow-xs">
+                  {totalPending} รอตรวจ
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => handleMainTabChange("tracking")}
+              className={`flex items-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl font-extrabold text-xs sm:text-sm transition-all duration-200 ${
+                mainTab === "tracking"
+                  ? "bg-white text-orange-600 shadow-sm shadow-slate-200"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
+              }`}
+            >
+              <FaChartPie className={mainTab === "tracking" ? "text-orange-500" : "text-slate-400"} />
+              <span>ติดตามผลงานของนักเรียน</span>
+              {trackingData?.overallStats?.overallPercentage !== undefined && (
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-800">
+                  {trackingData.overallStats.overallPercentage}%
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* VIEW 1: ตรวจการบ้าน (Grading Queue) */}
+          {mainTab === "grading" && (
+            <>
+              {isLoading ? (
+                <div className="py-16 text-center text-slate-400 font-medium animate-pulse">กำลังโหลดข้อมูล...</div>
+              ) : assignments.length === 0 ? (
+                <div className="bg-white p-14 rounded-2xl border text-center text-slate-400 space-y-3">
+                  <FaFolderOpen className="text-6xl mx-auto text-slate-200" />
+                  <p className="text-lg font-bold text-slate-600">ยังไม่มีการมอบหมายงาน</p>
+                  <p className="text-sm">ไปที่เมนู "มอบหมายงาน" เพื่อสร้างใบงานให้นักเรียน</p>
+                </div>
+              ) : (
+                <div className="space-y-5">
 
           {/* Summary bar (คลิกการ์ดเพื่อกรองฟิลเตอร์ได้ทันที) */}
           <div className="grid grid-cols-3 gap-2.5 sm:gap-4 select-none">
@@ -458,6 +549,20 @@ export default function TeacherGradingPage() {
               </div>
             );
           })
+          )}
+        </div>
+              )}
+            </>
+          )}
+
+          {/* VIEW 2: ติดตามผลงานของนักเรียน (Student Work Tracking) */}
+          {mainTab === "tracking" && (
+            <StudentTrackingView
+              data={trackingData}
+              isLoading={isTrackingLoading}
+              onRefresh={() => loadTrackingData(true)}
+              showToast={showToast}
+            />
           )}
         </div>
       )}
