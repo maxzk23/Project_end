@@ -344,7 +344,7 @@ export default function AttendanceHistoryTab({
                   </div>
                   <div className="border-r border-slate-100">
                     <span className="text-xs font-black text-purple-600 block">{g.leave}</span>
-                    <span className="text-[9px] text-slate-400 font-bold">ลา</span>
+                    <span className="text-[9px] text-slate-400 font-bold">ลาป่วย/กิจ</span>
                   </div>
                   <div>
                     <span className="text-xs font-black text-rose-500 block">{g.absent}</span>
@@ -412,7 +412,7 @@ export default function AttendanceHistoryTab({
                                 สาย: {log.late}
                               </span>
                               <span className="px-2 py-0.5 bg-purple-50 border border-purple-100 text-purple-700 rounded">
-                                ลา: {log.leave}
+                                ลาป่วย/กิจ: {log.leave}
                               </span>
                               <span className="px-2 py-0.5 bg-rose-50 border border-rose-100 text-rose-700 rounded">
                                 ขาด: {log.absent}

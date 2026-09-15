@@ -155,13 +155,13 @@ export default function AttendanceCheckTab({
                       <button
                         onClick={() => handleStatusChange(item.student.id, AttendanceStatus.LEAVE)}
                         disabled={isLocked || isPending}
-                        className={`py-2 rounded-xl text-xs font-extrabold border transition flex items-center justify-center disabled:opacity-60 disabled:cursor-not-allowed ${
+                        className={`py-2 rounded-xl text-[11px] font-extrabold border transition flex items-center justify-center text-center leading-tight disabled:opacity-60 disabled:cursor-not-allowed ${
                           item.status === "LEAVE"
                             ? "bg-purple-500 text-white border-purple-500 shadow-xs"
                             : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
                         }`}
                       >
-                        ลา
+                        ลาป่วย/ลากิจ
                       </button>
                       <button
                         onClick={() => handleStatusChange(item.student.id, AttendanceStatus.ABSENT)}
@@ -241,7 +241,7 @@ export default function AttendanceCheckTab({
                             >
                               สาย
                             </button>
-                            {/* ลา */}
+                            {/* ลาป่วย/ลากิจ */}
                             <button
                               onClick={() => handleStatusChange(item.student.id, AttendanceStatus.LEAVE)}
                               disabled={isLocked || isPending}
@@ -251,7 +251,7 @@ export default function AttendanceCheckTab({
                                   : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
                               }`}
                             >
-                              ลา
+                              ลาป่วย/ลากิจ
                             </button>
                             {/* ขาด */}
                             <button
@@ -325,7 +325,7 @@ export default function AttendanceCheckTab({
                 <>
                   <div style={{ width: `${presentPercent}%` }} className="h-full bg-emerald-500 transition-all duration-300" title="มาเรียน"></div>
                   <div style={{ width: `${latePercent}%` }} className="h-full bg-amber-500 transition-all duration-300" title="สาย"></div>
-                  <div style={{ width: `${leavePercent}%` }} className="h-full bg-purple-500 transition-all duration-300" title="ลา"></div>
+                  <div style={{ width: `${leavePercent}%` }} className="h-full bg-purple-500 transition-all duration-300" title="ลาป่วย/ลากิจ"></div>
                   <div style={{ width: `${absentPercent}%` }} className="h-full bg-rose-500 transition-all duration-300" title="ขาดเรียน"></div>
                 </>
               )}
@@ -349,10 +349,10 @@ export default function AttendanceCheckTab({
               <span className="text-xl font-black text-amber-600 block">{lateCount} คน</span>
               <span className="text-[10px] font-bold text-slate-500">มาสาย ({latePercent.toFixed(0)}%)</span>
             </div>
-            {/* ลา */}
+            {/* ลาป่วย/ลากิจ */}
             <div className="bg-purple-50/50 p-4 border border-purple-100 rounded-xl text-center">
               <span className="text-xl font-black text-purple-600 block">{leaveCount} คน</span>
-              <span className="text-[10px] font-bold text-slate-500">ใบลา ({leavePercent.toFixed(0)}%)</span>
+              <span className="text-[10px] font-bold text-slate-500">ลาป่วย/ลากิจ ({leavePercent.toFixed(0)}%)</span>
             </div>
             {/* ขาด */}
             <div className="bg-rose-50/50 p-4 border border-rose-100 rounded-xl text-center">

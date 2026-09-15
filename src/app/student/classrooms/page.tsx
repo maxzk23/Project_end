@@ -41,7 +41,7 @@ interface Classroom {
 const statusConfig: Record<AttendanceStatus, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
   PRESENT: { label: "มาเรียน", color: "text-emerald-600", bg: "bg-emerald-50 border-emerald-200", icon: <FaCheckCircle className="text-emerald-500" /> },
   LATE:    { label: "สาย",     color: "text-amber-600",   bg: "bg-amber-50 border-amber-200",   icon: <FaClock className="text-amber-500" /> },
-  LEAVE:   { label: "ลา",      color: "text-purple-600",  bg: "bg-purple-50 border-purple-200",  icon: <FaStickyNote className="text-purple-500" /> },
+  LEAVE:   { label: "ลาป่วย/ลากิจ", color: "text-purple-600",  bg: "bg-purple-50 border-purple-200",  icon: <FaStickyNote className="text-purple-500" /> },
   ABSENT:  { label: "ขาดเรียน", color: "text-rose-600",   bg: "bg-rose-50 border-rose-200",     icon: <FaTimesCircle className="text-rose-500" /> },
 };
 
@@ -253,7 +253,7 @@ export default function StudentAttendanceHistoryPage() {
                 { value: "ALL", label: "ทั้งหมดทุกสถานะ" },
                 { value: "PRESENT", label: "มาเรียน" },
                 { value: "LATE", label: "สาย" },
-                { value: "LEAVE", label: "ลา" },
+                { value: "LEAVE", label: "ลาป่วย/ลากิจ" },
                 { value: "ABSENT", label: "ขาดเรียน" }
               ]}
               value={selectedStatus}

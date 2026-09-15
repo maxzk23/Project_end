@@ -172,7 +172,7 @@ export default function StudentDashboard() {
         return (
           <div className="w-full p-4 rounded-xl font-bold flex justify-center items-center gap-3 bg-purple-50/50 border border-purple-200 text-purple-700 select-none">
             <span className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_#a855f7]"></span>
-            <span>ลาหยุดเรียน (มีใบลาได้รับการอนุมัติ)</span>
+            <span>ลาหยุดเรียน (ลาป่วย/ลากิจ)</span>
           </div>
         );
       case "ABSENT":

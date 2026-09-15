@@ -410,7 +410,7 @@ export default function TeacherDashboard() {
               {/* ลา */}
               <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 border-l-[3px] border-l-purple-500 text-center hover:bg-slate-100/60 transition">
                 <span className="text-xs font-bold text-purple-600 block">{summaryData?.attendance.leave ?? 0} คน</span>
-                <span className="text-[9px] text-slate-500 font-bold block mt-0.5">ลา</span>
+                <span className="text-[9px] text-slate-500 font-bold block mt-0.5">ลาป่วย/กิจ</span>
               </div>
               {/* ขาดเรียน */}
               <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 border-l-[3px] border-l-rose-500 text-center hover:bg-slate-100/60 transition">
