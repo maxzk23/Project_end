@@ -314,41 +314,41 @@ export default function AttendanceHistoryTab({
                   setHistoryMonthFilter(g.monthKey);
                   setHistoryViewMode("daily");
                 }}
-                className="bg-white rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden p-5 flex flex-col justify-between hover:shadow-md cursor-pointer hover:border-sky-300 transition-all group"
+                className="bg-white dark:bg-slate-900/90 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden p-5 flex flex-col justify-between hover:shadow-md cursor-pointer hover:border-sky-300 dark:hover:border-sky-500 transition-all group"
               >
                 <div className={`absolute top-0 left-0 bottom-0 w-1.5 ${rateColorClass}`} />
 
                 <div className="flex justify-between items-start w-full">
                   <div className="flex items-center gap-2">
                     <FaCalendarAlt className="text-slate-400 group-hover:text-sky-500 transition-colors text-base" />
-                    <h4 className="font-bold text-slate-800 text-sm">{g.groupName}</h4>
+                    <h4 className="font-bold text-slate-800 dark:text-slate-100 text-sm">{g.groupName}</h4>
                   </div>
                   <div className="text-right">
                     <span className={`text-lg font-black block ${rateTextClass}`}>{rate}%</span>
-                    <span className="text-[9px] font-bold text-slate-400 block uppercase">เข้าเรียนเฉลี่ย</span>
+                    <span className="text-[9px] font-bold text-slate-400 dark:text-slate-400 block uppercase">เข้าเรียนเฉลี่ย</span>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-500 mt-4 font-semibold">
-                  เช็คชื่อแล้ว: <strong className="text-slate-800">{g.days}</strong> วัน
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-4 font-semibold">
+                  เช็คชื่อแล้ว: <strong className="text-slate-800 dark:text-slate-100">{g.days}</strong> วัน
                 </p>
 
-                <div className="grid grid-cols-4 gap-1 pt-4 mt-4 border-t border-slate-100 text-center select-none">
-                  <div className="border-r border-slate-100">
-                    <span className="text-xs font-black text-slate-700 block">{g.present}</span>
-                    <span className="text-[9px] text-slate-400 font-bold">มา</span>
+                <div className="grid grid-cols-4 gap-1 pt-4 mt-4 border-t border-slate-100 dark:border-slate-800 text-center select-none">
+                  <div className="border-r border-slate-100 dark:border-slate-800">
+                    <span className="text-xs font-black text-slate-700 dark:text-slate-200 block">{g.present}</span>
+                    <span className="text-[9px] text-slate-400 dark:text-slate-400 font-bold">มา</span>
                   </div>
-                  <div className="border-r border-slate-100">
-                    <span className="text-xs font-black text-slate-700 block">{g.late}</span>
-                    <span className="text-[9px] text-slate-400 font-bold">สาย</span>
+                  <div className="border-r border-slate-100 dark:border-slate-800">
+                    <span className="text-xs font-black text-slate-700 dark:text-slate-200 block">{g.late}</span>
+                    <span className="text-[9px] text-slate-400 dark:text-slate-400 font-bold">สาย</span>
                   </div>
-                  <div className="border-r border-slate-100">
-                    <span className="text-xs font-black text-purple-600 block">{g.leave}</span>
-                    <span className="text-[9px] text-slate-400 font-bold">ลาป่วย/กิจ</span>
+                  <div className="border-r border-slate-100 dark:border-slate-800">
+                    <span className="text-xs font-black text-purple-600 dark:text-purple-300 block">{g.leave}</span>
+                    <span className="text-[9px] text-slate-400 dark:text-slate-400 font-bold">ลาป่วย/กิจ</span>
                   </div>
                   <div>
-                    <span className="text-xs font-black text-rose-500 block">{g.absent}</span>
-                    <span className="text-[9px] text-slate-400 font-bold">ขาด</span>
+                    <span className="text-xs font-black text-rose-500 dark:text-rose-400 block">{g.absent}</span>
+                    <span className="text-[9px] text-slate-400 dark:text-slate-400 font-bold">ขาด</span>
                   </div>
                 </div>
               </div>
@@ -363,12 +363,12 @@ export default function AttendanceHistoryTab({
             const isCollapsed = collapsedGroups[groupName] === true;
 
             return (
-              <div key={groupName} className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+              <div key={groupName} className="bg-white dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm">
                 <div
                   onClick={() => setCollapsedGroups((prev) => ({ ...prev, [groupName]: !prev[groupName] }))}
-                  className="flex justify-between items-center px-5 py-4 bg-slate-50 border-b border-slate-200 cursor-pointer select-none"
+                  className="flex justify-between items-center px-5 py-4 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 cursor-pointer select-none"
                 >
-                  <h4 className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+                  <h4 className="font-bold text-slate-800 dark:text-slate-100 text-xs flex items-center gap-1.5">
                     <FaCalendarAlt className="text-slate-400 text-[10px]" />
                     <span>ประจำเดือน {groupName}</span>
                     <span className="text-[10px] text-slate-400 font-medium">({logs.length} วัน)</span>
@@ -381,53 +381,53 @@ export default function AttendanceHistoryTab({
                 </div>
 
                 {!isCollapsed && (
-                  <div className="divide-y divide-slate-100 flex flex-col">
+                  <div className="divide-y divide-slate-100 dark:divide-slate-800 flex flex-col">
                     {logs.map((log: any) => {
                       const rateColorClass = log.rate >= 90 ? "bg-emerald-500" : log.rate >= 75 ? "bg-amber-500" : "bg-rose-500";
-                      const rateTextClass = log.rate >= 90 ? "text-emerald-600" : log.rate >= 75 ? "text-amber-600" : "text-rose-600";
+                      const rateTextClass = log.rate >= 90 ? "text-emerald-600 dark:text-emerald-400" : log.rate >= 75 ? "text-amber-600 dark:text-amber-400" : "text-rose-600 dark:text-rose-400";
 
                       return (
                         <div
                           key={`${log.date}_${log.classId}`}
-                          className="px-5 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative pl-7 hover:bg-slate-50/50 transition-all"
+                          className="px-5 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative pl-7 hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition-all"
                         >
                           <div className={`absolute top-0 left-0 bottom-0 w-1 ${rateColorClass}`} />
 
                           <div className="space-y-2">
-                            <h5 className="font-bold text-slate-800 text-sm flex items-center gap-2 flex-wrap">
+                            <h5 className="font-bold text-slate-800 dark:text-slate-100 text-sm flex items-center gap-2 flex-wrap">
                               <span>รายงานเข้าเรียนประจำวันที่ {formatThaiDate(log.date)}</span>
-                              <span className="bg-sky-50 text-sky-700 text-[10px] font-bold px-2 py-0.5 rounded-full border border-sky-100">
+                              <span className="bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 text-[10px] font-bold px-2 py-0.5 rounded-full border border-sky-100 dark:border-sky-800/60">
                                 ห้อง {log.classLabel}/{log.roomLabel}
                               </span>
                             </h5>
 
                             <div className="flex flex-wrap gap-2 text-[10px] font-bold select-none">
-                              <span className="px-2 py-0.5 bg-slate-100 border border-slate-200 text-slate-600 rounded">
+                              <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 rounded">
                                 นักเรียน: {log.total} คน
                               </span>
-                              <span className="px-2 py-0.5 bg-emerald-50 border border-emerald-100 text-emerald-700 rounded">
+                              <span className="px-2 py-0.5 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 rounded">
                                 มาเรียน: {log.present}
                               </span>
-                              <span className="px-2 py-0.5 bg-amber-50 border border-amber-100 text-amber-700 rounded">
+                              <span className="px-2 py-0.5 bg-amber-50 dark:bg-amber-950/50 border border-amber-100 dark:border-amber-800/60 text-amber-700 dark:text-amber-300 rounded">
                                 สาย: {log.late}
                               </span>
-                              <span className="px-2 py-0.5 bg-purple-50 border border-purple-100 text-purple-700 rounded">
+                              <span className="px-2 py-0.5 bg-purple-50 dark:bg-purple-950/50 border border-purple-100 dark:border-purple-800/60 text-purple-700 dark:text-purple-300 rounded">
                                 ลาป่วย/กิจ: {log.leave}
                               </span>
-                              <span className="px-2 py-0.5 bg-rose-50 border border-rose-100 text-rose-700 rounded">
+                              <span className="px-2 py-0.5 bg-rose-50 dark:bg-rose-950/50 border border-rose-100 dark:border-rose-800/60 text-rose-700 dark:text-rose-300 rounded">
                                 ขาด: {log.absent}
                               </span>
                             </div>
                           </div>
 
-                          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end border-t border-slate-100 md:border-none pt-3 md:pt-0">
+                          <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end border-t border-slate-100 dark:border-slate-800 md:border-none pt-3 md:pt-0">
                             <div className="text-right">
                               <span className={`text-base font-black block ${rateTextClass}`}>{log.rate}%</span>
-                              <span className="text-[9px] font-bold text-slate-400">อัตราเข้าเรียน</span>
+                              <span className="text-[9px] font-bold text-slate-400 dark:text-slate-400">อัตราเข้าเรียน</span>
                             </div>
                             <button
                               onClick={() => onViewDetails(log.classId, log.date)}
-                              className="px-3.5 py-2 bg-slate-100 border border-slate-200 text-slate-700 hover:bg-sky-500 hover:text-white hover:border-sky-500 rounded-lg text-xs font-bold transition flex items-center gap-1"
+                              className="px-3.5 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-600 hover:border-sky-500 rounded-lg text-xs font-bold transition flex items-center gap-1"
                             >
                               <FaSearch className="text-[10px]" />
                               <span>ดูรายละเอียด</span>

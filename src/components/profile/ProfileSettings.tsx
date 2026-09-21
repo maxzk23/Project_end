@@ -471,18 +471,25 @@ export default function ProfileSettings({ initialUser }: ProfileSettingsProps) {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {/* 1. โหมดสว่าง (Light) */}
+                {/* 1. โหมดสว่าง (Light) - ยังคงเป็นธีมสว่างเสมอไม่ว่าจะอยู่ในโหมดใด */}
                 <button
                   type="button"
                   onClick={() => setTheme("light")}
-                  className={`relative p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 group ${
+                  className={`relative p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 group shadow-xs hover:shadow-md ${
                     mounted && theme === "light"
-                      ? "border-sky-500 bg-sky-50/50 dark:bg-sky-950/30 ring-2 ring-sky-500/20 shadow-sm"
-                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600"
+                      ? "!border-sky-500 !ring-2 !ring-sky-500/30"
+                      : "hover:!border-slate-300"
                   }`}
+                  style={{
+                    backgroundColor: mounted && theme === "light" ? "#f0f9ff" : "#ffffff",
+                    borderColor: mounted && theme === "light" ? "#0ea5e9" : "#e2e8f0"
+                  }}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg shadow-xs">
+                    <div 
+                      className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow-xs border"
+                      style={{ backgroundColor: "#fef3c7", color: "#d97706", borderColor: "#fde68a" }}
+                    >
                       <FaSun />
                     </div>
                     {mounted && theme === "light" && (
@@ -491,32 +498,50 @@ export default function ProfileSettings({ initialUser }: ProfileSettingsProps) {
                       </span>
                     )}
                   </div>
-                  {/* Preview Palette Mini Card */}
-                  <div className="w-full h-10 rounded-lg bg-slate-100 p-1.5 flex gap-1.5 border border-slate-200">
-                    <div className="w-1/3 h-full rounded bg-white border border-slate-200 shadow-2xs"></div>
-                    <div className="flex-1 h-full rounded bg-white flex flex-col justify-center gap-1 px-1.5">
-                      <div className="w-3/4 h-1.5 bg-slate-400 rounded-full"></div>
-                      <div className="w-1/2 h-1 bg-sky-400 rounded-full"></div>
+
+                  {/* Preview Palette Mini Card - ตัวอย่างแดชบอร์ดสีขาวสะอาดตาเสมอ */}
+                  <div 
+                    className="w-full h-10 rounded-lg p-1.5 flex gap-1.5 border"
+                    style={{ backgroundColor: "#f8fafc", borderColor: "#e2e8f0" }}
+                  >
+                    <div 
+                      className="w-1/3 h-full rounded border shadow-2xs"
+                      style={{ backgroundColor: "#ffffff", borderColor: "#cbd5e1" }}
+                    />
+                    <div 
+                      className="flex-1 h-full rounded flex flex-col justify-center gap-1 px-1.5 border"
+                      style={{ backgroundColor: "#ffffff", borderColor: "#cbd5e1" }}
+                    >
+                      <div className="w-3/4 h-1.5 rounded-full" style={{ backgroundColor: "#94a3b8" }} />
+                      <div className="w-1/2 h-1 rounded-full" style={{ backgroundColor: "#38bdf8" }} />
                     </div>
                   </div>
+
                   <div>
-                    <h5 className="text-sm font-bold text-slate-800 dark:text-slate-100">โหมดสว่าง (Light)</h5>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">สีขาว คมชัด สะอาดตา สบายตาเวลากลางวัน</p>
+                    <h5 className="text-sm font-bold" style={{ color: "#0f172a" }}>โหมดสว่าง (Light)</h5>
+                    <p className="text-xs mt-0.5" style={{ color: "#64748b" }}>สีขาว คมชัด สะอาดตา สบายตาเวลากลางวัน</p>
                   </div>
                 </button>
 
-                {/* 2. โหมดมืด (Dark) */}
+                {/* 2. โหมดมืด (Dark) - ยังคงเป็นธีมมืดเสมอ */}
                 <button
                   type="button"
                   onClick={() => setTheme("dark")}
-                  className={`relative p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 group ${
+                  className={`relative p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 group shadow-xs hover:shadow-md ${
                     mounted && theme === "dark"
-                      ? "border-sky-500 bg-sky-50/50 dark:bg-sky-950/30 ring-2 ring-sky-500/20 shadow-sm"
-                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600"
+                      ? "!border-sky-500 !ring-2 !ring-sky-500/30 shadow-lg shadow-black/40"
+                      : "hover:!border-slate-600"
                   }`}
+                  style={{
+                    backgroundColor: mounted && theme === "dark" ? "#0c1527" : "#0f172a",
+                    borderColor: mounted && theme === "dark" ? "#0ea5e9" : "#334155"
+                  }}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-950/80 text-indigo-500 dark:text-indigo-400 flex items-center justify-center text-lg shadow-xs">
+                    <div 
+                      className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shadow-xs border"
+                      style={{ backgroundColor: "#1e1b4b", color: "#818cf8", borderColor: "#3730a3" }}
+                    >
                       <FaMoon />
                     </div>
                     {mounted && theme === "dark" && (
@@ -525,32 +550,43 @@ export default function ProfileSettings({ initialUser }: ProfileSettingsProps) {
                       </span>
                     )}
                   </div>
-                  {/* Preview Palette Mini Card */}
-                  <div className="w-full h-10 rounded-lg bg-slate-900 p-1.5 flex gap-1.5 border border-slate-700">
-                    <div className="w-1/3 h-full rounded bg-slate-800 border border-slate-700"></div>
-                    <div className="flex-1 h-full rounded bg-slate-800 flex flex-col justify-center gap-1 px-1.5">
-                      <div className="w-3/4 h-1.5 bg-slate-400 rounded-full"></div>
-                      <div className="w-1/2 h-1 bg-sky-500 rounded-full"></div>
+
+                  {/* Preview Palette Mini Card - ตัวอย่างแดชบอร์ดสีมืดสนิทเสมอ */}
+                  <div 
+                    className="w-full h-10 rounded-lg p-1.5 flex gap-1.5 border"
+                    style={{ backgroundColor: "#020617", borderColor: "#1e293b" }}
+                  >
+                    <div 
+                      className="w-1/3 h-full rounded border"
+                      style={{ backgroundColor: "#0f172a", borderColor: "#334155" }}
+                    />
+                    <div 
+                      className="flex-1 h-full rounded flex flex-col justify-center gap-1 px-1.5 border"
+                      style={{ backgroundColor: "#0f172a", borderColor: "#334155" }}
+                    >
+                      <div className="w-3/4 h-1.5 rounded-full" style={{ backgroundColor: "#64748b" }} />
+                      <div className="w-1/2 h-1 rounded-full" style={{ backgroundColor: "#0284c7" }} />
                     </div>
                   </div>
+
                   <div>
-                    <h5 className="text-sm font-bold text-slate-800 dark:text-slate-100">โหมดมืด (Dark)</h5>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">สีดำ-เทาเข้ม นุ่มนวล ถนอมสายตาในที่แสงน้อย</p>
+                    <h5 className="text-sm font-bold" style={{ color: "#f8fafc" }}>โหมดมืด (Dark)</h5>
+                    <p className="text-xs mt-0.5" style={{ color: "#94a3b8" }}>สีดำ-เทาเข้ม นุ่มนวล ถนอมสายตาในที่แสงน้อย</p>
                   </div>
                 </button>
 
-                {/* 3. ตามระบบ (System) */}
+                {/* 3. ตามระบบ (System) - แสดงผลแบบครึ่งสว่างครึ่งมืด */}
                 <button
                   type="button"
                   onClick={() => setTheme("system")}
-                  className={`relative p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 group ${
+                  className={`relative p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 group shadow-xs hover:shadow-md bg-white dark:bg-slate-900/90 border-slate-200 dark:border-slate-700 ${
                     mounted && theme === "system"
-                      ? "border-sky-500 bg-sky-50/50 dark:bg-sky-950/30 ring-2 ring-sky-500/20 shadow-sm"
-                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600"
+                      ? "!border-sky-500 !ring-2 !ring-sky-500/30 !bg-sky-50/30 dark:!bg-sky-950/30"
+                      : "hover:border-slate-300 dark:hover:border-slate-600"
                   }`}
                 >
                   <div className="flex items-center justify-between">
-                    <div className="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center text-lg shadow-xs">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center text-lg shadow-xs border border-purple-200 dark:border-purple-800/50">
                       <FaDesktop />
                     </div>
                     {mounted && theme === "system" && (
@@ -559,14 +595,36 @@ export default function ProfileSettings({ initialUser }: ProfileSettingsProps) {
                       </span>
                     )}
                   </div>
-                  {/* Preview Palette Mini Card */}
-                  <div className="w-full h-10 rounded-lg bg-gradient-to-r from-slate-200 to-slate-900 p-1.5 flex gap-1.5 border border-slate-300 dark:border-slate-700">
-                    <div className="w-1/3 h-full rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600"></div>
-                    <div className="flex-1 h-full rounded bg-white/70 dark:bg-slate-800/70 flex flex-col justify-center gap-1 px-1.5">
-                      <div className="w-3/4 h-1.5 bg-slate-500 rounded-full"></div>
-                      <div className="w-1/2 h-1 bg-sky-500 rounded-full"></div>
+
+                  {/* Preview Palette Mini Card - ตัวอย่างแบบแบ่งครึ่งสว่างและมืดชัดเจน */}
+                  <div 
+                    className="w-full h-10 rounded-lg p-1.5 flex gap-1.5 border overflow-hidden" 
+                    style={{ background: "linear-gradient(to right, #f8fafc 50%, #020617 50%)", borderColor: "#94a3b8" }}
+                  >
+                    {/* ฝั่งสว่าง (ซ้าย) */}
+                    <div 
+                      className="w-1/2 h-full rounded flex items-center gap-1 px-1.5 border" 
+                      style={{ backgroundColor: "#ffffff", borderColor: "#cbd5e1" }}
+                    >
+                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: "#f59e0b" }} />
+                      <div className="flex-1 flex flex-col gap-0.5">
+                        <div className="w-full h-1 rounded-full" style={{ backgroundColor: "#94a3b8" }} />
+                        <div className="w-2/3 h-0.5 rounded-full" style={{ backgroundColor: "#38bdf8" }} />
+                      </div>
+                    </div>
+                    {/* ฝั่งมืด (ขวา) */}
+                    <div 
+                      className="w-1/2 h-full rounded flex items-center gap-1 px-1.5 border" 
+                      style={{ backgroundColor: "#0f172a", borderColor: "#334155" }}
+                    >
+                      <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: "#818cf8" }} />
+                      <div className="flex-1 flex flex-col gap-0.5">
+                        <div className="w-full h-1 rounded-full" style={{ backgroundColor: "#64748b" }} />
+                        <div className="w-2/3 h-0.5 rounded-full" style={{ backgroundColor: "#0284c7" }} />
+                      </div>
                     </div>
                   </div>
+
                   <div>
                     <h5 className="text-sm font-bold text-slate-800 dark:text-slate-100">ตามระบบ (System)</h5>
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">ปรับเปลี่ยนอัตโนมัติตามอุปกรณ์ของคุณ</p>
