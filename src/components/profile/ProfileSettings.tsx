@@ -1,7 +1,8 @@
 "use client";
 
-import { useTransition, useState } from "react";
+import { useTransition, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
 import { updateProfile } from "@/app/actions/profile";
 import { 
   FaUser, 
@@ -16,8 +17,12 @@ import {
   FaCheck,
   FaSmile,
   FaCopy,
-  FaIdBadge
+  FaIdBadge,
+  FaSun,
+  FaMoon,
+  FaDesktop
 } from "react-icons/fa";
+
 
 // รายชื่อหมวดหมู่อวาตาร์
 export const AVATAR_CATEGORIES = [
@@ -113,6 +118,13 @@ interface ProfileSettingsProps {
 
 export default function ProfileSettings({ initialUser }: ProfileSettingsProps) {
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [isPending, startTransition] = useTransition();
   const [copied, setCopied] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState(
@@ -120,6 +132,7 @@ export default function ProfileSettings({ initialUser }: ProfileSettingsProps) {
       ? initialUser.avatarUrl
       : "preset-1"
   );
+
 
   // สถานะขยายดูรูปโปรไฟล์เพิ่มเติม และเลือกหมวดหมู่
   const isSelectedBeyondInitial = Boolean(
@@ -443,6 +456,122 @@ export default function ProfileSettings({ initialUser }: ProfileSettingsProps) {
                     )}
                   </button>
                 </div>
+              </div>
+            </div>
+
+            {/* หมวดหมู่: ธีมและการแสดงผล */}
+            <div className="space-y-4 pt-2">
+              <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+                <h4 className="text-sm font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+                  ธีมและการแสดงผล (Theme & Appearance)
+                </h4>
+                <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-100 dark:border-sky-800">
+                  {mounted ? (theme === "dark" ? "โหมดมืด (Dark)" : theme === "system" ? "ตามระบบ (System)" : "โหมดสว่าง (Light)") : "โหมดสว่าง (Light)"}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* 1. โหมดสว่าง (Light) */}
+                <button
+                  type="button"
+                  onClick={() => setTheme("light")}
+                  className={`relative p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 group ${
+                    mounted && theme === "light"
+                      ? "border-sky-500 bg-sky-50/50 dark:bg-sky-950/30 ring-2 ring-sky-500/20 shadow-sm"
+                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950/80 text-amber-600 dark:text-amber-400 flex items-center justify-center text-lg shadow-xs">
+                      <FaSun />
+                    </div>
+                    {mounted && theme === "light" && (
+                      <span className="w-5 h-5 bg-sky-500 text-white rounded-full flex items-center justify-center text-[10px] shadow">
+                        <FaCheck />
+                      </span>
+                    )}
+                  </div>
+                  {/* Preview Palette Mini Card */}
+                  <div className="w-full h-10 rounded-lg bg-slate-100 p-1.5 flex gap-1.5 border border-slate-200">
+                    <div className="w-1/3 h-full rounded bg-white border border-slate-200 shadow-2xs"></div>
+                    <div className="flex-1 h-full rounded bg-white flex flex-col justify-center gap-1 px-1.5">
+                      <div className="w-3/4 h-1.5 bg-slate-400 rounded-full"></div>
+                      <div className="w-1/2 h-1 bg-sky-400 rounded-full"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <h5 className="text-sm font-bold text-slate-800 dark:text-slate-100">โหมดสว่าง (Light)</h5>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">สีขาว คมชัด สะอาดตา สบายตาเวลากลางวัน</p>
+                  </div>
+                </button>
+
+                {/* 2. โหมดมืด (Dark) */}
+                <button
+                  type="button"
+                  onClick={() => setTheme("dark")}
+                  className={`relative p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 group ${
+                    mounted && theme === "dark"
+                      ? "border-sky-500 bg-sky-50/50 dark:bg-sky-950/30 ring-2 ring-sky-500/20 shadow-sm"
+                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="w-9 h-9 rounded-xl bg-indigo-100 dark:bg-indigo-950/80 text-indigo-500 dark:text-indigo-400 flex items-center justify-center text-lg shadow-xs">
+                      <FaMoon />
+                    </div>
+                    {mounted && theme === "dark" && (
+                      <span className="w-5 h-5 bg-sky-500 text-white rounded-full flex items-center justify-center text-[10px] shadow">
+                        <FaCheck />
+                      </span>
+                    )}
+                  </div>
+                  {/* Preview Palette Mini Card */}
+                  <div className="w-full h-10 rounded-lg bg-slate-900 p-1.5 flex gap-1.5 border border-slate-700">
+                    <div className="w-1/3 h-full rounded bg-slate-800 border border-slate-700"></div>
+                    <div className="flex-1 h-full rounded bg-slate-800 flex flex-col justify-center gap-1 px-1.5">
+                      <div className="w-3/4 h-1.5 bg-slate-400 rounded-full"></div>
+                      <div className="w-1/2 h-1 bg-sky-500 rounded-full"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <h5 className="text-sm font-bold text-slate-800 dark:text-slate-100">โหมดมืด (Dark)</h5>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">สีดำ-เทาเข้ม นุ่มนวล ถนอมสายตาในที่แสงน้อย</p>
+                  </div>
+                </button>
+
+                {/* 3. ตามระบบ (System) */}
+                <button
+                  type="button"
+                  onClick={() => setTheme("system")}
+                  className={`relative p-4 rounded-2xl border text-left transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 group ${
+                    mounted && theme === "system"
+                      ? "border-sky-500 bg-sky-50/50 dark:bg-sky-950/30 ring-2 ring-sky-500/20 shadow-sm"
+                      : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-600"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950/80 text-purple-600 dark:text-purple-400 flex items-center justify-center text-lg shadow-xs">
+                      <FaDesktop />
+                    </div>
+                    {mounted && theme === "system" && (
+                      <span className="w-5 h-5 bg-sky-500 text-white rounded-full flex items-center justify-center text-[10px] shadow">
+                        <FaCheck />
+                      </span>
+                    )}
+                  </div>
+                  {/* Preview Palette Mini Card */}
+                  <div className="w-full h-10 rounded-lg bg-gradient-to-r from-slate-200 to-slate-900 p-1.5 flex gap-1.5 border border-slate-300 dark:border-slate-700">
+                    <div className="w-1/3 h-full rounded bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600"></div>
+                    <div className="flex-1 h-full rounded bg-white/70 dark:bg-slate-800/70 flex flex-col justify-center gap-1 px-1.5">
+                      <div className="w-3/4 h-1.5 bg-slate-500 rounded-full"></div>
+                      <div className="w-1/2 h-1 bg-sky-500 rounded-full"></div>
+                    </div>
+                  </div>
+                  <div>
+                    <h5 className="text-sm font-bold text-slate-800 dark:text-slate-100">ตามระบบ (System)</h5>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">ปรับเปลี่ยนอัตโนมัติตามอุปกรณ์ของคุณ</p>
+                  </div>
+                </button>
               </div>
             </div>
 

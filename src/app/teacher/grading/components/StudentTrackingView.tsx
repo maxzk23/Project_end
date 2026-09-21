@@ -176,7 +176,7 @@ export default function StudentTrackingView({ data, isLoading, onRefresh, showTo
         <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs hover:border-emerald-200 transition flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500">ส่งงานครบ 100%</span>
-            <div className="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-sm">
+            <div className="w-8 h-8 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm">
               <FaCheckCircle />
             </div>
           </div>
@@ -205,7 +205,7 @@ export default function StudentTrackingView({ data, isLoading, onRefresh, showTo
         <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs hover:border-rose-200 transition flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500">ยังมีงานค้างส่ง</span>
-            <div className="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-sm">
+            <div className="w-8 h-8 rounded-xl bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center text-sm">
               <FaExclamationTriangle />
             </div>
           </div>
@@ -230,7 +230,7 @@ export default function StudentTrackingView({ data, isLoading, onRefresh, showTo
         <div className="bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs hover:border-sky-200 transition flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-500">การส่งตรงเวลา</span>
-            <div className="w-8 h-8 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center text-sm">
+            <div className="w-8 h-8 rounded-xl bg-sky-100 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center text-sm">
               <FaClock />
             </div>
           </div>
@@ -251,13 +251,13 @@ export default function StudentTrackingView({ data, isLoading, onRefresh, showTo
       </div>
 
       {/* 2. เมนูย่อย (Sub-view switchers) */}
-      <div className="flex items-center bg-slate-100 p-1 rounded-xl gap-1 w-fit border border-slate-200/80 shadow-xs">
+      <div className="flex items-center bg-slate-100 dark:bg-slate-800/80 p-1 rounded-xl gap-1 w-fit border border-slate-200/80 dark:border-slate-700 shadow-xs">
         <button
           onClick={() => setSubView("assignments")}
           className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
             subView === "assignments"
-              ? "bg-white text-orange-600 shadow-xs"
-              : "text-slate-600 hover:text-slate-900"
+              ? "bg-white dark:bg-slate-900 text-orange-600 dark:text-orange-400 shadow-xs"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
           }`}
         >
           <FaThList className="text-[11px]" />
@@ -267,8 +267,8 @@ export default function StudentTrackingView({ data, isLoading, onRefresh, showTo
           onClick={() => setSubView("students")}
           className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
             subView === "students"
-              ? "bg-white text-orange-600 shadow-xs"
-              : "text-slate-600 hover:text-slate-900"
+              ? "bg-white dark:bg-slate-900 text-orange-600 dark:text-orange-400 shadow-xs"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
           }`}
         >
           <FaUserGraduate className="text-[11px]" />
@@ -278,8 +278,8 @@ export default function StudentTrackingView({ data, isLoading, onRefresh, showTo
           onClick={() => setSubView("matrix")}
           className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-bold transition-all ${
             subView === "matrix"
-              ? "bg-white text-orange-600 shadow-xs"
-              : "text-slate-600 hover:text-slate-900"
+              ? "bg-white dark:bg-slate-900 text-orange-600 dark:text-orange-400 shadow-xs"
+              : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200"
           }`}
         >
           <FaTable className="text-[11px]" />

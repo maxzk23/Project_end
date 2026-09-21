@@ -218,15 +218,14 @@ export default function StudentTopbar({ onMenuClick }: TopbarProps) {
         
         {/* กล่องการแจ้งเตือน */}
         <div className="relative">
-          {/* ปุ่มรูปกระดิ่ง */}
           <button 
             onClick={toggleNotify}
-            className="relative bg-white border border-slate-200 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex justify-center items-center text-slate-500 hover:text-sky-500 hover:border-sky-500 transition-all duration-300 shadow-xs"
+            className="relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex justify-center items-center text-slate-500 dark:text-slate-400 hover:text-sky-500 dark:hover:text-sky-400 hover:border-sky-500 transition-all duration-300 shadow-xs"
           >
             <FaBell className="text-base sm:text-xl" />
             {/* ป้ายตัวเลขแจ้งเตือน (Badge) มุมขวาบน */}
             {unreadCount > 0 && (
-              <div className="absolute top-1 sm:top-1.5 right-1 sm:right-1.5 min-w-[16px] sm:min-w-[18px] h-[16px] sm:h-[18px] bg-rose-500 rounded-full border-2 border-white text-[9px] font-bold text-white flex items-center justify-center px-1">
+              <div className="absolute top-1 sm:top-1.5 right-1 sm:right-1.5 min-w-[16px] sm:min-w-[18px] h-[16px] sm:h-[18px] bg-rose-500 rounded-full border-2 border-white dark:border-slate-800 text-[9px] font-bold text-white flex items-center justify-center px-1">
                 {unreadCount}
               </div>
             )}
@@ -298,12 +297,12 @@ export default function StudentTopbar({ onMenuClick }: TopbarProps) {
         {/* ส่วนข้อมูลโปรไฟล์ (รูปภาพ และ ชื่อ) */}
         <Link 
           href="/student/profile"
-          className="flex items-center gap-3 bg-white pr-4 pl-1.5 py-1 rounded-full border border-slate-200 cursor-pointer hover:shadow-sm hover:border-sky-300 transition-all select-none"
+          className="flex items-center gap-3 bg-white dark:bg-slate-800/90 pr-4 pl-1.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 cursor-pointer hover:shadow-sm hover:border-sky-300 dark:hover:border-sky-500 transition-all select-none"
         >
           {renderAvatarHelper(profile?.avatarUrl, profile?.name || "นักเรียน", "w-9 h-9 text-base")}
           <div className="hidden md:block">
-            <h4 className="text-sm font-bold text-slate-800">{profile?.name || "กำลังโหลด..."}</h4>
-            <p className="text-xs text-slate-500">{profile?.classLabel || "นักเรียน"}</p>
+            <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">{profile?.name || "กำลังโหลด..."}</h4>
+            <p className="text-xs text-slate-500 dark:text-slate-400">{profile?.classLabel || "นักเรียน"}</p>
           </div>
         </Link>
 

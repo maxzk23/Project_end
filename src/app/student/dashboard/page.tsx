@@ -156,35 +156,35 @@ export default function StudentDashboard() {
     switch (status) {
       case "PRESENT":
         return (
-          <div className="w-full p-4 rounded-xl font-bold flex justify-center items-center gap-3 bg-emerald-50/50 border border-emerald-200 text-emerald-700 select-none">
+          <div className="w-full p-4 rounded-xl font-bold flex justify-center items-center gap-3 bg-emerald-50/50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 text-emerald-700 dark:text-emerald-400 select-none">
             <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></span>
             <span>เช็คชื่อมาเรียนเรียบร้อยแล้ววันนี้</span>
           </div>
         );
       case "LATE":
         return (
-          <div className="w-full p-4 rounded-xl font-bold flex justify-center items-center gap-3 bg-amber-50/50 border border-amber-200 text-amber-700 select-none">
+          <div className="w-full p-4 rounded-xl font-bold flex justify-center items-center gap-3 bg-amber-50/50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40 text-amber-700 dark:text-amber-400 select-none">
             <span className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b]"></span>
             <span>คุณเข้าเรียนสายในวันนี้</span>
           </div>
         );
       case "LEAVE":
         return (
-          <div className="w-full p-4 rounded-xl font-bold flex justify-center items-center gap-3 bg-purple-50/50 border border-purple-200 text-purple-700 select-none">
+          <div className="w-full p-4 rounded-xl font-bold flex justify-center items-center gap-3 bg-purple-50/50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/40 text-purple-700 dark:text-purple-400 select-none">
             <span className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_#a855f7]"></span>
             <span>ลาหยุดเรียน (ลาป่วย/ลากิจ)</span>
           </div>
         );
       case "ABSENT":
         return (
-          <div className="w-full p-4 rounded-xl font-bold flex justify-center items-center gap-3 bg-rose-50/50 border border-rose-200 text-rose-700 select-none">
+          <div className="w-full p-4 rounded-xl font-bold flex justify-center items-center gap-3 bg-rose-50/50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-800/40 text-rose-700 dark:text-rose-400 select-none">
             <span className="w-2 h-2 rounded-full bg-rose-500 shadow-[0_0_8px_#ef4444]"></span>
             <span>ขาดเรียนในวันนี้</span>
           </div>
         );
       default:
         return (
-          <div className="w-full p-4 rounded-xl border border-amber-200 border-dashed bg-amber-50/40 text-amber-600 font-bold flex justify-center items-center gap-3 select-none">
+          <div className="w-full p-4 rounded-xl border border-amber-200 dark:border-amber-800/50 border-dashed bg-amber-50/40 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 font-bold flex justify-center items-center gap-3 select-none">
             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shadow-[0_0_8px_#f59e0b]"></span>
             <span>รอคุณครูเรียกเช็คชื่อ...</span>
           </div>
@@ -208,17 +208,17 @@ export default function StudentDashboard() {
 
       {/* Toast แจ้งเตือนสิทธิ์ล็อกอินสำเร็จเมื่อเพิ่งเข้าสู่ระบบ */}
       {showLoginToast && (
-        <div className="fixed top-5 right-5 z-[60] bg-white border border-slate-200 p-4 rounded-2xl shadow-xl flex items-center gap-3.5 max-w-sm animate-in slide-in-from-top-6 duration-300 border-l-[5px] border-l-sky-500">
-          <div className="w-8 h-8 rounded-full bg-sky-50 flex items-center justify-center text-sky-700 shrink-0 text-base">
+        <div className="fixed top-5 right-5 z-[99999] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-2xl flex items-center gap-3.5 max-w-sm animate-in slide-in-from-top-6 duration-300 border-l-[5px] border-l-sky-500">
+          <div className="w-8 h-8 rounded-full bg-sky-50 dark:bg-sky-950/50 flex items-center justify-center text-sky-700 dark:text-sky-400 shrink-0 text-base">
             <FaCheckCircle className="text-emerald-500" />
           </div>
           <div className="text-left">
-            <h4 className="text-xs font-black text-slate-800 tracking-tight">เข้าสู่ระบบสำเร็จ</h4>
-            <p className="text-[10px] text-slate-400 font-semibold mt-0.5">ยินดีต้อนรับ {summary?.studentName || "นักเรียน"} เข้าสู่ระบบ</p>
+            <h4 className="text-xs font-black text-slate-800 dark:text-slate-100 tracking-tight">เข้าสู่ระบบสำเร็จ</h4>
+            <p className="text-[10px] text-slate-400 dark:text-slate-400 font-semibold mt-0.5">ยินดีต้อนรับ {summary?.studentName || "นักเรียน"} เข้าสู่ระบบ</p>
           </div>
           <button 
             onClick={() => setShowLoginToast(false)} 
-            className="text-slate-300 hover:text-slate-500 font-bold ml-2 text-base outline-none cursor-pointer"
+            className="text-slate-300 dark:text-slate-500 hover:text-slate-500 dark:hover:text-slate-300 font-bold ml-2 text-base outline-none cursor-pointer"
           >
             &times;
           </button>

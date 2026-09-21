@@ -217,10 +217,18 @@ export default function StudentAssignmentsPage() {
 
       {/* Toast */}
       {toastMsg && (
-        <div className={`fixed top-4 right-4 z-[9999] p-4 rounded-2xl shadow-xl border flex items-center gap-3 animate-in slide-in-from-top-4 duration-300 max-w-sm ${toastMsg.type === "success" ? "bg-emerald-50 border-emerald-200 text-emerald-800" : "bg-rose-50 border-rose-200 text-rose-800"}`}>
-          {toastMsg.type === "success" ? <FaCheckCircle className="shrink-0" /> : <FaExclamationCircle className="shrink-0" />}
-          <span className="text-sm font-semibold flex-1">{toastMsg.text}</span>
-          <button onClick={() => setToastMsg(null)} className="opacity-60 hover:opacity-100 transition"><FaTimes className="text-xs" /></button>
+        <div className={`fixed top-5 right-5 z-[99999] px-5 py-4 rounded-2xl shadow-2xl border flex items-center gap-3.5 animate-in slide-in-from-top-4 duration-300 max-w-sm ${
+          toastMsg.type === "success" 
+            ? "bg-emerald-600 text-white border-emerald-400 dark:bg-[#064e3b] dark:border-emerald-400 dark:text-emerald-50 shadow-emerald-950/50" 
+            : "bg-rose-600 text-white border-rose-400 dark:bg-[#881337] dark:border-rose-400 dark:text-rose-50 shadow-rose-950/50"
+        }`}>
+          {toastMsg.type === "success" ? (
+            <FaCheckCircle className="text-xl text-emerald-200 dark:text-emerald-300 shrink-0" />
+          ) : (
+            <FaExclamationCircle className="text-xl text-rose-200 dark:text-rose-300 shrink-0" />
+          )}
+          <span className="text-sm font-bold text-white dark:text-emerald-50 tracking-wide flex-1">{toastMsg.text}</span>
+          <button onClick={() => setToastMsg(null)} className="text-white/80 hover:text-white transition cursor-pointer"><FaTimes className="text-xs" /></button>
         </div>
       )}
 

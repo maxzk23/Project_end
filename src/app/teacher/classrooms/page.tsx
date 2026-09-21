@@ -389,13 +389,17 @@ export default function StudentRegistryPage() {
     <div className="space-y-8 text-left">
       {/* Toast แจ้งเตือน */}
       {toastMsg && (
-        <div className={`fixed top-4 right-4 z-[9999] p-4 rounded-xl shadow-lg border flex items-center gap-3 animate-in slide-in-from-top-4 duration-300 ${
+        <div className={`fixed top-5 right-5 z-[99999] px-5 py-4 rounded-2xl shadow-2xl border flex items-center gap-3.5 animate-in slide-in-from-top-4 duration-300 ${
           toastMsg.type === "success" 
-            ? "bg-emerald-50 border-emerald-200 text-emerald-800" 
-            : "bg-rose-50 border-rose-200 text-rose-800"
+            ? "bg-emerald-600 text-white border-emerald-400 dark:bg-[#064e3b] dark:border-emerald-400 dark:text-emerald-50 shadow-emerald-950/50" 
+            : "bg-rose-600 text-white border-rose-400 dark:bg-[#881337] dark:border-rose-400 dark:text-rose-50 shadow-rose-950/50"
         }`}>
-          {toastMsg.type === "success" ? <FaCheckCircle className="text-lg shrink-0" /> : <FaExclamationCircle className="text-lg shrink-0" />}
-          <span className="text-sm font-semibold">{toastMsg.text}</span>
+          {toastMsg.type === "success" ? (
+            <FaCheckCircle className="text-xl text-emerald-200 dark:text-emerald-300 shrink-0" />
+          ) : (
+            <FaExclamationCircle className="text-xl text-rose-200 dark:text-rose-300 shrink-0" />
+          )}
+          <span className="text-sm font-bold text-white dark:text-emerald-50 tracking-wide">{toastMsg.text}</span>
         </div>
       )}
 
@@ -412,59 +416,57 @@ export default function StudentRegistryPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
         {/* ม.1 (สีเขียวอ่อน) */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-4 border-l-emerald-500 flex items-center gap-5 bg-gradient-to-br from-emerald-500/5 to-white">
-          <div className="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-bold">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-emerald-500 flex items-center gap-5 bg-gradient-to-br from-emerald-500/5 to-white dark:from-emerald-950/20 dark:to-slate-900 hover:shadow-md transition-all">
+          <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 dark:border dark:border-emerald-800/50 rounded-xl flex items-center justify-center text-xl font-bold shrink-0">
             {countM1}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-800">{countM1} คน</h3>
-            <p className="text-sm text-slate-500 font-semibold">ม.1</p>
+            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{countM1} คน</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-semibold">ม.1</p>
           </div>
         </div>
 
         {/* ม.2 (สีม่วงอ่อน) */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-4 border-l-purple-500 flex items-center gap-5 bg-gradient-to-br from-purple-500/5 to-white">
-          <div className="w-12 h-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center text-xl font-bold">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-purple-500 flex items-center gap-5 bg-gradient-to-br from-purple-500/5 to-white dark:from-purple-950/20 dark:to-slate-900 hover:shadow-md transition-all">
+          <div className="w-12 h-12 bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 dark:border dark:border-purple-800/50 rounded-xl flex items-center justify-center text-xl font-bold shrink-0">
             {countM2}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-800">{countM2} คน</h3>
-            <p className="text-sm text-slate-500 font-semibold">ม.2</p>
+            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{countM2} คน</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-semibold">ม.2</p>
           </div>
         </div>
 
         {/* ม.3 (สีฟ้าอ่อน) */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-4 border-l-sky-500 flex items-center gap-5 bg-gradient-to-br from-sky-500/5 to-white">
-          <div className="w-12 h-12 bg-sky-100 text-sky-600 rounded-xl flex items-center justify-center text-xl font-bold">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-sky-500 flex items-center gap-5 bg-gradient-to-br from-sky-500/5 to-white dark:from-sky-950/20 dark:to-slate-900 hover:shadow-md transition-all">
+          <div className="w-12 h-12 bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 dark:border dark:border-sky-800/50 rounded-xl flex items-center justify-center text-xl font-bold shrink-0">
             {countM3}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-800">{countM3} คน</h3>
-            <p className="text-sm text-slate-500 font-semibold">ม.3</p>
+            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{countM3} คน</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-semibold">ม.3</p>
           </div>
         </div>
 
         {/* รวมทั้งหมด */}
-        <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 border-l-4 border-l-slate-400 flex items-center gap-5 bg-gradient-to-br from-slate-500/5 to-white">
-          <div className="w-12 h-12 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center text-xl font-bold">
+        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-slate-400 dark:border-l-slate-600 flex items-center gap-5 bg-gradient-to-br from-slate-500/5 to-white dark:from-slate-800/20 dark:to-slate-900 hover:shadow-md transition-all">
+          <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 dark:border dark:border-slate-700 rounded-xl flex items-center justify-center text-xl font-bold shrink-0">
             {countTotal}
           </div>
           <div>
-            <h3 className="text-2xl font-bold text-slate-800">{countTotal} คน</h3>
-            <p className="text-sm text-slate-500 font-semibold">รวมทั้งหมด</p>
+            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{countTotal} คน</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 font-semibold">รวมทั้งหมด</p>
           </div>
         </div>
 
       </div>
 
       {/* เมนูตัวกรอง และปุ่มจัดการ (ตามรูปเดโม่ 100%) */}
-      <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
         
         {/* กลุ่มตัวกรอง */}
         <div className="flex flex-wrap items-center gap-3">
           
-
-
           {/* ระดับชั้น */}
           <CustomSelect
             options={[
@@ -501,7 +503,7 @@ export default function StudentRegistryPage() {
               placeholder="ค้นหาชื่อ, รหัส..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm w-full focus:outline-none focus:border-sky-500 focus:bg-white transition"
+              className="pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-xl text-sm w-full focus:outline-none focus:border-sky-500 focus:bg-white dark:focus:bg-slate-900 transition"
             />
           </div>
 
@@ -512,7 +514,7 @@ export default function StudentRegistryPage() {
           
           <button
             onClick={() => setIsExcelModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs sm:text-sm transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-xl text-xs sm:text-sm transition-colors shadow-sm cursor-pointer"
           >
             <FaFileExcel />
             <span>นำเข้าไฟล์ Excel / CSV</span>
@@ -524,7 +526,7 @@ export default function StudentRegistryPage() {
               setCreatePassword(String(Math.floor(1000 + Math.random() * 9000))); // เจนรหัสเริ่มต้น 4 หลักให้ทันที
               setIsCreateModalOpen(true);
             }}
-            className="flex items-center gap-2 px-4 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs sm:text-sm transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2.5 bg-sky-500 hover:bg-sky-600 text-white font-bold rounded-xl text-xs sm:text-sm transition-colors shadow-sm cursor-pointer"
           >
             <FaPlus />
             <span>เพิ่มนักเรียนใหม่</span>
@@ -536,12 +538,12 @@ export default function StudentRegistryPage() {
 
       {/* ส่วนรายชื่อนักเรียน (การ์ดแสดงตามรูปเดโม่ 100%) */}
       {isLoading ? (
-        <div className="bg-white p-12 rounded-2xl text-center text-slate-500 font-semibold border border-slate-100">
+        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl text-center text-slate-500 dark:text-slate-400 font-semibold border border-slate-100 dark:border-slate-800">
           กำลังโหลดข้อมูลนักเรียน...
         </div>
       ) : filteredStudents.length === 0 ? (
-        <div className="bg-white p-12 rounded-2xl text-center text-slate-500 font-semibold border border-slate-100 space-y-3">
-          <FaUsers className="text-5xl mx-auto text-slate-300" />
+        <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl text-center text-slate-500 dark:text-slate-400 font-semibold border border-slate-100 dark:border-slate-800 space-y-3">
+          <FaUsers className="text-5xl mx-auto text-slate-300 dark:text-slate-600" />
           <p>ไม่พบรายชื่อนักเรียนที่สอดคล้องกับเงื่อนไขการค้นหา</p>
         </div>
       ) : (
@@ -549,7 +551,7 @@ export default function StudentRegistryPage() {
           {filteredStudents.map((std) => (
             <div 
               key={`${std.id}-${std.classroomId || 'none'}`}
-              className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-100 flex items-center justify-between gap-4 hover:shadow-md transition-shadow relative"
+              className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4 hover:shadow-md dark:hover:border-slate-700 transition-all relative"
             >
               
               {/* ซีกซ้าย: รายละเอียดและอวตาร */}
@@ -559,24 +561,24 @@ export default function StudentRegistryPage() {
                 {std.avatarUrl ? (
                   renderAvatarHelper(std.avatarUrl, std.name, "w-11 h-11 text-base")
                 ) : (
-                  <div className="w-11 h-11 bg-sky-50 text-sky-600 border border-sky-100 rounded-full flex items-center justify-center font-bold text-base shrink-0">
+                  <div className="w-11 h-11 bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-100 dark:border-sky-800/50 rounded-full flex items-center justify-center font-bold text-base shrink-0">
                     {std.name.charAt(0)}
                   </div>
                 )}
 
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-700 text-base">{std.name}</span>
+                    <span className="font-bold text-slate-700 dark:text-slate-200 text-base">{std.name}</span>
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                      std.yearLevel === "ม.1" ? "bg-emerald-100 text-emerald-700" :
-                      std.yearLevel === "ม.2" ? "bg-purple-100 text-purple-700" :
-                      "bg-sky-100 text-sky-700"
+                      std.yearLevel === "ม.1" ? "bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border dark:border-emerald-800/40" :
+                      std.yearLevel === "ม.2" ? "bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-400 border dark:border-purple-800/40" :
+                      "bg-sky-100 dark:bg-sky-950/50 text-sky-700 dark:text-sky-400 border dark:border-sky-800/40"
                     }`}>
                       {std.yearLevel}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-500 mt-1 font-semibold">
-                    รหัส: <span className="font-mono text-slate-600">{std.studentId}</span> - รหัสผ่าน: <span className="font-mono text-emerald-600 bg-emerald-50 px-1 py-0.5 rounded font-black">{std.passwordHint}</span> - {std.yearLevel}/{std.room}
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-semibold">
+                    รหัส: <span className="font-mono text-slate-600 dark:text-slate-300">{std.studentId}</span> - รหัสผ่าน: <span className="font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800/40 px-1 py-0.5 rounded font-black">{std.passwordHint}</span> - {std.yearLevel}/{std.room}
                   </p>
                 </div>
 
@@ -585,8 +587,8 @@ export default function StudentRegistryPage() {
               {/* ซีกขวา: คะแนนและเครื่องมือลบ/แก้ไข */}
               <div className="flex items-center gap-4 sm:gap-6">
                 
-                <span className="font-bold text-slate-800 text-sm sm:text-base shrink-0">
-                  {std.totalPoints.toLocaleString()} <span className="text-xs text-slate-400 font-semibold">pts</span>
+                <span className="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base shrink-0">
+                  {std.totalPoints.toLocaleString()} <span className="text-xs text-slate-400 dark:text-slate-500 font-semibold">pts</span>
                 </span>
 
                 <div className="flex items-center gap-1.5">
@@ -601,7 +603,7 @@ export default function StudentRegistryPage() {
                       setEditRollNumber(std.rollNumber || "");
                       setEditParentPhone(std.parentPhone || "");
                     }}
-                    className="p-2 bg-slate-50 hover:bg-sky-50 text-slate-400 hover:text-sky-600 rounded-xl transition"
+                    className="p-2 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-950/40 text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 rounded-xl transition cursor-pointer"
                     title="แก้ไขข้อมูลนักเรียน"
                   >
                     <FaEdit className="text-sm" />
@@ -613,7 +615,7 @@ export default function StudentRegistryPage() {
                       setTeacherPassword("");
                       setDeletingStudent(std);
                     }}
-                    className="p-2 bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-xl transition"
+                    className="p-2 bg-slate-50 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl transition cursor-pointer"
                     title="ลบข้อมูลนักเรียน"
                   >
                     <FaTrash className="text-sm" />

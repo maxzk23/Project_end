@@ -61,9 +61,9 @@ export default function AttendanceCheckTab({
           
           {/* แถบแจ้งเตือนสถานะล็อก */}
           {isLocked && (
-            <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl mb-5 flex justify-between items-center flex-wrap gap-3">
-              <div className="flex items-center gap-2.5 text-amber-900 text-xs font-bold">
-                <FaLock className="text-amber-600 text-sm shrink-0" />
+            <div className="p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/50 rounded-xl mb-5 flex justify-between items-center flex-wrap gap-3">
+              <div className="flex items-center gap-2.5 text-amber-900 dark:text-amber-200 text-xs font-bold">
+                <FaLock className="text-amber-600 dark:text-amber-400 text-sm shrink-0" />
                 <span>รายการเช็คชื่อของวันนี้ถูกล็อกไว้แล้ว (ป้องกันการแก้ไขโดยไม่ได้รับอนุญาต)</span>
               </div>
               <button
@@ -78,10 +78,10 @@ export default function AttendanceCheckTab({
           )}
 
           <div className="flex justify-between items-center mb-5 flex-wrap gap-3">
-            <h3 className="font-bold text-slate-800 flex items-center gap-2">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
               <span>รายชื่อนักเรียนเช็คชื่อ</span>
               {isLocked && (
-                <span className="bg-slate-100 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-bold border">
+                <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[10px] px-2 py-0.5 rounded-full font-bold border border-slate-200 dark:border-slate-700">
                   🔒 Locked
                 </span>
               )}
@@ -92,14 +92,14 @@ export default function AttendanceCheckTab({
               <button
                 onClick={() => markAllAs(AttendanceStatus.PRESENT)}
                 disabled={isLocked || isPending}
-                className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-bold hover:bg-emerald-100 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50 rounded-lg text-xs font-bold hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 เช็คมาทุกคน
               </button>
               <button
                 onClick={() => markAllAs(AttendanceStatus.ABSENT)}
                 disabled={isLocked || isPending}
-                className="px-3 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 rounded-lg text-xs font-bold hover:bg-rose-100 transition disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-3 py-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border border-rose-200 dark:border-rose-800/50 rounded-lg text-xs font-bold hover:bg-rose-100 dark:hover:bg-rose-900/50 transition disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 เช็คขาดทุกคน
               </button>
@@ -224,7 +224,7 @@ export default function AttendanceCheckTab({
                               className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition disabled:opacity-60 disabled:cursor-not-allowed ${
                                 item.status === "PRESENT"
                                   ? "bg-emerald-500 text-white border-emerald-500 shadow-sm"
-                                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                                  : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                               }`}
                             >
                               มา
@@ -236,7 +236,7 @@ export default function AttendanceCheckTab({
                               className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition disabled:opacity-60 disabled:cursor-not-allowed ${
                                 item.status === "LATE"
                                   ? "bg-amber-500 text-white border-amber-500 shadow-sm"
-                                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                                  : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                               }`}
                             >
                               สาย
@@ -248,7 +248,7 @@ export default function AttendanceCheckTab({
                               className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition disabled:opacity-60 disabled:cursor-not-allowed ${
                                 item.status === "LEAVE"
                                   ? "bg-purple-500 text-white border-purple-500 shadow-sm"
-                                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                                  : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                               }`}
                             >
                               ลาป่วย/ลากิจ
@@ -260,7 +260,7 @@ export default function AttendanceCheckTab({
                               className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition disabled:opacity-60 disabled:cursor-not-allowed ${
                                 item.status === "ABSENT"
                                   ? "bg-rose-500 text-white border-rose-500 shadow-sm"
-                                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                                  : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700"
                               }`}
                             >
                               ขาด
@@ -274,7 +274,7 @@ export default function AttendanceCheckTab({
                             disabled={isLocked || isPending}
                             onChange={(e) => handleNoteChange(item.student.id, e.target.value)}
                             placeholder="ป่วย, ติดธุระ..."
-                            className="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs w-full focus:outline-none focus:bg-white focus:border-sky-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                            className="px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 rounded-lg text-xs w-full focus:outline-none focus:bg-white dark:focus:bg-slate-900 focus:border-sky-500 disabled:opacity-60 disabled:cursor-not-allowed"
                           />
                         </td>
                       </tr>
@@ -313,14 +313,14 @@ export default function AttendanceCheckTab({
       {/* === ส่วนขวา: สถิติกราฟแบบเรียลไทม์ === */}
       <div className="space-y-6 text-left">
         <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-5">
-          <h3 className="font-bold text-slate-800 border-b border-slate-100 pb-3">สถิติห้องเรียนประจำวัน</h3>
+          <h3 className="font-bold text-slate-800 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-3">สถิติห้องเรียนประจำวัน</h3>
 
           {/* กราฟแถบสัดส่วน Segmented Bar Chart */}
           <div className="space-y-1.5">
-            <span className="text-xs text-slate-600 font-semibold block">สัดส่วนการเข้าชั้นเรียนวันนี้:</span>
-            <div className="w-full h-5 rounded-full overflow-hidden flex bg-slate-200 border border-slate-200/80">
+            <span className="text-xs text-slate-600 dark:text-slate-400 font-semibold block">สัดส่วนการเข้าชั้นเรียนวันนี้:</span>
+            <div className="w-full h-5 rounded-full overflow-hidden flex bg-slate-200 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
               {!hasRecords || totalStudents === 0 ? (
-                <div className="w-full h-full bg-slate-200 transition-all duration-300"></div>
+                <div className="w-full h-full bg-slate-200 dark:bg-slate-800 transition-all duration-300"></div>
               ) : (
                 <>
                   <div style={{ width: `${presentPercent}%` }} className="h-full bg-emerald-500 transition-all duration-300" title="มาเรียน"></div>
@@ -331,7 +331,7 @@ export default function AttendanceCheckTab({
               )}
             </div>
             {!hasRecords && totalStudents > 0 && (
-              <p className="text-[11px] text-slate-500 font-medium text-center pt-1">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium text-center pt-1">
                 ยังไม่มีการบันทึกข้อมูลเช็คชื่อประจำวันนี้
               </p>
             )}
@@ -340,29 +340,29 @@ export default function AttendanceCheckTab({
           {/* การ์ดตัวเลขสรุปแยกตามสถานะ */}
           <div className="grid grid-cols-2 gap-3">
             {/* มาเรียน */}
-            <div className="bg-emerald-50/50 p-4 border border-emerald-100 rounded-xl text-center">
-              <span className="text-xl font-black text-emerald-600 block">{presentCount} คน</span>
-              <span className="text-[10px] font-bold text-slate-500">มาเรียน ({presentPercent.toFixed(0)}%)</span>
+            <div className="bg-emerald-50/60 dark:bg-emerald-950/30 p-4 border border-emerald-200/80 dark:border-emerald-800/40 rounded-2xl text-center hover:bg-emerald-100/50 dark:hover:bg-emerald-950/50 transition-all shadow-2xs">
+              <span className="text-xl font-black text-emerald-600 dark:text-emerald-400 block">{presentCount} คน</span>
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mt-1">มาเรียน ({presentPercent.toFixed(0)}%)</span>
             </div>
             {/* สาย */}
-            <div className="bg-amber-50/50 p-4 border border-amber-100 rounded-xl text-center">
-              <span className="text-xl font-black text-amber-600 block">{lateCount} คน</span>
-              <span className="text-[10px] font-bold text-slate-500">มาสาย ({latePercent.toFixed(0)}%)</span>
+            <div className="bg-amber-50/60 dark:bg-amber-950/30 p-4 border border-amber-200/80 dark:border-amber-800/40 rounded-2xl text-center hover:bg-amber-100/50 dark:hover:bg-amber-950/50 transition-all shadow-2xs">
+              <span className="text-xl font-black text-amber-600 dark:text-amber-400 block">{lateCount} คน</span>
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mt-1">มาสาย ({latePercent.toFixed(0)}%)</span>
             </div>
             {/* ลาป่วย/ลากิจ */}
-            <div className="bg-purple-50/50 p-4 border border-purple-100 rounded-xl text-center">
-              <span className="text-xl font-black text-purple-600 block">{leaveCount} คน</span>
-              <span className="text-[10px] font-bold text-slate-500">ลาป่วย/ลากิจ ({leavePercent.toFixed(0)}%)</span>
+            <div className="bg-purple-50/60 dark:bg-purple-950/30 p-4 border border-purple-200/80 dark:border-purple-800/40 rounded-2xl text-center hover:bg-purple-100/50 dark:hover:bg-purple-950/50 transition-all shadow-2xs">
+              <span className="text-xl font-black text-purple-600 dark:text-purple-400 block">{leaveCount} คน</span>
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mt-1">ลาป่วย/ลากิจ ({leavePercent.toFixed(0)}%)</span>
             </div>
             {/* ขาด */}
-            <div className="bg-rose-50/50 p-4 border border-rose-100 rounded-xl text-center">
-              <span className="text-xl font-black text-rose-600 block">{absentCount} คน</span>
-              <span className="text-[10px] font-bold text-slate-500">ขาดเรียน ({absentPercent.toFixed(0)}%)</span>
+            <div className="bg-rose-50/60 dark:bg-rose-950/30 p-4 border border-rose-200/80 dark:border-rose-800/40 rounded-2xl text-center hover:bg-rose-100/50 dark:hover:bg-rose-950/50 transition-all shadow-2xs">
+              <span className="text-xl font-black text-rose-600 dark:text-rose-400 block">{absentCount} คน</span>
+              <span className="text-[11px] font-bold text-slate-600 dark:text-slate-300 block mt-1">ขาดเรียน ({absentPercent.toFixed(0)}%)</span>
             </div>
           </div>
 
-          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-500 leading-relaxed">
-            👉 <strong>สัดส่วนการมาเรียนจริง:</strong> คิดเป็น {((presentCount + lateCount) / (totalStudents || 1) * 100).toFixed(0)}% ของนักเรียนทั้งหมดในห้องเรียน
+          <div className="p-4 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs text-slate-600 dark:text-slate-300 leading-relaxed shadow-xs">
+            👉 <strong className="text-slate-800 dark:text-slate-100">สัดส่วนการมาเรียนจริง:</strong> คิดเป็น {((presentCount + lateCount) / (totalStudents || 1) * 100).toFixed(0)}% ของนักเรียนทั้งหมดในห้องเรียน
           </div>
         </div>
       </div>

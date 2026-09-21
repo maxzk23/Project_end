@@ -66,8 +66,9 @@ export default function ConfirmModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200 select-none"
       onClick={onClose}
     >
+      {/* กล่องเนื้อหาของ Modal */}
       <div 
-        className="bg-white w-full max-w-sm sm:max-w-md rounded-[28px] shadow-2xl border border-slate-100 p-6 sm:p-7 text-center flex flex-col items-center animate-in zoom-in-95 duration-200"
+        className="bg-white dark:bg-slate-900 w-full max-w-sm sm:max-w-md rounded-[28px] shadow-2xl border border-slate-100 dark:border-slate-800 p-6 sm:p-7 text-center flex flex-col items-center animate-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* ไอคอนวงกลมด้านบน */}
@@ -76,12 +77,12 @@ export default function ConfirmModal({
         </div>
 
         {/* หัวข้อเรื่อง */}
-        <h3 className="text-lg sm:text-xl font-extrabold text-slate-800 text-center mb-2 tracking-tight">
+        <h3 className="text-lg sm:text-xl font-extrabold text-slate-800 dark:text-slate-100 text-center mb-2 tracking-tight">
           {title}
         </h3>
 
         {/* รายละเอียดคำอธิบาย */}
-        <p className="text-xs sm:text-sm text-slate-400 font-semibold text-center leading-relaxed mb-6 max-w-sm">
+        <p className="text-xs sm:text-sm text-slate-400 dark:text-slate-400 font-semibold text-center leading-relaxed mb-6 max-w-sm">
           {description}
         </p>
 
@@ -91,7 +92,7 @@ export default function ConfirmModal({
             type="button"
             onClick={onClose}
             disabled={isLoading}
-            className="flex-1 py-3 px-4 bg-white border border-slate-200 text-slate-600 font-bold rounded-2xl text-xs sm:text-sm hover:bg-slate-50 transition cursor-pointer disabled:opacity-50 outline-none"
+            className="flex-1 py-3 px-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 font-bold rounded-2xl text-xs sm:text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition cursor-pointer disabled:opacity-50 outline-none"
           >
             {cancelText}
           </button>

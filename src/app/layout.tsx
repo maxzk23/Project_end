@@ -15,6 +15,8 @@ const geistMono = Geist_Mono({
   display: "swap",
 });
 
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+
 export const metadata: Metadata = {
   title: {
     default: "LMS - ระบบจัดการเรียนการสอน",
@@ -32,8 +34,19 @@ export default function RootLayout({
     <html
       lang="th"
       className={`${sarabun.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className={`${sarabun.className} min-h-full flex flex-col`}>{children}</body>
+      <body className={`${sarabun.className} min-h-full flex flex-col bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-200`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
+

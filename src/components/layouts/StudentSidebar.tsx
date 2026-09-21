@@ -66,17 +66,18 @@ export default function StudentSidebar({ isOpen = false, onClose }: SidebarProps
 
   const isActive = (path: string) => {
     return isCurrentActive(path) 
-      ? "bg-sky-500 text-white shadow-sm shadow-sky-200 font-semibold" 
-      : "text-slate-500 hover:bg-slate-50 hover:text-slate-700 font-medium";
+      ? "bg-sky-500 text-white shadow-sm shadow-sky-200 dark:shadow-none font-semibold" 
+      : "text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-700 dark:hover:text-slate-200 font-medium";
   };
 
   return (
-    <aside className={`fixed top-0 left-0 h-screen w-[260px] bg-white border-r border-slate-200 flex flex-col z-50 transition-all duration-300 ${
+    <aside className={`fixed top-0 left-0 h-screen w-[260px] bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col z-50 transition-all duration-300 ${
       isOpen ? "translate-x-0" : "-translate-x-full"
     } lg:translate-x-0`}>
       
       {/* ส่วนหัวของ Sidebar (โลโก้ / แบรนด์) */}
-      <div className="p-6 text-2xl font-bold text-sky-700 flex items-center justify-between border-b border-slate-200">
+      <div className="p-6 text-2xl font-bold text-sky-700 dark:text-sky-400 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
+
         <div className="flex items-center gap-3">
           <FaGraduationCap className="text-3xl drop-shadow-sm text-sky-500" />
           <span>LMS Student</span>
@@ -189,7 +190,7 @@ export default function StudentSidebar({ isOpen = false, onClose }: SidebarProps
       <div className="p-4 mt-auto">
         <button 
           onClick={() => logout()} // เรียกใช้งาน Action logout เมื่อคลิก
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 text-slate-500 hover:text-rose-600 hover:bg-rose-50/80 rounded-xl font-semibold transition-all duration-200 cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50/80 dark:hover:bg-rose-950/40 rounded-xl font-semibold transition-all duration-200 cursor-pointer"
         >
           <FaSignOutAlt className="text-lg" />
           <span>ออกจากระบบ</span>

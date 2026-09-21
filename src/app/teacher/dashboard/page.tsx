@@ -196,17 +196,17 @@ export default function TeacherDashboard() {
       
       {/* Toast แจ้งเตือนสิทธิ์ล็อกอินสำเร็จเลียนแบบรูปภาพเดโม่ */}
       {showLoginToast && (
-        <div className="fixed top-5 right-5 z-[60] bg-white border border-slate-200 p-4 rounded-2xl shadow-xl flex items-center gap-3.5 max-w-sm animate-in slide-in-from-top-6 duration-300 border-l-[5px] border-l-slate-800">
-          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 shrink-0 text-base">
+        <div className="fixed top-5 right-5 z-[99999] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-4 rounded-2xl shadow-2xl flex items-center gap-3.5 max-w-sm animate-in slide-in-from-top-6 duration-300 border-l-[5px] border-l-slate-800 dark:border-l-emerald-500">
+          <div className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-700 shrink-0 text-base">
             <FaCheckCircle className="text-emerald-500" />
           </div>
           <div className="text-left">
-            <h4 className="text-xs font-black text-slate-800 tracking-tight">เข้าสู่ระบบสำเร็จ</h4>
-            <p className="text-[10px] text-slate-400 font-semibold mt-0.5">ยินดีต้อนรับคุณครูเข้าสู่ระบบจัดการ</p>
+            <h4 className="text-xs font-black text-slate-800 dark:text-slate-100 tracking-tight">เข้าสู่ระบบสำเร็จ</h4>
+            <p className="text-[10px] text-slate-400 dark:text-slate-400 font-semibold mt-0.5">ยินดีต้อนรับคุณครูเข้าสู่ระบบจัดการ</p>
           </div>
           <button 
             onClick={() => setShowLoginToast(false)} 
-            className="text-slate-300 hover:text-slate-500 font-bold ml-2 text-base outline-none"
+            className="text-slate-300 dark:text-slate-500 hover:text-slate-500 dark:hover:text-slate-300 font-bold ml-2 text-base outline-none cursor-pointer"
           >
             &times;
           </button>
@@ -371,14 +371,14 @@ export default function TeacherDashboard() {
               <span>สรุปการเข้าเรียนประจำวัน (Daily Attendance Summary)</span>
             </h3>
             
-            <p className="text-xs text-slate-600 font-medium">
+            <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
               สัดส่วนการเข้าเรียนของชั้นเรียนห้องเรียนปัจจุบัน (คำนวณแบบเรียลไทม์)
             </p>
 
             {/* Segmented bar chart */}
-            <div className="w-full h-3 rounded-full overflow-hidden flex bg-slate-200 border border-slate-200/80">
+            <div className="w-full h-3 rounded-full overflow-hidden flex bg-slate-200 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
               {attPercent.total === 0 ? (
-                <div className="w-full h-full bg-slate-200 transition-all duration-300"></div>
+                <div className="w-full h-full bg-slate-200 dark:bg-slate-800 transition-all duration-300"></div>
               ) : (
                 <>
                   <div style={{ width: `${attPercent.present}%` }} className="h-full bg-emerald-500 transition-all duration-300"></div>
@@ -390,7 +390,7 @@ export default function TeacherDashboard() {
             </div>
 
             {attPercent.total === 0 && (
-              <p className="text-[11px] text-slate-500 font-semibold text-center -mt-1">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold text-center -mt-1">
                 ยังไม่มีการบันทึกข้อมูลการเข้าเรียนในวันนี้ (0 คน)
               </p>
             )}
@@ -398,30 +398,30 @@ export default function TeacherDashboard() {
             {/* การ์ดสถิติย่อขอบข้างหลากสี */}
             <div className="grid grid-cols-4 gap-2">
               {/* มาเรียน */}
-              <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 border-l-[3px] border-l-emerald-500 text-center hover:bg-slate-100/60 transition">
-                <span className="text-xs font-bold text-emerald-600 block">{summaryData?.attendance.present ?? 0} คน</span>
-                <span className="text-[9px] text-slate-500 font-bold block mt-0.5">มาเรียน</span>
+              <div className="bg-emerald-50/40 dark:bg-emerald-950/30 p-2.5 rounded-xl border border-emerald-100/80 dark:border-emerald-800/40 border-l-[3px] border-l-emerald-500 text-center hover:bg-emerald-100/40 dark:hover:bg-emerald-900/30 transition">
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 block">{summaryData?.attendance.present ?? 0} คน</span>
+                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-bold block mt-0.5">มาเรียน</span>
               </div>
               {/* สาย */}
-              <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 border-l-[3px] border-l-amber-500 text-center hover:bg-slate-100/60 transition">
-                <span className="text-xs font-bold text-amber-600 block">{summaryData?.attendance.late ?? 0} คน</span>
-                <span className="text-[9px] text-slate-500 font-bold block mt-0.5">สาย</span>
+              <div className="bg-amber-50/40 dark:bg-amber-950/30 p-2.5 rounded-xl border border-amber-100/80 dark:border-amber-800/40 border-l-[3px] border-l-amber-500 text-center hover:bg-amber-100/40 dark:hover:bg-amber-900/30 transition">
+                <span className="text-xs font-bold text-amber-600 dark:text-amber-400 block">{summaryData?.attendance.late ?? 0} คน</span>
+                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-bold block mt-0.5">สาย</span>
               </div>
               {/* ลา */}
-              <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 border-l-[3px] border-l-purple-500 text-center hover:bg-slate-100/60 transition">
-                <span className="text-xs font-bold text-purple-600 block">{summaryData?.attendance.leave ?? 0} คน</span>
-                <span className="text-[9px] text-slate-500 font-bold block mt-0.5">ลาป่วย/กิจ</span>
+              <div className="bg-purple-50/40 dark:bg-purple-950/30 p-2.5 rounded-xl border border-purple-100/80 dark:border-purple-800/40 border-l-[3px] border-l-purple-500 text-center hover:bg-purple-100/40 dark:hover:bg-purple-900/30 transition">
+                <span className="text-xs font-bold text-purple-600 dark:text-purple-400 block">{summaryData?.attendance.leave ?? 0} คน</span>
+                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-bold block mt-0.5">ลาป่วย/กิจ</span>
               </div>
               {/* ขาดเรียน */}
-              <div className="bg-slate-50/50 p-2.5 rounded-xl border border-slate-100 border-l-[3px] border-l-rose-500 text-center hover:bg-slate-100/60 transition">
-                <span className="text-xs font-bold text-rose-600 block">{summaryData?.attendance.absent ?? 0} คน</span>
-                <span className="text-[9px] text-slate-500 font-bold block mt-0.5">ขาดเรียน</span>
+              <div className="bg-rose-50/40 dark:bg-rose-950/30 p-2.5 rounded-xl border border-rose-100/80 dark:border-rose-800/40 border-l-[3px] border-l-rose-500 text-center hover:bg-rose-100/40 dark:hover:bg-rose-900/30 transition">
+                <span className="text-xs font-bold text-rose-600 dark:text-rose-400 block">{summaryData?.attendance.absent ?? 0} คน</span>
+                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-bold block mt-0.5">ขาดเรียน</span>
               </div>
             </div>
 
             <Link 
               href="/teacher/attendance"
-              className="w-full flex items-center justify-center gap-1.5 py-3.5 bg-sky-50 text-sky-600 font-bold text-xs rounded-xl hover:bg-sky-100 hover:shadow transition-all shadow-xs border border-sky-100 active:scale-[0.99]"
+              className="w-full flex items-center justify-center gap-1.5 py-3.5 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 font-bold text-xs rounded-xl hover:bg-sky-100 dark:hover:bg-sky-900/50 hover:shadow transition-all shadow-xs border border-sky-100 dark:border-sky-800/50 active:scale-[0.99]"
             >
               <FaUserCheck />
               <span>ลงทะเบียน / บันทึกข้อมูลการเข้าเรียนประจำวัน</span>
@@ -440,12 +440,12 @@ export default function TeacherDashboard() {
             ) : (
               <div className="space-y-3">
                 {summaryData?.recentSubmissions.map((sub) => (
-                  <div key={sub.id} className="flex items-center justify-between p-3 bg-slate-50 border border-slate-100 rounded-xl hover:bg-slate-100/50 transition">
+                  <div key={sub.id} className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 rounded-xl hover:bg-slate-100/50 dark:hover:bg-slate-800/90 transition">
                     <div className="flex items-center gap-3">
                       <FaFilePdf className="text-2xl text-rose-500 shrink-0" />
                       <div>
-                        <h5 className="font-bold text-slate-700 text-xs">{sub.assignmentTitle}</h5>
-                        <p className="text-[9px] text-slate-400 font-semibold mt-0.5">
+                        <h5 className="font-bold text-slate-700 dark:text-slate-200 text-xs">{sub.assignmentTitle}</h5>
+                        <p className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold mt-0.5">
                           ส่งโดย: {sub.studentName} | เมื่อเวลา {new Date(sub.submittedAt).toLocaleTimeString("th-TH", { hour: '2-digit', minute: '2-digit' })} น.
                         </p>
                       </div>
@@ -463,7 +463,7 @@ export default function TeacherDashboard() {
 
             <Link 
               href="/teacher/grading"
-              className="w-full flex items-center justify-center gap-1.5 py-3.5 bg-sky-50 text-sky-600 font-bold text-xs rounded-xl hover:bg-sky-100 transition-colors shadow-sm border border-sky-100"
+              className="w-full flex items-center justify-center gap-1.5 py-3.5 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 font-bold text-xs rounded-xl hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors shadow-sm border border-sky-100 dark:border-sky-800/50"
             >
               <FaFileSignature />
               <span>ไปที่แผงตรวจการบ้านทั้งหมด</span>
@@ -491,10 +491,10 @@ export default function TeacherDashboard() {
             ) : (
               <div className="space-y-3">
                 {summaryData?.materials.map((m) => (
-                  <div key={m.id} className="flex justify-between items-center p-3 bg-slate-50 border border-slate-100 rounded-xl">
+                  <div key={m.id} className="flex justify-between items-center p-3 bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800 rounded-xl">
                     <div className="min-w-0 flex-1">
-                      <h5 className="font-bold text-slate-700 text-xs truncate">{m.title}</h5>
-                      <span className="text-[9px] text-slate-400 font-semibold block mt-0.5">{m.isLocked ? "ซ่อนอยู่" : "เปิดเรียนรู้"}</span>
+                      <h5 className="font-bold text-slate-700 dark:text-slate-200 text-xs truncate">{m.title}</h5>
+                      <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold block mt-0.5">{m.isLocked ? "ซ่อนอยู่" : "เปิดเรียนรู้"}</span>
                     </div>
                     
                     <button
@@ -503,7 +503,7 @@ export default function TeacherDashboard() {
                       className="text-2xl cursor-pointer shrink-0"
                     >
                       {m.isLocked ? (
-                        <FaToggleOff className="text-slate-300" />
+                        <FaToggleOff className="text-slate-300 dark:text-slate-600" />
                       ) : (
                         <FaToggleOn className="text-sky-500" />
                       )}
@@ -515,7 +515,7 @@ export default function TeacherDashboard() {
 
             <Link 
               href="/teacher/materials"
-              className="w-full flex items-center justify-center gap-1.5 py-3.5 bg-sky-50 text-sky-600 font-bold text-xs rounded-xl hover:bg-sky-100 transition-colors shadow-sm border border-sky-100"
+              className="w-full flex items-center justify-center gap-1.5 py-3.5 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 font-bold text-xs rounded-xl hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors shadow-sm border border-sky-100 dark:border-sky-800/50"
             >
               <span>ไปที่แผงควบคุมสิทธิ์บทเรียน (Time-lock)</span>
             </Link>
@@ -533,19 +533,19 @@ export default function TeacherDashboard() {
             ) : (
               <div className="space-y-2.5">
                 {summaryData?.leaderboard.map((student) => (
-                  <div key={student.rank} className="flex justify-between items-center py-2 border-b border-slate-100 last:border-0">
+                  <div key={student.rank} className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
                     <div className="flex items-center gap-3">
                       <div className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center ${
-                        student.rank === 1 ? "bg-yellow-100 text-yellow-600" : "bg-slate-100 text-slate-500"
+                        student.rank === 1 ? "bg-yellow-100 text-yellow-600 dark:bg-yellow-950/50 dark:text-yellow-400" : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
                       }`}>
                         {student.rank}
                       </div>
                       <div>
-                        <h5 className="font-bold text-slate-700 text-xs">{student.studentName}</h5>
-                        <span className="text-[9px] text-slate-400 font-semibold">ห้อง ม.3/1 • ม.3</span>
+                        <h5 className="font-bold text-slate-700 dark:text-slate-200 text-xs">{student.studentName}</h5>
+                        <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">ห้อง ม.3/1 • ม.3</span>
                       </div>
                     </div>
-                    <span className="font-mono text-xs font-black text-sky-600">{student.totalPoints.toLocaleString()} pts</span>
+                    <span className="font-mono text-xs font-black text-sky-600 dark:text-sky-400">{student.totalPoints.toLocaleString()} pts</span>
                   </div>
                 ))}
               </div>

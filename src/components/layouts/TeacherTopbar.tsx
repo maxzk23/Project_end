@@ -216,7 +216,7 @@ export default function TeacherTopbar({ onMenuClick }: TopbarProps) {
       <div className="flex items-center gap-3">
         <button 
           onClick={onMenuClick}
-          className="lg:hidden p-2.5 bg-white border border-slate-200 text-slate-500 rounded-xl hover:bg-slate-50 hover:text-sky-600 hover:border-sky-500 transition shrink-0 shadow-xs"
+          className="lg:hidden p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-300 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-sky-600 dark:hover:text-sky-400 hover:border-sky-500 transition shrink-0 shadow-xs"
           aria-label="เปิดเมนู"
         >
           <FaBars className="text-base" />
@@ -224,19 +224,19 @@ export default function TeacherTopbar({ onMenuClick }: TopbarProps) {
 
         {isDashboard ? (
           <div className="flex flex-col text-left">
-            <h1 className="text-lg sm:text-2xl font-black text-slate-800 tracking-tight">
+            <h1 className="text-lg sm:text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
               สวัสดี, {profile ? (profile.name.startsWith("คุณครู") ? profile.name.replace("คุณครู", "ครู") : profile.name) : "คุณครู"}!
             </h1>
-            <p className="text-[11px] sm:text-xs text-slate-600 mt-0.5 sm:mt-1 font-semibold">ภาพรวมการเรียนการสอน ห้อง ม.3/1 ประจำวันนี้</p>
+            <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 mt-0.5 sm:mt-1 font-semibold">ภาพรวมการเรียนการสอน ห้อง ม.3/1 ประจำวันนี้</p>
           </div>
         ) : (
           getPageTitle(pathname) && (
             <div className="flex items-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-semibold select-none min-w-0">
-              <Link href="/teacher/dashboard" className="text-slate-500 hover:text-sky-600 transition font-bold flex items-center gap-1 shrink-0">
+              <Link href="/teacher/dashboard" className="text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition font-bold flex items-center gap-1 shrink-0">
                 <span>แดชบอร์ด</span>
               </Link>
-              <span className="text-slate-300 font-light shrink-0">/</span>
-              <span className="text-sky-700 bg-sky-50 border border-sky-200/80 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-extrabold flex items-center gap-1.5 shadow-2xs truncate max-w-[130px] sm:max-w-none">
+              <span className="text-slate-300 dark:text-slate-600 font-light shrink-0">/</span>
+              <span className="text-sky-700 dark:text-sky-300 bg-sky-50 dark:bg-sky-950/60 border border-sky-200/80 dark:border-sky-800 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full font-extrabold flex items-center gap-1.5 shadow-2xs truncate max-w-[130px] sm:max-w-none">
                 <span className="w-1.5 h-1.5 rounded-full bg-sky-500 animate-pulse shrink-0"></span>
                 <span className="truncate">{getPageTitle(pathname)}</span>
               </span>
@@ -252,12 +252,12 @@ export default function TeacherTopbar({ onMenuClick }: TopbarProps) {
         <div className="relative">
           <button 
             onClick={toggleNotify}
-            className="relative bg-white border border-slate-200 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex justify-center items-center text-slate-500 hover:text-sky-600 hover:border-sky-500 transition-all duration-300 shadow-xs"
+            className="relative bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 w-10 h-10 sm:w-12 sm:h-12 rounded-full flex justify-center items-center text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 hover:border-sky-500 dark:hover:border-sky-500 transition-all duration-300 shadow-xs"
           >
             <FaBell className="text-base sm:text-xl" />
             {/* ป้ายตัวเลขแจ้งเตือน */}
             {unreadCount > 0 && (
-              <div className="absolute top-1 sm:top-1.5 right-1 sm:right-1.5 min-w-[16px] sm:min-w-[18px] h-[16px] sm:h-[18px] bg-rose-500 rounded-full border-2 border-white text-[9px] font-bold text-white flex items-center justify-center px-1">
+              <div className="absolute top-1 sm:top-1.5 right-1 sm:right-1.5 min-w-[16px] sm:min-w-[18px] h-[16px] sm:h-[18px] bg-rose-500 rounded-full border-2 border-white dark:border-slate-800 text-[9px] font-bold text-white flex items-center justify-center px-1">
                 {unreadCount}
               </div>
             )}
@@ -343,12 +343,12 @@ export default function TeacherTopbar({ onMenuClick }: TopbarProps) {
         {/* ส่วนข้อมูลโปรไฟล์ครูตามรูปภาพเดโม่ */}
         <Link 
           href="/teacher/profile"
-          className="flex items-center gap-3 bg-white pr-5 pl-1.5 py-1 rounded-full border border-slate-200 cursor-pointer hover:shadow-sm hover:border-sky-300 transition-all select-none"
+          className="flex items-center gap-3 bg-white dark:bg-slate-800/90 pr-5 pl-1.5 py-1 rounded-full border border-slate-200 dark:border-slate-700 cursor-pointer hover:shadow-sm hover:border-sky-300 dark:hover:border-sky-500 transition-all select-none"
         >
           {renderAvatarHelper(profile?.avatarUrl, profile?.name || "ครู", "w-9 h-9 text-base")}
           <div className="hidden md:block text-left">
-            <h4 className="text-xs font-bold text-slate-800">{profile ? profile.name : "กำลังโหลด..."}</h4>
-            <p className="text-[10px] text-slate-400 font-semibold">
+            <h4 className="text-xs font-bold text-slate-800 dark:text-slate-100">{profile ? profile.name : "กำลังโหลด..."}</h4>
+            <p className="text-[10px] text-slate-400 dark:text-slate-400 font-semibold">
               {profile ? (profile.role === "ADMIN" ? "ผู้ดูแลระบบ" : "ครูประจำวิชา วิทยาการคำนวณ") : "คุณครู"}
             </p>
           </div>

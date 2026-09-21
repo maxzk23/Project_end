@@ -11,7 +11,7 @@ export default function TeacherLayout({ children }: { children: ReactNode }) {
 
   return (
     // พื้นหลังสีเทาอ่อน (slate-50) เพื่อความสบายตา
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans flex overflow-x-hidden">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans flex overflow-x-hidden transition-colors duration-200">
       
       {/* แทรก Sidebar ของคุณครู */}
       <TeacherSidebar 

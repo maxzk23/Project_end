@@ -1,8 +1,16 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #0f172a;
+}
+
+.dark {
+  --background: #090d16;
+  --foreground: #f8fafc;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -12,13 +20,406 @@
   --font-mono: var(--font-geist-mono);
 }
 
-
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sarabun), ui-sans-serif, system-ui, sans-serif;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
+
+/* ==========================================
+   GLOBAL DARK MODE THEME REFINEMENTS
+   ========================================== */
+
+.dark {
+  color-scheme: dark;
+}
+
+.dark .bg-white:not([class*="dark:bg-"]) {
+  background-color: #0f172a;
+}
+
+.dark .bg-slate-50:not([class*="dark:bg-"]) {
+  background-color: #090d16;
+}
+
+.dark .bg-slate-100:not([class*="dark:bg-"]) {
+  background-color: #1e293b;
+}
+
+.dark .border-slate-100:not([class*="dark:border-"]),
+.dark .border-slate-200:not([class*="dark:border-"]),
+.dark .border-slate-200\/60:not([class*="dark:border-"]),
+.dark .border-slate-200\/80:not([class*="dark:border-"]) {
+  border-color: #1e293b;
+}
+
+.dark .divide-slate-50 > :not([hidden]) ~ :not([hidden]):not([class*="dark:divide-"]),
+.dark .divide-slate-100 > :not([hidden]) ~ :not([hidden]):not([class*="dark:divide-"]),
+.dark .divide-slate-200 > :not([hidden]) ~ :not([hidden]):not([class*="dark:divide-"]) {
+  border-color: #1e293b;
+}
+
+/* Dark mode typography adjustments */
+.dark .text-slate-900:not([class*="dark:text-"]),
+.dark .text-slate-800:not([class*="dark:text-"]) {
+  color: #f8fafc;
+}
+
+.dark .text-slate-700:not([class*="dark:text-"]) {
+  color: #e2e8f0;
+}
+
+.dark .text-slate-600:not([class*="dark:text-"]) {
+  color: #cbd5e1;
+}
+
+.dark .text-slate-500:not([class*="dark:text-"]) {
+  color: #94a3b8;
+}
+
+.dark .text-slate-400:not([class*="dark:text-"]) {
+  color: #64748b;
+}
+
+/* ==========================================
+   LEADERBOARD RANK BADGES IN DARK MODE
+   ========================================== */
+
+.dark .leaderboard-rank-1 {
+  background-color: rgba(245, 158, 11, 0.18) !important;
+  border-color: rgba(251, 191, 36, 0.45) !important;
+  color: #fcd34d !important;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.25) !important;
+}
+.dark .leaderboard-rank-1 svg {
+  color: #fbbf24 !important;
+}
+
+.dark .leaderboard-rank-2 {
+  background-color: rgba(203, 213, 225, 0.18) !important;
+  border-color: rgba(226, 232, 240, 0.45) !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 0 12px rgba(203, 213, 225, 0.2) !important;
+}
+.dark .leaderboard-rank-2 svg {
+  color: #e2e8f0 !important;
+}
+
+.dark .leaderboard-rank-3 {
+  background-color: rgba(249, 115, 22, 0.18) !important;
+  border-color: rgba(251, 146, 60, 0.45) !important;
+  color: #fdba74 !important;
+  box-shadow: 0 0 12px rgba(249, 115, 22, 0.25) !important;
+}
+.dark .leaderboard-rank-3 svg {
+  color: #fb923c !important;
+}
+
+.dark .leaderboard-rank-other {
+  background-color: rgba(30, 41, 59, 0.9) !important;
+  border-color: rgba(51, 65, 85, 0.8) !important;
+  color: #cbd5e1 !important;
+}
+
+/* ==========================================
+   ALL BUTTONS STYLING IN DARK MODE
+   ========================================== */
+
+/* 1. Neutral / White / Light Surface Buttons */
+.dark button.bg-white,
+.dark button[class*="bg-white"],
+.dark a.bg-white,
+.dark a[class*="bg-white"] {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark button.bg-white:hover,
+.dark button[class*="bg-white"]:hover,
+.dark a.bg-white:hover,
+.dark a[class*="bg-white"]:hover {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #ffffff !important;
+}
+
+.dark button.bg-slate-50,
+.dark button.bg-slate-100,
+.dark button[class*="bg-slate-50"],
+.dark button[class*="bg-slate-100"],
+.dark a.bg-slate-50,
+.dark a.bg-slate-100,
+.dark a[class*="bg-slate-50"],
+.dark a[class*="bg-slate-100"] {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+  color: #e2e8f0 !important;
+}
+
+.dark button.bg-slate-50:hover,
+.dark button.bg-slate-100:hover,
+.dark button[class*="bg-slate-50"]:hover,
+.dark button[class*="bg-slate-100"]:hover,
+.dark a.bg-slate-50:hover,
+.dark a.bg-slate-100:hover,
+.dark a[class*="bg-slate-50"]:hover,
+.dark a[class*="bg-slate-100"]:hover {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #ffffff !important;
+}
+
+/* Prevent bright hover flash on buttons/links in dark mode */
+.dark button[class*="hover:bg-slate-50"]:hover,
+.dark button[class*="hover:bg-slate-100"]:hover,
+.dark button[class*="hover:bg-slate-200"]:hover,
+.dark a[class*="hover:bg-slate-50"]:hover,
+.dark a[class*="hover:bg-slate-100"]:hover,
+.dark a[class*="hover:bg-slate-200"]:hover {
+  background-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+/* 2. Soft / Tinted Action Buttons in Dark Mode */
+.dark button[class*="bg-sky-50"],
+.dark a[class*="bg-sky-50"] {
+  background-color: rgba(2, 132, 199, 0.18) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  color: #38bdf8 !important;
+}
+.dark button[class*="bg-sky-50"]:hover,
+.dark a[class*="bg-sky-50"]:hover {
+  background-color: rgba(2, 132, 199, 0.32) !important;
+  border-color: rgba(56, 189, 248, 0.5) !important;
+  color: #7dd3fc !important;
+}
+
+.dark button[class*="bg-emerald-50"],
+.dark a[class*="bg-emerald-50"] {
+  background-color: rgba(16, 185, 129, 0.18) !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+  color: #34d399 !important;
+}
+.dark button[class*="bg-emerald-50"]:hover,
+.dark a[class*="bg-emerald-50"]:hover {
+  background-color: rgba(16, 185, 129, 0.32) !important;
+  border-color: rgba(52, 211, 153, 0.5) !important;
+  color: #6ee7b7 !important;
+}
+
+.dark button[class*="bg-rose-50"],
+.dark a[class*="bg-rose-50"],
+.dark button[class*="bg-red-50"],
+.dark a[class*="bg-red-50"] {
+  background-color: rgba(244, 63, 94, 0.18) !important;
+  border-color: rgba(251, 113, 133, 0.35) !important;
+  color: #fb7185 !important;
+}
+.dark button[class*="bg-rose-50"]:hover,
+.dark a[class*="bg-rose-50"]:hover,
+.dark button[class*="bg-red-50"]:hover,
+.dark a[class*="bg-red-50"]:hover {
+  background-color: rgba(244, 63, 94, 0.32) !important;
+  border-color: rgba(251, 113, 133, 0.5) !important;
+  color: #fda4af !important;
+}
+
+.dark button[class*="bg-amber-50"],
+.dark a[class*="bg-amber-50"],
+.dark button[class*="bg-yellow-50"],
+.dark a[class*="bg-yellow-50"] {
+  background-color: rgba(245, 158, 11, 0.18) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+  color: #fbbf24 !important;
+}
+.dark button[class*="bg-amber-50"]:hover,
+.dark a[class*="bg-amber-50"]:hover,
+.dark button[class*="bg-yellow-50"]:hover,
+.dark a[class*="bg-yellow-50"]:hover {
+  background-color: rgba(245, 158, 11, 0.32) !important;
+  border-color: rgba(251, 191, 36, 0.5) !important;
+  color: #fde68a !important;
+}
+
+.dark button[class*="bg-purple-50"],
+.dark a[class*="bg-purple-50"],
+.dark button[class*="bg-indigo-50"],
+.dark a[class*="bg-indigo-50"] {
+  background-color: rgba(168, 85, 247, 0.18) !important;
+  border-color: rgba(192, 132, 252, 0.35) !important;
+  color: #c084fc !important;
+}
+.dark button[class*="bg-purple-50"]:hover,
+.dark a[class*="bg-purple-50"]:hover,
+.dark button[class*="bg-indigo-50"]:hover,
+.dark a[class*="bg-indigo-50"]:hover {
+  background-color: rgba(168, 85, 247, 0.32) !important;
+  border-color: rgba(192, 132, 252, 0.5) !important;
+  color: #e9d5ff !important;
+}
+
+/* 3. Shadow Adjustments on Buttons in Dark Mode */
+.dark button[class*="shadow-sky-200"],
+.dark button[class*="shadow-rose-200"],
+.dark button[class*="shadow-slate-200"],
+.dark button[class*="shadow-amber-200"],
+.dark button[class*="shadow-emerald-200"] {
+  box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* ==========================================
+   BOXES, CARDS & CONTAINERS IN DARK MODE
+   ========================================== */
+
+/* 1. Track and unfilled progress bar boxes */
+.dark div.bg-slate-200:not([class*="dark:bg-"]),
+.dark div[class*="bg-slate-200"]:not([class*="dark:bg-"]) {
+  background-color: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+/* 2. Slate-50 and Slate-100 inner boxes, cards, list rows */
+.dark div[class*="bg-slate-50/"]:not([class*="dark:bg-"]),
+.dark p[class*="bg-slate-50/"]:not([class*="dark:bg-"]),
+.dark a[class*="bg-slate-50/"]:not([class*="dark:bg-"]),
+.dark div.bg-slate-50:not([class*="dark:bg-"]),
+.dark div[class~="bg-slate-50"]:not([class*="dark:bg-"]) {
+  background-color: #141e33 !important;
+  border-color: #243048 !important;
+}
+
+.dark div[class*="bg-slate-100/"]:not([class*="dark:bg-"]),
+.dark div.bg-slate-100:not([class*="dark:bg-"]),
+.dark div[class~="bg-slate-100"]:not([class*="dark:bg-"]) {
+  background-color: #1a253c !important;
+  border-color: #2a3854 !important;
+}
+
+/* 3. Hover effects on list rows and cards */
+.dark div[class*="hover:bg-slate-100"]:hover:not([class*="dark:hover:"]),
+.dark div[class*="hover:bg-slate-50"]:hover:not([class*="dark:hover:"]),
+.dark a[class*="hover:bg-slate-100"]:hover:not([class*="dark:hover:"]),
+.dark a[class*="hover:bg-slate-50"]:hover:not([class*="dark:hover:"]),
+.dark tr[class*="hover:bg-slate-50"]:hover {
+  background-color: #1e293b !important;
+}
+
+/* 4. Color-tinted stat boxes with opacity */
+.dark div[class*="bg-emerald-50/"]:not([class*="dark:bg-"]):not([class*="fixed"]),
+.dark div.bg-emerald-50:not([class*="dark:bg-"]):not([class*="fixed"]) {
+  background-color: rgba(6, 78, 59, 0.3) !important;
+  border-color: rgba(52, 211, 153, 0.28) !important;
+}
+.dark div[class*="bg-amber-50/"]:not([class*="dark:bg-"]):not([class*="fixed"]),
+.dark div.bg-amber-50:not([class*="dark:bg-"]):not([class*="fixed"]) {
+  background-color: rgba(120, 53, 15, 0.3) !important;
+  border-color: rgba(251, 191, 36, 0.28) !important;
+}
+.dark div[class*="bg-purple-50/"]:not([class*="dark:bg-"]):not([class*="fixed"]),
+.dark div.bg-purple-50:not([class*="dark:bg-"]):not([class*="fixed"]) {
+  background-color: rgba(88, 28, 135, 0.3) !important;
+  border-color: rgba(192, 132, 252, 0.28) !important;
+}
+.dark div[class*="bg-rose-50/"]:not([class*="dark:bg-"]):not([class*="fixed"]),
+.dark div.bg-rose-50:not([class*="dark:bg-"]):not([class*="fixed"]) {
+  background-color: rgba(136, 19, 55, 0.3) !important;
+  border-color: rgba(251, 113, 133, 0.28) !important;
+}
+.dark div[class*="bg-sky-50/"]:not([class*="dark:bg-"]):not([class*="fixed"]),
+.dark div.bg-sky-50:not([class*="dark:bg-"]):not([class*="fixed"]) {
+  background-color: rgba(8, 47, 73, 0.35) !important;
+  border-color: rgba(56, 189, 248, 0.28) !important;
+}
+
+/* 5. Fixed Toast & Alert Notifications in Dark Mode (Solid, Non-transparent, High Contrast) */
+.dark div.fixed[class*="bg-emerald-50"],
+.dark div[class*="fixed"][class*="bg-emerald-50"],
+.dark div[class*="fixed"][class*="text-emerald-800"] {
+  background-color: #064e3b !important;
+  border-color: #10b981 !important;
+  color: #f0fdf4 !important;
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.9), 0 0 20px rgba(16, 185, 129, 0.35) !important;
+  opacity: 1 !important;
+}
+
+.dark div.fixed[class*="bg-emerald-50"] *,
+.dark div[class*="fixed"][class*="bg-emerald-50"] *,
+.dark div[class*="fixed"][class*="text-emerald-800"] * {
+  color: #f0fdf4 !important;
+}
+
+.dark div.fixed[class*="bg-emerald-50"] svg,
+.dark div[class*="fixed"][class*="bg-emerald-50"] svg,
+.dark div[class*="fixed"][class*="text-emerald-800"] svg {
+  color: #6ee7b7 !important;
+}
+
+.dark div.fixed[class*="bg-rose-50"],
+.dark div[class*="fixed"][class*="bg-rose-50"],
+.dark div[class*="fixed"][class*="text-rose-800"] {
+  background-color: #881337 !important;
+  border-color: #f43f5e !important;
+  color: #fff1f2 !important;
+  box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.9), 0 0 20px rgba(244, 63, 94, 0.35) !important;
+  opacity: 1 !important;
+}
+
+.dark div.fixed[class*="bg-rose-50"] *,
+.dark div[class*="fixed"][class*="bg-rose-50"] *,
+.dark div[class*="fixed"][class*="text-rose-800"] * {
+  color: #fff1f2 !important;
+}
+
+.dark div.fixed[class*="bg-rose-50"] svg,
+.dark div[class*="fixed"][class*="bg-rose-50"] svg,
+.dark div[class*="fixed"][class*="text-rose-800"] svg {
+  color: #fda4af !important;
+}
+
+/* In dark mode, ensure any to-white gradients blend seamlessly into dark cards */
+.dark [class*="to-white"] {
+  --tw-gradient-to: #0f172a var(--tw-gradient-to-position) !important;
+}
+
+
+
+/* Form controls in Dark Mode */
+.dark input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="file"]),
+.dark textarea {
+  background-color: #131b2e !important;
+  border-color: #243048 !important;
+  color: #f8fafc !important;
+}
+
+.dark input:focus,
+.dark textarea:focus {
+  border-color: #38bdf8 !important;
+  background-color: #18223a !important;
+}
+
+.dark select {
+  background-color: #131b2e !important;
+  border-color: #243048 !important;
+  color: #f8fafc !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2.2' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' /%3E%3C/svg%3E") !important;
+}
+
+.dark select option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+}
+
+.dark select option:checked {
+  background-color: #0369a1 !important;
+  color: #ffffff !important;
+}
+
+.dark select option:hover {
+  background-color: #1e293b !important;
+}
+
 
 /* ==========================================
    MODERN & ROUNDED DROPDOWN (SELECT) STYLING

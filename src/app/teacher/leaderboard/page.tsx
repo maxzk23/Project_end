@@ -88,25 +88,25 @@ export default function TeacherLeaderboardPage() {
     switch (rank) {
       case 1:
         return (
-          <div className="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 border border-yellow-200 flex items-center justify-center font-bold text-sm shrink-0">
+          <div className="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 border border-yellow-200 flex items-center justify-center font-bold text-sm shrink-0 leaderboard-rank-1">
             <FaCrown className="text-yellow-500 animate-bounce" />
           </div>
         );
       case 2:
         return (
-          <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-600 border border-slate-200 flex items-center justify-center font-bold text-sm shrink-0">
+          <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-600 border border-slate-200 flex items-center justify-center font-bold text-sm shrink-0 leaderboard-rank-2">
             <FaMedal className="text-slate-400" />
           </div>
         );
       case 3:
         return (
-          <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-700 border border-orange-200 flex items-center justify-center font-bold text-sm shrink-0">
+          <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-700 border border-orange-200 flex items-center justify-center font-bold text-sm shrink-0 leaderboard-rank-3">
             <FaMedal className="text-orange-500" />
           </div>
         );
       default:
         return (
-          <div className="w-8 h-8 rounded-full bg-slate-50 text-slate-500 border border-slate-200 flex items-center justify-center font-bold text-xs shrink-0">
+          <div className="w-8 h-8 rounded-full bg-slate-50 text-slate-500 border border-slate-200 flex items-center justify-center font-bold text-xs shrink-0 leaderboard-rank-other">
             {rank}
           </div>
         );
