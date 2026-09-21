@@ -21,7 +21,9 @@ import {
   FaToggleOn,
   FaToggleOff,
   FaGraduationCap,
-  FaCheckCircle
+  FaCheckCircle,
+  FaCrown,
+  FaMedal
 } from "react-icons/fa";
 
 interface Classroom {
@@ -160,6 +162,36 @@ export default function TeacherDashboard() {
         bc.close();
       }
     });
+  };
+
+  // Helper สำหรับดึงไอคอนลำดับเหรียญรางวัลตามหน้า Leaderboard
+  const getRankBadge = (rank: number) => {
+    switch (rank) {
+      case 1:
+        return (
+          <div className="w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 border border-yellow-200 flex items-center justify-center font-bold text-sm shrink-0 leaderboard-rank-1">
+            <FaCrown className="text-yellow-500 animate-bounce" />
+          </div>
+        );
+      case 2:
+        return (
+          <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-600 border border-slate-200 flex items-center justify-center font-bold text-sm shrink-0 leaderboard-rank-2">
+            <FaMedal className="text-slate-400" />
+          </div>
+        );
+      case 3:
+        return (
+          <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-700 border border-orange-200 flex items-center justify-center font-bold text-sm shrink-0 leaderboard-rank-3">
+            <FaMedal className="text-orange-500" />
+          </div>
+        );
+      default:
+        return (
+          <div className="w-8 h-8 rounded-full bg-slate-50 text-slate-500 border border-slate-200 flex items-center justify-center font-bold text-xs shrink-0 leaderboard-rank-other">
+            {rank}
+          </div>
+        );
+    }
   };
 
   // คำนวณความกว้างสัดส่วนกราฟแบบ Segmented Bar Chart
@@ -522,8 +554,8 @@ export default function TeacherDashboard() {
           </div>
 
           {/* การ์ด: ทำเนียบเกียรติยศนักเรียน (Leaderboard) */}
-          <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100 text-left space-y-4">
-            <h3 className="text-sm font-extrabold text-slate-800 flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-900 p-6 rounded-3xl shadow-sm border border-slate-100 dark:border-slate-800 text-left space-y-4">
+            <h3 className="text-sm font-extrabold text-slate-800 dark:text-slate-100 flex items-center gap-2">
               <FaTrophy className="text-yellow-500" />
               <span>ทำเนียบเกียรติยศนักเรียน (Leaderboard)</span>
             </h3>
@@ -535,11 +567,7 @@ export default function TeacherDashboard() {
                 {summaryData?.leaderboard.map((student) => (
                   <div key={student.rank} className="flex justify-between items-center py-2 border-b border-slate-100 dark:border-slate-800 last:border-0">
                     <div className="flex items-center gap-3">
-                      <div className={`w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center ${
-                        student.rank === 1 ? "bg-yellow-100 text-yellow-600 dark:bg-yellow-950/50 dark:text-yellow-400" : "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400"
-                      }`}>
-                        {student.rank}
-                      </div>
+                      {getRankBadge(student.rank)}
                       <div>
                         <h5 className="font-bold text-slate-700 dark:text-slate-200 text-xs">{student.studentName}</h5>
                         <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold">ห้อง ม.3/1 • ม.3</span>
@@ -553,7 +581,7 @@ export default function TeacherDashboard() {
 
             <Link 
               href="/teacher/leaderboard"
-              className="w-full flex items-center justify-center gap-1.5 py-3.5 bg-sky-50 text-sky-600 font-bold text-xs rounded-xl hover:bg-sky-100 hover:shadow transition-all shadow-xs border border-sky-100 active:scale-[0.99]"
+              className="w-full flex items-center justify-center gap-1.5 py-3.5 bg-sky-50 dark:bg-sky-950/40 text-sky-600 dark:text-sky-400 font-bold text-xs rounded-xl hover:bg-sky-100 dark:hover:bg-sky-900/50 hover:shadow transition-all shadow-xs border border-sky-100 dark:border-sky-800/50 active:scale-[0.99]"
             >
               <FaTrophy />
               <span>ไปที่แผงสถิติมินิเกมและคะแนนชั้นเรียน</span>
