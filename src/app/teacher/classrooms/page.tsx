@@ -373,6 +373,9 @@ export default function StudentRegistryPage() {
   const countM2 = students.filter(s => s.yearLevel === "ม.2").length;
   const countM3 = students.filter(s => s.yearLevel === "ม.3").length;
   const countTotal = students.length;
+  const pctM1 = countTotal > 0 ? Math.round((countM1 / countTotal) * 100) : 0;
+  const pctM2 = countTotal > 0 ? Math.round((countM2 / countTotal) * 100) : 0;
+  const pctM3 = countTotal > 0 ? Math.round((countM3 / countTotal) * 100) : 0;
 
   // Filtered Students
   const filteredStudents = students.filter(s => {
@@ -412,52 +415,156 @@ export default function StudentRegistryPage() {
         <p className="text-sm text-slate-500 mt-1">บริหารจัดการข้อมูล บัญชีล็อกอิน และระดับชั้นของนักเรียนทั้งหมด</p>
       </div>
 
-      {/* 4-Column Stats Grid (เหมือนเดโม่ 100%) */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* 4-Column Stats Grid - จัดวางแบบโปร่ง โครงสร้างบน-ล่าง ไม่เบียดและไม่ทับข้อความ */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         
-        {/* ม.1 (สีเขียวอ่อน) */}
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-emerald-500 flex items-center gap-5 bg-gradient-to-br from-emerald-500/5 to-white dark:from-emerald-950/20 dark:to-slate-900 hover:shadow-md transition-all">
-          <div className="w-12 h-12 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 dark:border dark:border-emerald-800/50 rounded-xl flex items-center justify-center text-xl font-bold shrink-0">
-            {countM1}
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{countM1} คน</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 font-semibold">ม.1</p>
-          </div>
-        </div>
+        {/* 1. ระดับชั้น ม.1 */}
+        <button
+          type="button"
+          onClick={() => setSelectedLevel(selectedLevel === "ม.1" ? "all" : "ม.1")}
+          className={`relative p-5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-4 overflow-hidden group min-h-[125px] ${
+            selectedLevel === "ม.1"
+              ? "bg-emerald-50/90 dark:bg-emerald-950/40 border-emerald-500 ring-2 ring-emerald-500/30 shadow-md"
+              : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 border-l-4 border-l-emerald-500 bg-gradient-to-br from-emerald-500/5 to-white dark:from-emerald-950/20 dark:to-slate-900 hover:shadow-md hover:border-emerald-300"
+          }`}
+        >
+          {/* Decorative Watermark Icon */}
+          <FaGraduationCap className="absolute -right-2 -bottom-2 text-6xl text-emerald-500/10 dark:text-emerald-400/10 pointer-events-none" />
 
-        {/* ม.2 (สีม่วงอ่อน) */}
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-purple-500 flex items-center gap-5 bg-gradient-to-br from-purple-500/5 to-white dark:from-purple-950/20 dark:to-slate-900 hover:shadow-md transition-all">
-          <div className="w-12 h-12 bg-purple-100 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 dark:border dark:border-purple-800/50 rounded-xl flex items-center justify-center text-xl font-bold shrink-0">
-            {countM2}
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{countM2} คน</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 font-semibold">ม.2</p>
-          </div>
-        </div>
+          {/* แถวบน: สัญลักษณ์ประจำชั้น และ ป้ายสถานะ (จัดอยู่คนละบรรทัดกับข้อความ ไม่บังข้อความแน่นอน) */}
+          <div className="flex items-center justify-between w-full h-10 relative z-10">
+            <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60 rounded-xl flex items-center justify-center text-sm font-black shrink-0 shadow-xs">
+              ม.1
+            </div>
 
-        {/* ม.3 (สีฟ้าอ่อน) */}
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-sky-500 flex items-center gap-5 bg-gradient-to-br from-sky-500/5 to-white dark:from-sky-950/20 dark:to-slate-900 hover:shadow-md transition-all">
-          <div className="w-12 h-12 bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 dark:border dark:border-sky-800/50 rounded-xl flex items-center justify-center text-xl font-bold shrink-0">
-            {countM3}
+            {selectedLevel === "ม.1" && (
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500 text-white font-bold shadow-xs animate-in fade-in">
+                เลือกดูอยู่
+              </span>
+            )}
           </div>
-          <div>
-            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{countM3} คน</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 font-semibold">ม.3</p>
-          </div>
-        </div>
 
-        {/* รวมทั้งหมด */}
-        <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 border-l-4 border-l-slate-400 dark:border-l-slate-600 flex items-center gap-5 bg-gradient-to-br from-slate-500/5 to-white dark:from-slate-800/20 dark:to-slate-900 hover:shadow-md transition-all">
-          <div className="w-12 h-12 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 dark:border dark:border-slate-700 rounded-xl flex items-center justify-center text-xl font-bold shrink-0">
-            {countTotal}
+          {/* แถวล่าง: ระดับชั้น (ตัวใหญ่ เด่นชัด มีพื้นที่เต็มที่) และ จำนวนนักเรียน */}
+          <div className="relative z-10 min-w-0 w-full pt-1">
+            <h3 className="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 tracking-tight leading-snug">
+              ระดับชั้น ม.1
+            </h3>
+            <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1">
+              นักเรียน <strong className="text-emerald-600 dark:text-emerald-400 font-bold">{countM1} คน</strong> <span className="text-[11px] opacity-75 font-normal">({pctM1}%)</span>
+            </p>
           </div>
-          <div>
-            <h3 className="text-2xl font-bold text-slate-800 dark:text-slate-100">{countTotal} คน</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 font-semibold">รวมทั้งหมด</p>
+        </button>
+
+        {/* 2. ระดับชั้น ม.2 */}
+        <button
+          type="button"
+          onClick={() => setSelectedLevel(selectedLevel === "ม.2" ? "all" : "ม.2")}
+          className={`relative p-5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-4 overflow-hidden group min-h-[125px] ${
+            selectedLevel === "ม.2"
+              ? "bg-purple-50/90 dark:bg-purple-950/40 border-purple-500 ring-2 ring-purple-500/30 shadow-md"
+              : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 border-l-4 border-l-purple-500 bg-gradient-to-br from-purple-500/5 to-white dark:from-purple-950/20 dark:to-slate-900 hover:shadow-md hover:border-purple-300"
+          }`}
+        >
+          {/* Decorative Watermark Icon */}
+          <FaGraduationCap className="absolute -right-2 -bottom-2 text-6xl text-purple-500/10 dark:text-purple-400/10 pointer-events-none" />
+
+          {/* แถวบน: สัญลักษณ์ประจำชั้น และ ป้ายสถานะ */}
+          <div className="flex items-center justify-between w-full h-10 relative z-10">
+            <div className="w-10 h-10 bg-purple-100 dark:bg-purple-950/60 text-purple-700 dark:text-purple-400 border border-purple-200 dark:border-purple-800/60 rounded-xl flex items-center justify-center text-sm font-black shrink-0 shadow-xs">
+              ม.2
+            </div>
+
+            {selectedLevel === "ม.2" && (
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-purple-500 text-white font-bold shadow-xs animate-in fade-in">
+                เลือกดูอยู่
+              </span>
+            )}
           </div>
-        </div>
+
+          {/* แถวล่าง: ระดับชั้น (ตัวใหญ่ เด่นชัด มีพื้นที่เต็มที่) และ จำนวนนักเรียน */}
+          <div className="relative z-10 min-w-0 w-full pt-1">
+            <h3 className="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 tracking-tight leading-snug">
+              ระดับชั้น ม.2
+            </h3>
+            <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1">
+              นักเรียน <strong className="text-purple-600 dark:text-purple-400 font-bold">{countM2} คน</strong> <span className="text-[11px] opacity-75 font-normal">({pctM2}%)</span>
+            </p>
+          </div>
+        </button>
+
+        {/* 3. ระดับชั้น ม.3 */}
+        <button
+          type="button"
+          onClick={() => setSelectedLevel(selectedLevel === "ม.3" ? "all" : "ม.3")}
+          className={`relative p-5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-4 overflow-hidden group min-h-[125px] ${
+            selectedLevel === "ม.3"
+              ? "bg-sky-50/90 dark:bg-sky-950/40 border-sky-500 ring-2 ring-sky-500/30 shadow-md"
+              : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 border-l-4 border-l-sky-500 bg-gradient-to-br from-sky-500/5 to-white dark:from-sky-950/20 dark:to-slate-900 hover:shadow-md hover:border-sky-300"
+          }`}
+        >
+          {/* Decorative Watermark Icon */}
+          <FaGraduationCap className="absolute -right-2 -bottom-2 text-6xl text-sky-500/10 dark:text-sky-400/10 pointer-events-none" />
+
+          {/* แถวบน: สัญลักษณ์ประจำชั้น และ ป้ายสถานะ */}
+          <div className="flex items-center justify-between w-full h-10 relative z-10">
+            <div className="w-10 h-10 bg-sky-100 dark:bg-sky-950/60 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60 rounded-xl flex items-center justify-center text-sm font-black shrink-0 shadow-xs">
+              ม.3
+            </div>
+
+            {selectedLevel === "ม.3" && (
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-sky-500 text-white font-bold shadow-xs animate-in fade-in">
+                เลือกดูอยู่
+              </span>
+            )}
+          </div>
+
+          {/* แถวล่าง: ระดับชั้น (ตัวใหญ่ เด่นชัด มีพื้นที่เต็มที่) และ จำนวนนักเรียน */}
+          <div className="relative z-10 min-w-0 w-full pt-1">
+            <h3 className="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 tracking-tight leading-snug">
+              ระดับชั้น ม.3
+            </h3>
+            <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1">
+              นักเรียน <strong className="text-sky-600 dark:text-sky-400 font-bold">{countM3} คน</strong> <span className="text-[11px] opacity-75 font-normal">({pctM3}%)</span>
+            </p>
+          </div>
+        </button>
+
+        {/* 4. รวมทั้งหมด */}
+        <button
+          type="button"
+          onClick={() => setSelectedLevel("all")}
+          className={`relative p-5 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-4 overflow-hidden group min-h-[125px] ${
+            selectedLevel === "all"
+              ? "bg-slate-100 dark:bg-slate-800/80 border-slate-400 dark:border-slate-600 ring-2 ring-slate-400/30 shadow-md"
+              : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-800 border-l-4 border-l-slate-400 dark:border-l-slate-600 bg-gradient-to-br from-slate-500/5 to-white dark:from-slate-800/20 dark:to-slate-900 hover:shadow-md hover:border-slate-400"
+          }`}
+        >
+          {/* Decorative Watermark Icon */}
+          <FaUsers className="absolute -right-2 -bottom-2 text-6xl text-slate-500/10 dark:text-slate-400/10 pointer-events-none" />
+
+          {/* แถวบน: สัญลักษณ์ และ ป้ายแสดงทั้งหมด */}
+          <div className="flex items-center justify-between w-full h-10 relative z-10">
+            <div className="w-10 h-10 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-center shrink-0 shadow-xs">
+              <FaUsers className="text-lg" />
+            </div>
+
+            {selectedLevel === "all" && (
+              <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-700 dark:bg-slate-600 text-white font-bold shadow-xs animate-in fade-in">
+                แสดงทั้งหมด
+              </span>
+            )}
+          </div>
+
+          {/* แถวล่าง: รวมทุกระดับชั้น (มีพื้นที่เต็มกล่อง กว้างขวาง ไม่เบียด ไม่ทับข้อความ) */}
+          <div className="relative z-10 min-w-0 w-full pt-1">
+            <h3 className="text-base sm:text-lg font-black text-slate-800 dark:text-slate-100 tracking-tight leading-snug">
+              รวมทุกระดับชั้น
+            </h3>
+            <p className="text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1">
+              นักเรียนทั้งหมด <strong className="text-slate-800 dark:text-slate-200 font-bold">{countTotal} คน</strong>
+            </p>
+          </div>
+        </button>
 
       </div>
 
@@ -536,7 +643,7 @@ export default function StudentRegistryPage() {
 
       </div>
 
-      {/* ส่วนรายชื่อนักเรียน (การ์ดแสดงตามรูปเดโม่ 100%) */}
+      {/* ส่วนรายชื่อนักเรียน: ปรับแยกเป็น ม.1, ม.2, ม.3 พร้อมระบุจำนวนคนอย่างชัดเจน */}
       {isLoading ? (
         <div className="bg-white dark:bg-slate-900 p-12 rounded-2xl text-center text-slate-500 dark:text-slate-400 font-semibold border border-slate-100 dark:border-slate-800">
           กำลังโหลดข้อมูลนักเรียน...
@@ -553,79 +660,79 @@ export default function StudentRegistryPage() {
               key={`${std.id}-${std.classroomId || 'none'}`}
               className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-800 flex items-center justify-between gap-4 hover:shadow-md dark:hover:border-slate-700 transition-all relative"
             >
-              
-              {/* ซีกซ้าย: รายละเอียดและอวตาร */}
-              <div className="flex items-center gap-4">
-                
-                {/* สัญลักษณ์อวตาร */}
-                {std.avatarUrl ? (
-                  renderAvatarHelper(std.avatarUrl, std.name, "w-11 h-11 text-base")
-                ) : (
-                  <div className="w-11 h-11 bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-100 dark:border-sky-800/50 rounded-full flex items-center justify-center font-bold text-base shrink-0">
-                    {std.name.charAt(0)}
-                  </div>
-                )}
+                        
+                        {/* ซีกซ้าย: รายละเอียดและอวตาร */}
+                        <div className="flex items-center gap-4">
+                          
+                          {/* สัญลักษณ์อวตาร */}
+                          {std.avatarUrl ? (
+                            renderAvatarHelper(std.avatarUrl, std.name, "w-11 h-11 text-base")
+                          ) : (
+                            <div className="w-11 h-11 bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-100 dark:border-sky-800/50 rounded-full flex items-center justify-center font-bold text-base shrink-0">
+                              {std.name.charAt(0)}
+                            </div>
+                          )}
 
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-700 dark:text-slate-200 text-base">{std.name}</span>
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                      std.yearLevel === "ม.1" ? "bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border dark:border-emerald-800/40" :
-                      std.yearLevel === "ม.2" ? "bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-400 border dark:border-purple-800/40" :
-                      "bg-sky-100 dark:bg-sky-950/50 text-sky-700 dark:text-sky-400 border dark:border-sky-800/40"
-                    }`}>
-                      {std.yearLevel}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-semibold">
-                    รหัส: <span className="font-mono text-slate-600 dark:text-slate-300">{std.studentId}</span> - รหัสผ่าน: <span className="font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800/40 px-1 py-0.5 rounded font-black">{std.passwordHint}</span> - {std.yearLevel}/{std.room}
-                  </p>
-                </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-slate-700 dark:text-slate-200 text-base">{std.name}</span>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                                std.yearLevel === "ม.1" ? "bg-emerald-100 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 border dark:border-emerald-800/40" :
+                                std.yearLevel === "ม.2" ? "bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-400 border dark:border-purple-800/40" :
+                                "bg-sky-100 dark:bg-sky-950/50 text-sky-700 dark:text-sky-400 border dark:border-sky-800/40"
+                              }`}>
+                                {std.yearLevel}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-semibold">
+                              รหัส: <span className="font-mono text-slate-600 dark:text-slate-300">{std.studentId}</span> - รหัสผ่าน: <span className="font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-100 dark:border-emerald-800/40 px-1 py-0.5 rounded font-black">{std.passwordHint}</span> - {std.yearLevel}/{std.room}
+                            </p>
+                          </div>
 
-              </div>
+                        </div>
 
-              {/* ซีกขวา: คะแนนและเครื่องมือลบ/แก้ไข */}
-              <div className="flex items-center gap-4 sm:gap-6">
-                
-                <span className="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base shrink-0">
-                  {std.totalPoints.toLocaleString()} <span className="text-xs text-slate-400 dark:text-slate-500 font-semibold">pts</span>
-                </span>
+                        {/* ซีกขวา: คะแนนและเครื่องมือลบ/แก้ไข */}
+                        <div className="flex items-center gap-4 sm:gap-6">
+                          
+                          <span className="font-bold text-slate-800 dark:text-slate-100 text-sm sm:text-base shrink-0">
+                            {std.totalPoints.toLocaleString()} <span className="text-xs text-slate-400 dark:text-slate-500 font-semibold">pts</span>
+                          </span>
 
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => {
-                      setErrorMsg(null);
-                      setTeacherPassword("");
-                      setEditingStudent(std);
-                      setEditPasswordHint(std.passwordHint);
-                      setEditNickname(std.nickname || "");
-                      setEditGender(std.gender || "");
-                      setEditRollNumber(std.rollNumber || "");
-                      setEditParentPhone(std.parentPhone || "");
-                    }}
-                    className="p-2 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-950/40 text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 rounded-xl transition cursor-pointer"
-                    title="แก้ไขข้อมูลนักเรียน"
-                  >
-                    <FaEdit className="text-sm" />
-                  </button>
+                          <div className="flex items-center gap-1.5">
+                            <button
+                              onClick={() => {
+                                setErrorMsg(null);
+                                setTeacherPassword("");
+                                setEditingStudent(std);
+                                setEditPasswordHint(std.passwordHint);
+                                setEditNickname(std.nickname || "");
+                                setEditGender(std.gender || "");
+                                setEditRollNumber(std.rollNumber || "");
+                                setEditParentPhone(std.parentPhone || "");
+                              }}
+                              className="p-2 bg-slate-50 dark:bg-slate-800 hover:bg-sky-50 dark:hover:bg-sky-950/40 text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 rounded-xl transition cursor-pointer"
+                              title="แก้ไขข้อมูลนักเรียน"
+                            >
+                              <FaEdit className="text-sm" />
+                            </button>
 
-                  <button
-                    onClick={() => {
-                      setErrorMsg(null);
-                      setTeacherPassword("");
-                      setDeletingStudent(std);
-                    }}
-                    className="p-2 bg-slate-50 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl transition cursor-pointer"
-                    title="ลบข้อมูลนักเรียน"
-                  >
-                    <FaTrash className="text-sm" />
-                  </button>
-                </div>
+                            <button
+                              onClick={() => {
+                                setErrorMsg(null);
+                                setTeacherPassword("");
+                                setDeletingStudent(std);
+                              }}
+                              className="p-2 bg-slate-50 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 rounded-xl transition cursor-pointer"
+                              title="ลบข้อมูลนักเรียน"
+                            >
+                              <FaTrash className="text-sm" />
+                            </button>
+                          </div>
 
-              </div>
+                        </div>
 
-            </div>
-          ))}
+                      </div>
+                    ))}
         </div>
       )}
 
